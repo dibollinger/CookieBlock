@@ -1,0 +1,4 @@
+The files in this folder are copy-pasted from the extension and altered to work with NodeJS.
+
+Any changes relating to feature extraction or prediction MUST be ported over to the extension.
+Otherwise, the analysis will not apply.

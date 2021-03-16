@@ -1,0 +1,9 @@
+.idea/
+.vscode/
+feature-extraction/data/training_data/*.json
+feature-extraction/data/validation_data/*.libsvm
+feature-extraction/data/model/*.json
+feature-extraction/node_modules/*
+feature-extraction/outputs/class_weights.txt
+feature-extraction/outputs/prediction_stats.log
+feature-extraction/outputs/processed.libsvm

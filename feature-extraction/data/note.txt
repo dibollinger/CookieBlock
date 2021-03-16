@@ -1,0 +1,2 @@
+Copied over and altered to work with NodeJS.
+Any changes relating to features MUST be ported over to the extension.

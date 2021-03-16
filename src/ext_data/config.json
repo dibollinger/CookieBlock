@@ -1,0 +1,9 @@
+{
+    "update_limit": 10,
+    "default_policy": {
+        "block_necessary": false,
+        "block_functional": false,
+        "block_analytics": false,
+        "block_advertising": true
+    }
+}

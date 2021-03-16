@@ -1,0 +1,58 @@
+{
+
+  "manifest_version": 2,
+  "name": "CookieBlock",
+  "author": "Dino Bollinger",
+  "homepage_url": "https://github.com/dibollinger/CookieBlock",
+  "version": "0.1",
+  "incognito": "spanning",
+  "default_locale": "en",
+
+  "description": "__MSG_extensionDescription__",
+
+  "icons": {
+    "16": "icons/cookieblock-16.png",
+    "32": "icons/cookieblock-32.png",
+    "48": "icons/cookieblock-48.png",
+    "64": "icons/cookieblock-64.png",
+    "96": "icons/cookieblock-96.png",
+    "128": "icons/cookieblock-128.png"
+  },
+
+  "permissions": [
+      "<all_urls>",         // host permission, required to access and delete cookies for each website
+      "cookies",            // obviously required for cookie access
+      "storage",            // required to store settings
+      "unlimitedStorage",   // required to keep track of cookie updates. may be changed later (not supported in Opera)
+      "tabs"                // required to access current tab to add site exceptions (somehow not covered by host permissions?)
+  ],
+
+  "background": {
+    "page": "background/cookieblock_background.html"
+  },
+
+  "options_ui": {
+    "browser_style": true,
+    "page": "options/cookieblock_options.html",
+    "open_in_tab": true
+  },
+
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": {
+      "16": "icons/cookieblock-16.png",
+      "32": "icons/cookieblock-32.png",
+      "48": "icons/cookieblock-48.png",
+      "64": "icons/cookieblock-64.png"
+    },
+    "default_title": "CookieBlock",
+    "default_popup": "popup/cookieblock_popup.html"
+  },
+
+  "browser_specific_settings": {
+    // Firefox
+    "gecko": {
+      "id": "cookieblock@example.com" // intentionally not the real address
+    }
+  }
+}

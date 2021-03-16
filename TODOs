@@ -1,0 +1,15 @@
+* Better message exchange between options and background script
+* Revise unlimited storage permission. Currently needed for storage of cookie updates locally.
+* Handle third-party cookies differently:
+   1. get all current tab domains
+   2. if cookie host does not match any of them, it's a third party cookie
+   3. else it's a first party cookie
+   -> May result in false negatives, but much rarer
+   -> Problem: how to classify cookies already stored in the browser? Don't do it at all?
+* Add a feedback box
+* Add proper Bayes Decision
+* Add timings for debugging
+* Change the classifier so that cookie labels are remembered for a short duration, such that cookies aren't constantly reclassified.
+* Need to verify feature extraction correctness.
+* Improve performance of the extension.
+* Localization

@@ -1,0 +1,194 @@
+/*
+* Based on the CSS from Consent-O-Matic by Janus Bager Kristensen, Rolf Bagge, CAVI
+* MIT License
+*/
+body, html {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    min-height: 100vh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: top;
+    background: radial-gradient(ellipse, rgb(12, 72, 129), rgb(2, 1, 42));
+    max-width: 50em;
+    border-style: groove;
+    border-left: .125em solid black;
+    border-right: .125em solid black;
+    margin-top: 5em;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 1em rgba(0,0,0,0.5);
+    line-height: 1.25em;
+}
+
+.header {
+    position: relative;
+    padding: 1em;
+    color: white;
+    font-family: sans-serif;
+    display: flex;
+    margin-bottom: 0em;
+    background: radial-gradient(ellipse, rgb(5, 25, 44), rgb(2, 1, 42));
+    border-style: ridge;
+    border-color: whitesmoke;
+    border-width: .3em;
+}
+.header .title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.header h1 {
+    margin-top:0;
+    margin-bottom: 0;
+    line-height: 1.2em;
+    margin-left: 1em;
+}
+.header h2 {
+    margin-top: 0.5em;
+    font-weight: 400;
+    font-size: larger;
+    margin-left: 2.0em;
+
+}
+.header img {
+    margin-left: 1.2em;
+    height: 6em;
+}
+
+
+legend {
+    font-size: 1.75em;
+    font-weight: bold;
+}
+
+fieldset {
+    border: 0;
+}
+
+.contents {
+    flex: 1 0 auto;
+    background: white;
+}
+.contents ul {
+    list-style: none;
+    margin-left: 0em;
+    padding-left: 0em;
+}
+
+.contents ul li {
+    background: rgba(0,0,100,0.025);
+    position: relative;
+    padding: 1em;
+    padding-left: 6em;
+    padding-right: 2em;
+    margin-left: 0;
+    cursor: pointer;
+}
+.contents ul li.active {
+    background: rgba(100,255,100,0.2);
+}
+.contents ul li:hover {
+    background: rgba(0,0,100,0.075);
+}
+.contents ul li.active:hover {
+    background: rgba(50,255,50,0.2);
+}
+
+
+.settings_group {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+}
+.overview_description {
+    margin-top: 1.3em;
+    margin-bottom: .7em;
+    line-height: 1.4;
+    font-size: large;
+}
+
+.catname{
+    font-size: larger;
+    font-weight: bold;
+}
+
+.missing_checkbox {
+    margin-top:.75em;
+    margin-left: 1.25em;
+    margin-top: 1.75em;
+}
+
+.class_desc {
+    margin-top: 1em;
+    margin-left: 2em;
+    line-height: 1.4;
+    font-size: medium;
+}
+
+.checkbox {
+    margin-top: 1em;
+    font-size: 110%;
+    display: inline;
+}
+
+.preference_form {
+    font-size: 1em;
+}
+
+.submit_field {
+    margin-top: 2em;
+    margin-left: 3em;
+}
+
+.description {
+    padding: 2em;
+    padding-bottom: 0.5em;
+}
+
+.rulelist li {
+    display: flex;
+    align-items: center;
+    word-wrap: break-word;
+    cursor: initial !important;
+}
+.rulelist li button {
+    pointer-events: all;
+    position: absolute;
+    left: 2em;
+    border: 0;
+    cursor: pointer;
+    size: 1em;
+}
+.rulelist li button:hover {
+    background: red;
+}
+
+.button_clicktext {
+    float:left;
+    font-size: 1.25em;
+    margin-top: .5em;
+    margin-left: 2.5em;
+}
+
+hr.thin {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border-top: 1px solid black;
+}
+
+hr.thick {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    border-top: 2px solid black;
+}
+
+.stat_text {
+    font-size: larger;
+}

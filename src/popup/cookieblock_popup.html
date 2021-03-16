@@ -1,0 +1,26 @@
+<!-- HTML layout based on Consent-O-Matic popup by Janus Bager Kristensen, Rolf Bagge, CAVI -->
+<!-- MIT License -->
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="cookieblock_popup.css">
+</head>
+<body>
+
+    <div class="titlebox">
+        <img class="logo" src="/icons/cookieblock-96.png">
+        <div class="title">CookieBlock</div>
+    </div>
+    <br>
+    <div id="popup-content">
+        <div id="desc-box">Trust all cookies from this website?</div>
+        <div hidden class="error" id="error-box">Something went wrong!</div>
+        <button id="add-exception">Add Site Exception</button>
+        <button id="options">More Settings</button>
+    </div>
+
+    <script type="module" src="cookieblock_popup.js"></script>
+</body>
+</html>
