@@ -42,9 +42,7 @@ Note that CookieBlock does not handle the cookie banner itself. In order to remo
     - `/options/`: Contains the options and first time setup page of the extension.
     - `/popup/`: Contains code for the extension popup.
 
-# Credits
-
-## License
+# Credits and License
 
 CookieBlock is released under the MIT License, see included LICENSE file.
 
@@ -68,24 +66,21 @@ Includes code from the following:
 
 Huge thanks go to CCoates for designing the awesome CookieBlock logo!
 
+----
 
-## Thesis Advisors
+This extension was created as part of the master thesis *"Analyzing Cookies Compliance with the GDPR*.
+See also the following repositories for other components that were developed as part of the thesis:
 
-This extension was created as part of the master thesis __"Analyzing Cookies Compliance with the GDPR"__.
+__Related Repositories:__
+* CookieBlock: https://github.com/dibollinger/CookieBlock
+* Prototype Crawler: https://github.com/dibollinger/CookieBlock-Crawler-Prototype
+* Final Crawler: https://github.com/dibollinger/CookieBlock-Consent-Crawler
+* Cookie Classifier: https://github.com/dibollinger/CookieBlock-Consent-Classifier
+* Violation Detection & More: https://github.com/dibollinger/CookieBlock-Other-Scripts 
+* Collected Data: https://drive.google.com/drive/folders/1P2ikGlnb3Kbb-FhxrGYUPvGpvHeHy5ao
 
-Thanks go to the following people for assisting with the thesis and the development of the extension:
-
+__Thesis Supervision and Assistance:__
 * Karel Kubicek
 * Dr. Carlos Cotrini
 * Prof. Dr. David Basin
 * The Institute of Information Security at ETH Zürich
-
-
-# Related Repositories
-
-See also the following repositories for other components that were developed as part of the thesis:
-* __Prototype Webcrawler__: https://github.com/dibollinger/CookieBlock-Crawler-Prototype
-* __Cookie Consent Crawler__: https://github.com/dibollinger/CookieBlock-Consent-Crawler
-* __Cookie Consent Classifier__: https://github.com/dibollinger/CookieBlock-Consent-Classifier
-* __GDPR Violation Detection and more__: https://github.com/dibollinger/CookieBlock-Other-Scripts
-* __Datasets__: TODO
