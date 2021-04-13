@@ -1,12 +1,8 @@
 // Author: Dino Bollinger
 // License: MIT
 
-import { enforcePolicy } from "../modules/enforcer.js";
-import { getLocalData } from "/modules/utils.js";
-
 // storage keys for each type of domain exception (global, functionality, analytics, advertising)
 const exceptionKeys = ["cblk_exglobal", "cblk_exfunc", "cblk_exanal", "cblk_exadvert"]
-
 
 /**
  * Callback function that executes once the configuration has been retrieved.

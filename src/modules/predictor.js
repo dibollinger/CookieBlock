@@ -1,8 +1,6 @@
 // Author: Dino Bollinger
 // License: MIT
 
-import { getLocalData } from '/modules/utils.js'
-
 /* Initialization */
 var forests = [null, null, null, null];
 getLocalData(browser.extension.getURL("ext_data/model/forest_class0.json"), "json", (f) => forests[0] = f);
@@ -84,7 +82,7 @@ const forest_predict = function(classForests, features) {
 * @param {Object} features   Cookie features formatted as {"index":value}.
 * @return {Number}           The predicted label for the cookie.
 */
-export const predictClass = function (sparseFeatures){
+const predictClass = function (sparseFeatures){
     let result = forest_predict(forests, sparseFeatures);
     return result["prediction"];
 }

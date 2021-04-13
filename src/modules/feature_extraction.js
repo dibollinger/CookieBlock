@@ -1,8 +1,6 @@
 // Author: Dino Bollinger
 // License: MIT
 
-import { getLocalData, urlToUniformDomain } from '/modules/utils.js'
-
 /** Global Variables */
 
 // Loaded in from a JSON file, stores the configuration on which features to extract from a cookie
@@ -820,7 +818,7 @@ const perDiffFeatures = {
 * @param {Object} cookieDat   Object storing the cookie values.
 * @return {Object}            An object representing a sparse vector -- keys are indices, values are floats.
 */
-export const extractFeatures = function(cookieDat) {
+const extractFeatures = function(cookieDat) {
 
     let sparseFeatures = {};
     let curr_idx = 0;

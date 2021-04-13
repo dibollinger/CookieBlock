@@ -1,8 +1,6 @@
 // Author: Dino Bollinger
 // License: MIT
 
-import { urlToUniformDomain } from '/modules/utils.js';
-
 const addText = "Add Site Exception";
 const removeText = "Remove Site Exception";
 

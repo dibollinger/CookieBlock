@@ -1,19 +1,11 @@
 // Author: Dino Bollinger
 // License: MIT
 
-import { getLocalData, escapeString, urlToUniformDomain } from "/modules/utils.js";
-import { extractFeatures } from "/modules/feature_extraction.js";
-import { predictClass } from "/modules/predictor.js";
-
 // Maximum number of cookie updates to store in the extension. If exceeded, will evict the oldest update.
 var updateLimit;
 getLocalData(browser.extension.getURL("ext_data/config.json"), "json", (r) => {
     updateLimit = r["update_limit"];
 });
-
-// storage keys for each type of domain exception (global, functionality, analytics, advertising)
-const exceptionKeys = ["cblk_exglobal", "cblk_exfunc", "cblk_exanal", "cblk_exadvert"]
-
 
 /**
  * Generic error handler function.
@@ -220,7 +212,7 @@ const makePolicyDecision = function(cookieDat, label) {
 };
 
 
-export const enforcePolicy = function (ckey, cookieDat){
+const enforcePolicy = function (ckey, cookieDat){
 
     browser.storage.local.get("cblk_storage").then((r) => {
 

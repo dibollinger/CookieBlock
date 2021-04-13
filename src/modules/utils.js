@@ -8,7 +8,7 @@
 * @param {String} dtype        Type of the data. Examples: "json", "text", "binary"
 * @param {Function} callback   Callback function that will be executed as soon as the data is available, receives data as first argument.
 */
-export const getLocalData = function(url, dtype, callback) {
+const getLocalData = function(url, dtype, callback) {
     const req = new XMLHttpRequest();
 
     req.responseType = dtype;
@@ -35,7 +35,7 @@ export const getLocalData = function(url, dtype, callback) {
 * @param  {String} str   Maybe URL encoded string.
 * @return {String}       Decoded String.
 */
-export const escapeString = function(str) {
+const escapeString = function(str) {
     if (typeof str != "string") {
         str = String(str);
     }
@@ -49,7 +49,7 @@ export const escapeString = function(str) {
  * @param {String} domain  Domain to clean and bring into uniform format
  * @return {String}        Cleaned domain string.
  */
-export const urlToUniformDomain = function(url) {
+const urlToUniformDomain = function(url) {
     let new_url = url.trim();
     new_url = new_url.replace(/^http(s)?:\/\//, "");
     new_url = new_url.replace(/^www([0-9])?/, "");

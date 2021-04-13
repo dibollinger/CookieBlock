@@ -3,7 +3,6 @@
 
 // Script that controls the first-time setup of the extension
 
-// import { enforcePolicy } from "../modules/enforcer.js";
 
 const enableDebugging = function() {
     let debugStatus = document.getElementById("debug_checkbox").checked;

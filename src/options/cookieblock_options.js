@@ -2,9 +2,6 @@
 // License: MIT
 // Script that controls the preferences section of the extension
 
-import { urlToUniformDomain } from '/modules/utils.js';
-import { enforcePolicy } from "../modules/enforcer.js";
-
 const onError = function(error) {
     console.error(`error: ${error}`);
 }
