@@ -1,4 +1,5 @@
 // Author: Dino Bollinger
+// License: MIT
 let utils = require('./utils.js')
 
 /* Initialization */

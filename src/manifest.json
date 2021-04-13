@@ -23,8 +23,8 @@
       "<all_urls>",         // host permission, required to access and delete cookies for each website
       "cookies",            // obviously required for cookie access
       "storage",            // required to store settings
-      "unlimitedStorage",   // required to keep track of cookie updates. may be changed later (not supported in Opera)
-      "tabs"                // required to access current tab to add site exceptions (somehow not covered by host permissions?)
+      "unlimitedStorage",   // required to keep track of cookie updates
+      "tabs"                // required to access current tab to add site exceptions
   ],
 
   "background": {

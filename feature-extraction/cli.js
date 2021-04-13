@@ -2,8 +2,9 @@
 // Author: Dino Bollinger
 // MIT License
 
-// This command line script can either perform feature extraction, which is necessary to produce a new model for the extension.
-// or it can perform predictions on a validation set to gain validation statistics.
+// This command line script can either perform feature extraction, which is necessary to
+// produce a new model for the extension or it can perform predictions on a validation set
+// to gain validation statistics.
 
 let fs = require('fs');
 let utils = require("./modules/utils.js");

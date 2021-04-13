@@ -1,4 +1,5 @@
 // Author: Dino Bollinger
+// License: MIT
 
 let fs = require('fs');
 

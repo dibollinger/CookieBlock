@@ -480,8 +480,6 @@ const perCookieFeatures = {
         }
     },
     "feature_same_site_first_update":  (sparse, curr_idx, cookie_data, args) => {
-        // TODO: Train for "unspecified" -- this normally only appears in Chrome, but not in Firefox
-        // For now it is graded the same as "lax"
         let sflag = cookie_data["variable_data"][0]["same_site"];
         if (sflag === "no_restriction"){
             sparse[curr_idx] = 1.0;
@@ -520,7 +518,6 @@ const perUpdateFeatures = {
         sparse[curr_idx] = var_data["session"] ? 1.0 : -1.0;
     },
     "feature_same_site": (sparse, curr_idx, var_data, args) => {
-        //TODO: train on unspecified
         let sflag = var_data["same_site"];
         let eone = -1.0; let etwo = -1.0; let ethree = -1.0;
         if (sflag === "no_restriction"){
@@ -574,21 +571,18 @@ const perUpdateFeatures = {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
         let result = chooseBestSeparator(cookieContent, ",|#:;&", args["min_seps"]);
 
-        //console.debug(`Chosen Delimiter with ${result["count"]} occurrences: ${result["sep"]}`);
         sparse[curr_idx] = (result["sep"] === undefined) ? -1 : result["count"] + 1;
     },
     "feature_period_separated": (sparse, curr_idx, var_data, args) => {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
         let result = chooseBestSeparator(cookieContent, ".", args["min_seps"]);
 
-        //console.debug(`Chosen Delimiter with ${result["count"]} occurrences: ${result["sep"]}`);
         sparse[curr_idx] = (result["sep"] === undefined) ? -1 : result["count"] + 1;
     },
     "feature_dash_separated": (sparse, curr_idx, var_data, args) => {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
         let result = chooseBestSeparator(cookieContent, "-", args["min_seps"]);
 
-        //console.debug(`Chosen Delimiter with ${result["count"]} occurrences: ${result["sep"]}`);
         sparse[curr_idx] = (result["sep"] === undefined) ? -1 : result["count"] + 1;
     },
     "feature_base64_encoded": (sparse, curr_idx, var_data, args) => {
@@ -597,7 +591,6 @@ const perUpdateFeatures = {
             decoded = atob(var_data["value"]);
             sparse[curr_idx] = 1.0;
         } catch(error){
-            //console.debug("Could not decode cookie content as base64.")
             sparse[curr_idx] = -1.0;
         }
     },
@@ -613,7 +606,6 @@ const perUpdateFeatures = {
                 JSON.parse(decoded);
                 sparse[curr_idx] = 1.0;
             } catch(serror){
-                //console.debug("Was not a JSON object.")
                 sparse[curr_idx] = -1.0;
             }
         }
@@ -666,9 +658,7 @@ const perUpdateFeatures = {
             try{
                 decoded = atob(var_data["value"]);
                 jsobj = JSON.parse(decoded);
-            } catch(serror){
-                //console.debug("Was not a JSON object.");
-            }
+            } catch(serror){}
         }
 
         let foundIdentifier = false;
@@ -877,9 +867,6 @@ export const extractFeatures = function(cookieDat) {
             curr_idx += entry["vector_size"] * (feature_config["num_updates"] - 1);
         }
     }
-
-    //console.debug("Sparse Features:");
-    //console.debug(sparseFeatures);
 
     return sparseFeatures;
 }

@@ -1,4 +1,6 @@
 // Author: Dino Bollinger
+// License: MIT
+
 let utils = require('./utils.js');
 var difflib = require('difflib');
 var levenshtein = require('levenshtein');
@@ -647,11 +649,11 @@ const perUpdateFeatures = {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
         let result = chooseBestSeparator(cookieContent, ",|#:;&", args["min_seps"]);
 
+        let containsBool = false;
         let containsNum = false;
-        let containsHex = false;
         let containsAlpha = false;
         let containsAlnum = false;
-        let containsBool = false;
+        let containsHex = false;
         let containsLocale = false;
 
         if (result["sep"]) {
