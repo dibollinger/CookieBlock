@@ -1,6 +1,198 @@
 {
-    "extensionDescription": {
-      "message": "Automatically enforces user consent preferences on browser cookies.",
-      "description": "Description of the extension."
-    }
+  "extensionName": {
+    "message": "CookieBlock",
+    "description": "Name of the extension."
+  },
+
+  "manifestDescription": {
+    "message": "Automatically enforces user consent preferences for browser cookies.",
+    "description": "Description of the extension in the manifest."
+  },
+
+  "firstTimeSubtitle": {
+    "message": "First Time Setup",
+    "description": "Subtitle of the first time setup page."
+  },
+
+  "firstTimeGreeting": {
+    "message": "Thank you for installing CookieBlock!",
+    "description": "Greeting message on the first time setup."
+  },
+
+  "firstTimeDesc": {
+    "message": "CookieBlock attempts to automatically enforce your cookie consent preferences on all websites you visit. This is done through the user of a pre-trained machine learning classifier. Please select the categories you consent towards.",
+    "description": "Description seen on the first time setup page."
+  },
+
+  "catNecessaryTitle": {
+    "message": "Strictly Necessary Cookies",
+    "description": "Text next to the 'Necessary' checkbox."
+  },
+
+  "catFunctionalityTitle": {
+    "message": "Functionality Cookies",
+    "description": "Text next to the 'Functionality' checkbox."
+  },
+
+  "catAnalyticsTitle" : {
+    "message": "Analytics Cookies",
+    "description": "Text next to the 'Analytics' checkbox."
+  },
+
+  "catAdvertisingTitle": {
+    "message": "Advertising/Tracking Cookies",
+    "description": "Text next to the 'Advertising' checkbox."
+  },
+
+  "catNecessaryDescription": {
+    "message": "This category includes cookies that are typically required for essential services to operate. Deleting these may cause websites to break.",
+    "description": "Description of the 'Necessary' category."
+  },
+
+  "catFunctionalityDescription": {
+    "message": "Functionality cookies serve to remember optional user preferences, such as language or website style, and to improve the user experience. They are not required for essential services to work.",
+    "description": "Description of the 'Functionality' category."
+  },
+
+  "catAnalyticsDescription" : {
+    "message": "Analytics cookies are used to collect statistical information about how visitors use a website. Normally the collected data should be anonymized and not be sensitive.",
+    "description": "Description of the 'Analytics' category."
+  },
+
+  "catAdvertisingDescription" : {
+    "message": "Advertising cookies track visitors across multiple websites and collect sensitive, personally identifiable information. This is commonly used to construct a user profile for targeted advertising.",
+    "description": "Description of the 'Advertising' category."
+  },
+
+  "buttonUpdatePolicy" : {
+    "message": "Update Policy",
+    "description": "Label of the update button."
+  },
+
+  "headerAdditionalOptions" : {
+    "message": "Additional Options",
+    "description": "Additional options header text."
+  },
+
+  "additionalOptionsDesc" : {
+    "message": "Additional extension settings:",
+    "description": "Additional options description."
+  },
+
+  "enableDebugMode" : {
+    "message": "Enable Debug Mode",
+    "description": "Debug Mode Toggle."
+  },
+
+  "debugDescription" : {
+    "message": "ONLY USE THIS WHEN TESTING! Debug mode will skip the removal of cookies such that the assigned category can be verified manually.",
+    "description": "Debug Description."
+  },
+
+  "buttonExitSetup" : {
+    "message": "Define policy and close",
+    "description": "Label for the close button on the first time setup"
+  },
+
+  "popupText" : {
+    "message": "Trust all cookies from this website?",
+    "description": "Text present on the popup."
+  },
+
+  "popupButtonAdd" : {
+    "message": "Add Site Exception",
+    "description": "Button text for adding exceptions"
+  },
+
+  "popupButtonRemove" : {
+    "message": "Remove Site Exception",
+    "description": "Button text for removing exceptions"
+  },
+
+  "popupButtonOptions" : {
+    "message": "More Settings",
+    "description": "Button for opening the options page"
+  },
+
+  "optionsHeaderConsent" : {
+    "message": "Consent Preferences",
+    "description": "Header for the consent category options"
+  },
+
+  "optionsConsentUpdate" : {
+    "message": "Update Policy",
+    "description": "Text on the update button"
+  },
+
+  "currentCookieEnforceTitle" : {
+    "message": "Enforce Policy on Existing Cookies",
+    "description": "Header for the policy enforcement button."
+  },
+
+  "currentCookieEnforceDescription" : {
+    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all current cookies that the automatic classifier assigns to cookies you did not agree to.",
+    "description" : "Description of the policy enforcement on current cookies."
+  },
+
+  "currentCookieEnforceButton" : {
+    "message" : "Apply Policy",
+    "description" : "Label on the button that performs the current cookie classification."
+  },
+
+  "globalExceptionsHeader" : {
+    "message" : "Website Exceptions",
+    "description" : "Header for the global extensions listing."
+  },
+
+  "globalExceptionsDescription" : {
+    "message" : "Cookies that originate from one of the domains in this list will always be permitted, regardless of the current consent policy.",
+    "description" : "Decription for the global website exceptions."
+  },
+
+  "exceptionPlaceholderText" : {
+    "message" : "Add Exception",
+    "description": "Text for the exception domain entry fields."
+  },
+
+  "functionalExceptionsHeader" : {
+    "message" : "Domain Exceptions for Functional Category",
+    "description" : "exception header title"
+  },
+
+  "functionalExceptionsDescription" : {
+    "message" : "Do not reject Functionality Cookies that stem from the following domains:",
+    "description" : "exception description"
+  },
+
+  "analyticsExceptionsHeader" : {
+    "message" : "Domain Exceptions for Analytics Category",
+    "description" : "exception header title"
+  },
+
+  "analyticsExceptionsDescription" : {
+    "message" : "Do not reject Analytics Cookies that stem from the following domains:",
+    "description" : "exception description"
+  },
+
+  "advertExceptionsHeader" : {
+    "message" : "Domain Exception for Advertising Category",
+    "description" : "exception header title"
+
+  },
+
+  "advertExceptionsDescription" : {
+    "message" : "Do not reject Advertising Cookies that stem from the following domains:",
+    "description" : "exception description"
+  },
+
+  "categoryStatisticsHeader" : {
+    "message" : "Category Statistics",
+    "description": "Header for the category statistics"
+  },
+
+  "categoryStatisticsDesc" : {
+    "message" : "Number of cookies that were assigned to which category:",
+    "description" : "Description of the statistics."
   }
+
+}

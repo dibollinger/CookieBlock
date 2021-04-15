@@ -1,14 +1,14 @@
 {
 
   "manifest_version": 2,
-  "name": "CookieBlock",
+  "name": "__MSG_extensionName__",
   "author": "Dino Bollinger",
   "homepage_url": "https://github.com/dibollinger/CookieBlock",
   "version": "0.1",
   "incognito": "spanning",
   "default_locale": "en",
 
-  "description": "__MSG_extensionDescription__",
+  "description": "__MSG_manifestDescription__",
 
   "icons": {
     "16": "icons/cookieblock-16.png",
