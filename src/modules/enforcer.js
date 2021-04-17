@@ -1,50 +1,15 @@
 // Author: Dino Bollinger
 // License: MIT
 
-// Maximum number of cookie updates to store in the extension. If exceeded, will evict the oldest update.
-var updateLimit;
-getLocalData(browser.extension.getURL("ext_data/config.json"), "json", (r) => {
-    updateLimit = r["update_limit"];
-});
-
-/**
- * Generic error handler function.
- * @param {String} error
- */
-const onError = (error) => {
-    console.error(`An error occurred: ${error}`);
-}
-
-/**
- * Transforms the given domain or URL into a uniform representation.
- * @param {String} domainOrURL    Domain or URL to transform into uniform format
- * @return {String}               Transformed domain.
- */
-const sanitizeDomain = (domainOrURL) => {
-    try {
-        return urlToUniformDomain(new URL(domainOrURL).hostname);
-    } catch(error) {
-        return urlToUniformDomain(domainOrURL);
-    }
-}
-
-/**
-* Given a cookie expiration date, compute the expiry time in seconds,
-* starting from the current time and date.
-* @param  {Object} cookie  Cookie object that contains the attributes "session" and "expirationDate".
-* @return {Number}         Expiration time in seconds. Zero if session cookie.
-*/
-const datetimeToExpiry = function(cookie) {
-    let curTS = Math.floor(Date.now() / 1000);
-    return cookie.session ? 0 : cookie.expirationDate - curTS;
-};
+var httpRemovalCounter = 0;
+var httpsRemovalCounter = 0;
 
 /**
 * Creates a new feature extraction input object from the raw cookie data.
-* @param  {Object} cookie  Raw cookie data as received from the browser.
-* @return {Object}  Feature Extraction input object.
+* @param  {Object} cookie    Raw cookie data as received from the browser.
+* @return {Promise<object>}  Feature Extraction input object.
 */
-const createFEInput = function(cookie) {
+const createFEInput = async function(cookie) {
     return {
       "name": escapeString(cookie.name),
       "domain": escapeString(cookie.domain),
@@ -73,11 +38,12 @@ const createFEInput = function(cookie) {
  * If the update limit is reached, the oldest update will be removed.
  * @param  {Object} prevCookie   Feature Extraction input, previously constructed.
  * @param  {Object} newCookie    New cookie data, untransformed.
- * @return {Object}              The existing cookie object, updated with new data.
+ * @return {Promise<object>}     The existing cookie object, updated with new data.
  */
-const updateFEInput = function(prevCookie, newCookie) {
+const updateFEInput = async function(prevCookie, newCookie) {
 
     let updateArray = prevCookie["variable_data"];
+    let updateLimit = await getUpdateLimit();
 
     let updateStruct = {
         "host_only": newCookie.hostOnly,
@@ -106,17 +72,15 @@ const updateFEInput = function(prevCookie, newCookie) {
 * @param  {String} ckey          String key that identifies the cookie.
 * @param  {Object} cookieDat     Cookie data object as received from the browser.
 * @param  {Object} cookieStore   Object in which all cookies are indexed.
-* @return {Object}               The new feature extraction input
+* @return {Promise<object>}      The new feature extraction input.
 */
-const updateCookieStore = function(ckey, cookieDat, cookieStore) {
+const retrieveUpdatedCookie = async function(ckey, cookieDat, cookieStore) {
     let transformedCookie;
     if (ckey in cookieStore) {
-        transformedCookie = updateFEInput(cookieStore[ckey], cookieDat);
+        transformedCookie = await updateFEInput(cookieStore[ckey], cookieDat);
+    } else {
+        transformedCookie = await createFEInput(cookieDat);
     }
-    else {
-        transformedCookie = createFEInput(cookieDat);
-    }
-    cookieStore[ckey] = transformedCookie
     return transformedCookie;
 };
 
@@ -139,122 +103,106 @@ const classifyCookie = function(feature_input) {
  * @param  {Object} cookieDat   Raw cookie data as retrieved from the browser, with "storeId".
  * @param  {Number} label       Label predicted by the classifier.
  */
-const makePolicyDecision = function(cookieDat, label) {
+const makePolicyDecision = async function(cookieDat, label) {
 
-    let onRemoval = () => {
+    let cName = classIndexToString(label);
 
-        console.debug("Cookie (%s,%s,%s) classified as class %d has been removed.", cookieDat.name, cookieDat.domain, cookieDat.path, label);
-    };
-
-    let onKeep = () => {
-        console.debug("Cookie (%s,%s,%s) classified as class %d has been spared.", cookieDat.name, cookieDat.domain, cookieDat.path, label);
-    };
-
-    browser.storage.sync.get(exceptionKeys).then((r) => {
-
-        let skipRejection = false;
-        let ckDomain = sanitizeDomain(escapeString(cookieDat.domain));
-        switch(label){
-            case 1:
-            skipRejection = r["cblk_exfunc"].includes(ckDomain);
+    let skipRejection = false;
+    switch(label) {
+        case 1: // functionality
+            skipRejection = (await getExceptionsList("cblk_exfunc")).includes(ckDomain);
             break;
-            case 2:
-            skipRejection = r["cblk_exanal"].includes(ckDomain);
+        case 2: // analytics
+            skipRejection = (await getExceptionsList("cblk_exanal")).includes(ckDomain);
             break;
-            case 3:
-            skipRejection = r["cblk_exadvert"].includes(ckDomain);
+        case 3: // advertising
+            skipRejection = (await getExceptionsList("cblk_exadvert")).includes(ckDomain);
             break;
-        }
+    }
 
-        if (!skipRejection) {
-            let policy = browser.storage.sync.get("cblk_userpolicy");
-            policy.then((r) => {
-            console.assert(r.cblk_userpolicy !== undefined, "User Policy is undefined!")
 
-            if (r.cblk_userpolicy[label]) {
-                // First try to remove the cookie, using https as the protocol
-                var https_removed = browser.cookies.remove({
+    let ckDomain = sanitizeDomain(escapeString(cookieDat.domain));
+    if (skipRejection) {
+        console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
+    } else {
+        let consentArray = await getUserPolicy();
+        console.assert(consentArray !== undefined, "User policy was somehow undefined!")
+        if (consentArray[label]) {
+            // spare the cookie
+            console.debug("Affirmative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+        } else {
+            console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+
+            // First try to remove the cookie, using https as the protocol
+            let remResult = await browser.cookies.remove({
                 "name": cookieDat.name,
                 "url": "https://" + cookieDat.domain + cookieDat.path,
                 "firstPartyDomain": cookieDat.firstPartyDomain,
                 "storeId": cookieDat.storeId
-                });
+            });
 
-                // check if removal was successful -- if not, retry with http protocol
-                https_removed.then((rem) => {
-                if (rem === null){
-
-                    var http_removed = browser.cookies.remove({
+            // check if removal was successful -- if not, retry with http protocol
+            if (remResult === null){
+                remResult = await browser.cookies.remove({
                     "name": cookieDat.name,
                     "url": "http://" + cookieDat.domain + cookieDat.path,
                     "firstPartyDomain": cookieDat.firstPartyDomain,
                     "storeId": cookieDat.storeId
-                    });
+                });
 
-                    http_removed.then((rem2) => {
-                    if (rem2 === null){
-                        // If failed again, something strange is going on.
-                        console.error(`Failure to remove cookie: (${cookieDat.name},${cookieDat.domain})`)
-                    }
-                    else onRemoval();
-                    }, onError);
+                if (remResult === null){
+                    // If failed again, report error.
+                    console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                } else {
+                    console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                    console.debug(remResult);
+                    httpRemovalCounter += 1;
                 }
-                else onRemoval();
-                }, onError);
+            } else {
+                console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                console.debug(remResult);
+                httpsRemovalCounter += 1;
             }
-            else onKeep();
-
-            }, onError);
-        } else {
-            console.debug(`Spared cookie ${cookieDat.name};${cookieDat.domain} with label ${label} as it is whitelisted for this category.`);
         }
-    }, onError);
+    }
 };
 
+/**
+ * Enforce the user policy by classifying the cookie and deleting it if it belongs to a rejected category.
+ * @param {String} ckey String that identifies the cookie uniquely.
+ * @param {Object} cookieDat Object that contains the data for the current cookie update.
+ */
+const enforcePolicy = async function (ckey, cookieDat){
 
-const enforcePolicy = function (ckey, cookieDat){
+    let cblk_store = await getCookieStorage();
+    let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, cblk_store);
 
-    browser.storage.local.get("cblk_storage").then((r) => {
+    cblk_store[ckey] = serializedCookie;
+    browser.storage.local.set({"cblk_storage": cblk_store});
 
-        // update the extension cookie storage
-        let serializedCookie = updateCookieStore(ckey, cookieDat, r["cblk_storage"]);
-        //console.debug("Stored Data: " + JSON.stringify(serializedCookie));
+    let ckDomain = sanitizeDomain(serializedCookie.domain);
 
-        // update the cookie storage
-        browser.storage.local.set({
-        "cblk_storage": r["cblk_storage"]
-        });
+    let updateCounters = async (idx) => {
+        let stats = await getStatsCounter();
+        stats[idx] += 1;
+        browser.storage.local.set({"cblk_counter": stats});
+    };
 
-        let ckDomain = sanitizeDomain(serializedCookie.domain);
+    let globalExcepts = await getExceptionsList("cblk_exglobal");
+    if (globalExcepts.includes(ckDomain)) {
+        console.debug(`Cookie found in domain whitelist: (${ckey})`);
+        updateCounters(4);
+    } else {
+        // classify the cookie
+        let label = classifyCookie(serializedCookie);
+        updateCounters(label);
 
-        browser.storage.sync.get("cblk_exglobal").then((r) => {
-        if (!r["cblk_exglobal"].includes(ckDomain)) {
-            // classify the cookie
-            let label = classifyCookie(serializedCookie);
-
-            // Update counters
-            browser.storage.local.get("cblk_counter").then((r) => {
-                r["cblk_counter"][label] += 1;
-                browser.storage.local.set({"cblk_counter": r["cblk_counter"]})
-            }, onError);
-
-            browser.storage.local.get("cblk_debug").then((r) => {
-            if (r["cblk_debug"])
-                console.debug(`Cookie Identifier: ${ckey} -- Assigned Label: ${label} -- Removal Skipped!`)
-            else{
-                // decide on the cookie
-                makePolicyDecision(cookieDat, label);
-            }
-            },(error) => {
-            console.error(`An error occurred: ${error}`);
-            });
+        // make a decision
+        let dstate = await getDebugState();
+        if (dstate) {
+            console.debug(`Debug Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${label}`);
         } else {
-            browser.storage.local.get("cblk_counter").then((r) => {
-                r["cblk_counter"][4] += 1;
-                browser.storage.local.set({"cblk_counter": r["cblk_counter"]})
-            }, onError);
-            console.debug(`Did not classify cookie ${ckey} because its domain is contained in the global whitelist.`)
+            makePolicyDecision(cookieDat, label);
         }
-        });
-    });
+    }
 }

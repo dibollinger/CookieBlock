@@ -1,103 +1,41 @@
 // Author: Dino Bollinger
 // License: MIT
 
-// storage keys for each type of domain exception (global, functionality, analytics, advertising)
-const exceptionKeys = ["cblk_exglobal", "cblk_exfunc", "cblk_exanal", "cblk_exadvert"]
+// General TODO: try catch blocks around async code
 
 /**
- * Callback function that executes once the configuration has been retrieved.
+ * Asynchronous callback function to set up config defaults.
  * @param {Object} resp  Default configuration
  */
-const initCallback = function(defaultConfig) {
+const setupDefaults = async function(defaultConfig) {
+  let dp = defaultConfig["default_policy"];
+  let policy = (await browser.storage.sync.get("cblk_userpolicy"))["cblk_userpolicy"];
+  if (policy === undefined) {
+    policy = [dp["acc_nec"], dp["acc_func"], dp["acc_anal"], dp["acc_ads"]];
+    browser.storage.sync.set({"cblk_userpolicy": policy });
+  }
 
-  // initialize debug mode setting
-  browser.storage.local.get("cblk_debug").then((r) => {
-    if (r["cblk_debug"] === undefined) {
-      browser.storage.local.set({"cblk_debug": false});
-    } else {
-      console.assert(typeof r["cblk_debug"] === "boolean", "Stored debug mode value wasn't a boolean!");
-    }
-  }, (error) => {
-    console.error(`An error occurred: ${error}`);
-  });
-
-
-  // setup the whitelists
-  browser.storage.sync.get(exceptionKeys).then((r) => {
-
-    if (r["cblk_exglobal"] === undefined) {
-      browser.storage.sync.set({"cblk_exglobal": []});
-    }
-
-    if (r["cblk_exfunc"] === undefined) {
-      browser.storage.sync.set({"cblk_exfunc": []});
-    }
-
-    if (r["cblk_exanal"] === undefined) {
-      browser.storage.sync.set({"cblk_exanal": []});
-    }
-
-    if (r["cblk_exadvert"] === undefined) {
-      browser.storage.sync.set({"cblk_exadvert": []});
-    }
-
-  }, (error) => {
-    console.error(`An error occurred: ${error}`);
-  });
-
-
-  // set up counters
-  browser.storage.local.get("cblk_counter").then((r) => {
-    if (r["cblk_counter"] === undefined)
-      browser.storage.local.set({"cblk_counter": [0,0,0,0,0]});
-  }, (error) => {
-    console.error(`An error occurred: ${error}`);
-  });
-
-
-  // if the user policy is undefined, initialize it from defaults
-  browser.storage.sync.get("cblk_userpolicy").then((r) => {
-    if (r["cblk_userpolicy"] === undefined) {
-      browser.storage.sync.set({
-        "cblk_userpolicy": [defaultConfig["default_policy"]["block_necessary"],
-                             defaultConfig["default_policy"]["block_functional"],
-                             defaultConfig["default_policy"]["block_analytics"],
-                             defaultConfig["default_policy"]["block_advertising"]]
-      });
-    }
-  }, (error) => {
-    console.error(`An error occurred while retrieving user policy: ${error}`);
-  });
-
-
-  // initialize the extension cookie storage
-  browser.storage.local.get("cblk_storage").then((r) => {
-    if (r["cblk_storage"] === undefined) {
-      browser.storage.local.set({ "cblk_storage": {} });
-    }
-  }, (error) => {
-    console.error(`An error occurred while retrieving cookie store: ${error}`);
-  });
+  let ulimit = (await browser.storage.sync.get("cblk_ulimit"))["cblk_ulimit"];
+  if (ulimit == undefined) {
+    ulimit = dp["update_limit"];
+    browser.storage.sync.set({"cblk_ulimit": ulimit });
+  }
 }
-
-
 
 /**
 * Listener that is executed any time a cookie is added, updated or removed.
 * Classifies the cookie and rejects it based on user policy.
 * @param {Object} changeInfo  Contains the cookie itself, and cause info.
 */
-const cookieChangeListener = function(changeInfo) {
-
+const cookieChangeListener = async function(changeInfo) {
+    // do nothing in this case
     if (changeInfo.removed) {
-        // do nothing in this case
         return;
     }
 
     // construct the key for keeping track of cookie updates
     let cookieDat = changeInfo.cookie;
-    let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.firstPartyDomain + ";" + cookieDat.path;
-
+    let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
     enforcePolicy(ckey, cookieDat);
 };
 
@@ -112,12 +50,6 @@ const firstTimeSetup = function(details) {
   }
 }
 
-
-/** Init + Listener **/
-// Assumption: Callback is faster than we receive any cookies.
-getLocalData(browser.extension.getURL("ext_data/config.json"), "json", initCallback);
+getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", setupDefaults);
 browser.cookies.onChanged.addListener(cookieChangeListener);
-
-
-// Check if extension was just installed. If so, open a new tab with setup instructions
-browser.runtime.onInstalled.addListener(firstTimeSetup)
+browser.runtime.onInstalled.addListener(firstTimeSetup);
