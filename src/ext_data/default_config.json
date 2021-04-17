@@ -1,0 +1,9 @@
+{
+    "update_limit": 10,
+    "default_policy": {
+        "acc_nec": true,
+        "acc_func": false,
+        "acc_anal": false,
+        "acc_ads": false
+    }
+}
