@@ -28,7 +28,7 @@ const getExceptionsList = async function(sKey) {
         console.warn(`Warning: Exceptions list for key ${sKey} not in sync storage. Using empty array default.`);
         exceptionsList = [];
         let sobj = {}; sobj[sKey] = exceptionsList;
-        browser.storage.local.set(sobj);
+        browser.storage.sync.set(sobj);
     }
     console.assert(Array.isArray(exceptionsList), "Error: Stored exception list was not an array!");
     return exceptionsList;

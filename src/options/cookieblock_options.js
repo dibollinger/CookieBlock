@@ -59,7 +59,7 @@ const appendExceptionToList = async function(exceptionDomain, listID, storageID)
  * @param {String} storageID  Storage identity for the exception list.
  * @param {String} listID     Identity of the list to append the exception to.
  */
-const handleExceptionSubmit =  function(inputID, storageID, listID) {
+const handleExceptionSubmit = async function(inputID, storageID, listID) {
     let iElem = document.querySelector(inputID);
     if (iElem.value != null && iElem.value != "")
     {
@@ -103,7 +103,7 @@ const setupSettingsPage = async function() {
     restoreExceptionList("cblk_exadvert", "advertising_exceptions");
 
     let policy = await getUserPolicy();
-    // document.getElementById("nec_checkbox").checked = policy[0];
+    document.getElementById("nec_checkbox").checked = policy[0];
     document.getElementById("func_checkbox").checked = policy[1];
     document.getElementById("anal_checkbox").checked = policy[2];
     document.getElementById("advert_checkbox").checked = policy[3];
@@ -124,9 +124,8 @@ const setupSettingsPage = async function() {
  * The user policy is a fixed-size array of 4 booleans.
  * @param {Object} event Unused
  */
-const updateUserPolicy = function(event) {
-    let cN = true;
-    //let cN = document.getElementById("nec_checkbox").checked;
+const updateUserPolicy = async function(event) {
+    let cN = document.getElementById("nec_checkbox").checked;
     let cF = document.getElementById("func_checkbox").checked;
     let cAn = document.getElementById("anal_checkbox").checked;
     let cAd = document.getElementById("advert_checkbox").checked;
@@ -138,11 +137,10 @@ const updateUserPolicy = function(event) {
 /**
  * Event for clicking the debug checkbox
  */
-const toggleDebugging = function() {
+const toggleDebugging = async function() {
     let debugStatus = document.getElementById("debug_checkbox").checked;
     browser.storage.local.set({ "cblk_debug": debugStatus});
 }
-
 
 /**
  * Runs the classification on all current browser cookies

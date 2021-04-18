@@ -88,11 +88,11 @@ const retrieveUpdatedCookie = async function(ckey, cookieDat, cookieStore) {
 /**
  * Using the cookie input, extract features from the cookie and classify it, retrieving a label.
  * @param  {Object} feature_input   Transformed cookie data input, for the feature extraction.
- * @return {Number}                 Cookie category label as an integer, ranging from [0,3].
+ * @return {Promise<Number>}        Cookie category label as an integer, ranging from [0,3].
  */
-const classifyCookie = function(feature_input) {
+const classifyCookie = async function(feature_input) {
     let features = extractFeatures(feature_input);
-    let label = predictClass(features);
+    let label = await predictClass(features);
     console.assert(label >= 0 && label < 4, "Predicted label exceeded valid range: %d", label)
     return label
 };
@@ -194,7 +194,7 @@ const enforcePolicy = async function (ckey, cookieDat){
         updateCounters(4);
     } else {
         // classify the cookie
-        let label = classifyCookie(serializedCookie);
+        let label = await classifyCookie(serializedCookie);
         updateCounters(label);
 
         // make a decision

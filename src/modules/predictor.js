@@ -49,9 +49,9 @@ const getForestScore = async function(forest, features) {
 * Rather than using XGBoost directly, we perform predictions using the decision tree dump.
 * The object represents a sparse vector, with missing features being absent keys.
 * @param {Object} features   Cookie features formatted as {"index": value}.
-* @return {Number}           The predicted label for the cookie.
+* @return {Promise<Number>}  The predicted label for the cookie.
 */
-const predictClass = function (features){
+const predictClass = async function (features){
 
     let existsUndefined = forests.reduce((total, f) => {return total || (f === undefined)})
     if (existsUndefined) {

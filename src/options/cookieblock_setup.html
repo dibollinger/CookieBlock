@@ -26,15 +26,21 @@
     <hr class="thick">
     <div id="settings_group">
         <fieldset class="preference_form">
-            <input id="func_checkbox" type="checkbox" class="checkbox">
-            <label for="func_checkbox" class="catname">Reject Functionality Cookies</label>
+            <input id="nec_checkbox" type="checkbox" class="checkbox disabled" disabled checked>
+            <label for="nec_checkbox" class="catname">Strictly Necessary Cookies</label>
+            <br>
+            <div class=class_desc> This category includes cookies that are typically required for essential services to operate.
+                Deleting these may cause websites to break.</div>
+            <br>
+            <input id="func_checkbox" type="checkbox" class="checkbox" checked>
+            <label for="func_checkbox" class="catname">Functionality Cookies</label>
             <br>
             <div class=class_desc> Functionality cookies usually serve to remember user preferences, such as language or website style,
                 or enable non-essential functionality which can improve the user experience. Such cookies are usually
                 persistent to keep settings stored across multiple browsing sessions. </div>
             <br>
             <input id="anal_checkbox" type="checkbox" class="checkbox">
-            <label for="anal_checkbox" class="catname">Reject Performance/Analytics Cookies</label>
+            <label for="anal_checkbox" class="catname">Performance/Analytics Cookies</label>
             <br>
             <div class=class_desc>Analytics cookies serve to collect statistical information about how visitors use
                 the current website. This is generally used to measure the website performance, and to improve the service.
@@ -42,8 +48,8 @@
                 collected data should not contain sensitive information that could identify the user.
                 </div>
             <br>
-            <input id="advert_checkbox" type="checkbox" class="checkbox" checked>
-            <label for="advert_checkbox" class="catname">Reject Advertising/Tracking Cookies</label>
+            <input id="advert_checkbox" type="checkbox" class="checkbox">
+            <label for="advert_checkbox" class="catname">Advertising/Tracking Cookies</label>
             <br>
             <div class=class_desc> Advertising cookies track visitors across multiple websites and collect sensitive,
                 personally identifiable information. The goal is to display optimized advertisements that best match

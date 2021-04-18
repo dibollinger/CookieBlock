@@ -35,24 +35,21 @@ const popupSetup = async function() {
 
     let exceptionButton = document.getElementById("add-exception");
 
-    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        let currentURL = tabs[0].url
+    browser.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+        let currentURL = tabs[0].url;
         if (currentURL.match(ignoredPages)){
             exceptionButton.disabled = true;
             exceptionButton.style.opacity = "0.5";
         }
 
         let sanitizedDomain = urlToUniformDomain(new URL(currentURL).hostname);
-
         if (sanitizedDomain){
-            browser.storage.sync.get("cblk_exglobal").then((r) => {
-                console.assert(r["cblk_exglobal"] !== undefined, "Global exception array was not initialized!");
-                if (r["cblk_exglobal"].includes(sanitizedDomain)){
-                    exceptionButton.textContent = removeText;
-                } else {
-                    exceptionButton.textContent = addText;
-                }
-            });
+            let exglobal = await getExceptionsList("cblk_exglobal");
+            if (exglobal.includes(sanitizedDomain)){
+                exceptionButton.textContent = removeText;
+            } else {
+                exceptionButton.textContent = addText;
+            }
         }
     });
 };
@@ -63,7 +60,7 @@ const popupSetup = async function() {
  */
 const addGlobalException = async function() {
     hideErrorBox();
-    browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    browser.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
         let currentURL = tabs[0].url
 
         // ignore the following types of pages

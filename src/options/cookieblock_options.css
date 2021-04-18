@@ -138,6 +138,11 @@ fieldset {
     display: inline;
 }
 
+.disabled {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
 .preference_form {
     font-size: 1em;
 }
