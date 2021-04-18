@@ -4,22 +4,52 @@
 // General TODO: try catch blocks around async code
 
 /**
- * Asynchronous callback function to set up config defaults.
+ * Asynchronous callback function to set up config and storage defaults.
  * @param {Object} resp  Default configuration
  */
 const setupDefaults = async function(defaultConfig) {
+
   let dp = defaultConfig["default_policy"];
+
   let policy = (await browser.storage.sync.get("cblk_userpolicy"))["cblk_userpolicy"];
   if (policy === undefined) {
     policy = [dp["acc_nec"], dp["acc_func"], dp["acc_anal"], dp["acc_ads"]];
-    browser.storage.sync.set({"cblk_userpolicy": policy });
+    setUserPolicy(policy);
   }
 
   let ulimit = (await browser.storage.sync.get("cblk_ulimit"))["cblk_ulimit"];
   if (ulimit === undefined) {
     ulimit = defaultConfig["update_limit"];
-    browser.storage.sync.set({"cblk_ulimit": ulimit });
+    setUpdateLimit(ulimit);
   }
+
+  let stats = (await browser.storage.local.get("cblk_counter"))["cblk_counter"];
+  if (stats === undefined) {
+    setStatsCounter([0,0,0,0,0]);
+  }
+
+  let debugState = (await browser.storage.local.get("cblk_debug"))["cblk_debug"];
+  if (debugState === undefined) {
+    setDebugState(false);
+  }
+
+  let storage = (await browser.storage.local.get("cblk_storage"))["cblk_storage"];
+  if (storage === undefined) {
+    setCookieStorage({});
+  }
+
+  let excdefFunc = async (sKey) => {
+    let exceptionsList = (await browser.storage.sync.get(sKey))[sKey];
+    if (exceptionsList === undefined) {
+        await setExceptionsList(sKey, []);
+    }
+  };
+
+  excdefFunc("cblk_exglobal");
+  excdefFunc("cblk_exfunc");
+  excdefFunc("cblk_exanal");
+  excdefFunc("cblk_exadvert");
+
 }
 
 /**

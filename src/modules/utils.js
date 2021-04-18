@@ -2,18 +2,37 @@
 // License: MIT
 
 /**
+ * Set the debug status toggle.
+ * @param {Boolean} dstate current state
+ */
+const setDebugState = async function(dstate) {
+    await browser.storage.local.set({"cblk_debug": dstate });
+}
+
+/**
  * Retrieve the extension debug setting from extension local storage, or default if not present.
  * @returns {Promise<boolean>}  Debug toggle setting state.
  */
 const getDebugState = async function() {
-    let debugToggle = (await browser.storage.local.get("cblk_debug"))["cblk_debug"];
-    if (debugToggle === undefined) {
+    let debugState = (await browser.storage.local.get("cblk_debug"))["cblk_debug"];
+    if (debugState === undefined) {
         console.warn(`Warning: Debug toggle not found in local storage. Using 'false' as default.`);
-        debugToggle = false;
-        await browser.storage.local.set({"cblk_debug": debugToggle });
+        console.trace();
+        debugState = false;
+        await setDebugState(debugState);
     }
-    console.assert(typeof debugToggle === "boolean", `Error: Stored debug mode value wasn't a boolean: ${typeof debugToggle}`);
-    return debugToggle;
+    console.assert(typeof debugState === "boolean", `Error: Stored debug mode value wasn't a boolean: ${typeof debugState}`);
+    return debugState;
+}
+
+/**
+ * Update the exceptions list store.
+ * @param {String} sKey
+ * @param {Array} newExcs
+ */
+const setExceptionsList = async function(sKey, newExcs) {
+    let sobj = {}; sobj[sKey] = newExcs;
+    await browser.storage.sync.set(sobj);
 }
 
 /**
@@ -26,12 +45,20 @@ const getExceptionsList = async function(sKey) {
     let exceptionsList = (await browser.storage.sync.get(sKey))[sKey];
     if (exceptionsList === undefined) {
         console.warn(`Warning: Exceptions list for key ${sKey} not in sync storage. Using empty array default.`);
+        console.trace();
         exceptionsList = [];
-        let sobj = {}; sobj[sKey] = exceptionsList;
-        await browser.storage.sync.set(sobj);
+        await setExceptionsList(sKey, exceptionsList);
     }
     console.assert(Array.isArray(exceptionsList), `Error: Stored exception list was not an array: ${typeof exceptionsList}`);
     return exceptionsList;
+}
+
+/**
+ * Set the statistics array.
+ * @param {Array} newStats New stats array
+ */
+ const setStatsCounter = async function(newStats) {
+    await browser.storage.local.set({"cblk_counter": newStats });
 }
 
 /**
@@ -42,11 +69,20 @@ const getStatsCounter = async function() {
     let stats = (await browser.storage.local.get("cblk_counter"))["cblk_counter"];
     if (stats === undefined) {
         console.warn("Warning: Stats not found in local storage. Using zero init array.");
+        console.trace();
         stats = [0,0,0,0,0];
-        await browser.storage.local.set({"cblk_counter": stats });
+        await setStatsCounter();
     }
     console.assert(Array.isArray(stats), `Error: Stored stats was not an array: ${typeof stats}`);
     return stats;
+}
+
+/**
+ * Set the user policy.
+ * @param {Array} newPolicy New policy array.
+ */
+const setUserPolicy = async function(newPolicy) {
+    await browser.storage.sync.set({"cblk_userpolicy": newPolicy });
 }
 
 /**
@@ -57,11 +93,20 @@ const getUserPolicy = async function() {
     let policy = (await browser.storage.sync.get("cblk_userpolicy"))["cblk_userpolicy"];
     if (policy === undefined) {
         console.warn("Warning: User policy not found in sync storage. Using strict config as default.");
+        console.trace();
         policy = [1, 0, 0, 0];
-        await browser.storage.sync.set({"cblk_userpolicy": policy });
+        setUserPolicy(policy);
     }
     console.assert(Array.isArray(policy), `Error: Stored user policy was not an array: ${typeof policy}`);
     return policy;
+}
+
+/**
+ * Set cookie storage to the specified object value.
+ * @param {Object} newStorage
+ */
+const setCookieStorage = async function(newStorage) {
+    await browser.storage.local.set({ "cblk_storage": newStorage });
 }
 
 /**
@@ -72,12 +117,22 @@ const getCookieStorage = async function() {
     let storage = (await browser.storage.local.get("cblk_storage"))["cblk_storage"];
     if (storage === undefined) {
         console.warn("Warning: CookieBlock cookie store was not found. Initializing empty storage.");
+        console.trace();
         storage = {};
-        await browser.storage.local.set({ "cblk_storage": storage });
+        setCookieStorage(storage);
     }
     console.assert(typeof storage === "object", `Error in CookieBlock cookie storage: ${typeof storage}`);
     return storage;
 }
+
+/**
+ * Set the update limit to the specified value.
+ * @param {Number} newLimit New update limit.
+ */
+ const setUpdateLimit = async function(newLimit) {
+    await browser.storage.sync.set({"cblk_ulimit": newLimit });
+}
+
 
 /**
  * Retrieve the update limit from sync storage.
@@ -88,8 +143,9 @@ const getUpdateLimit = async function() {
     let ulimit = (await browser.storage.sync.get("cblk_ulimit"))["cblk_ulimit"];
     if (ulimit === undefined) {
         console.warn("Warning: CookieBlock update limit was undefined. Initializing limit of 10 updates.");
+        console.trace();
         ulimit = 10;
-        await browser.storage.sync.set({"cblk_ulimit": ulimit });
+        setUpdateLimit(ulimit);
     }
     console.assert(typeof ulimit === "number", `Stored update limit was not a number: ${typeof ulimit}`);
     return ulimit;
