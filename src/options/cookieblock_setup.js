@@ -6,7 +6,7 @@
 /**
  * Toggle the debug state
  */
-const toggleDebug = function() {
+const toggleDebug = async function() {
     let debugStatus = document.getElementById("debug_checkbox").checked;
     await setDebugState(debugStatus);
 }
@@ -15,20 +15,14 @@ const toggleDebug = function() {
  * Button to update the settings.
  */
 const updateAndClassify = async function() {
-    let cN = true;
-    //let cN = document.getElementById("nec_checkbox").checked;
+    let cN = document.getElementById("nec_checkbox").checked;
     let cF = document.getElementById("func_checkbox").checked;
     let cAn = document.getElementById("anal_checkbox").checked;
     let cAd = document.getElementById("advert_checkbox").checked;
     await setUserPolicy([cN, cF, cAn, cAd]);
 
-    // Disabled for now
-    /*let allCookies = await browser.cookies.getAll({});
-    for (let cookieDat of allCookies) {
-        let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-        // TODO: Need to pass a message to the background script
-        //enforcePolicy(ckey, cookieDat);
-    }*/
+    let sending = browser.runtime.sendMessage({"classify_all": true});
+    sending.then((msg) => {console.log("Process completed.")});
 
     // close tab
     browser.tabs.getCurrent(function(tab) {

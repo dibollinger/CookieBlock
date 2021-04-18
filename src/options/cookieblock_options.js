@@ -141,13 +141,11 @@ const toggleDebugging = async function() {
  * Runs the classification on all current browser cookies
  */
 const classifyAllCurrentCookies = async function() {
-    let allCookies = await browser.cookies.getAll({});
-    for (let cookieDat of allCookies){
-        let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-        //TODO: Replace with a message event that is received by the background script.
-        //enforcePolicy(ckey, cookieDat);
-    }
-    document.getElementById("apply_text").hidden = false;
+    let sending = browser.runtime.sendMessage({"classify_all": true});
+    sending.then((msg) => {
+        console.debug(msg.response);
+        document.getElementById("apply_text").hidden = false;
+    });
 }
 
 /**

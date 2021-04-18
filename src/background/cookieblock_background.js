@@ -1,10 +1,15 @@
 // Author: Dino Bollinger
 // License: MIT
 
-// General TODO: try catch blocks around async code
+var httpRemovalCounter = 0;
+var httpsRemovalCounter = 0;
+
+var localCookieStorage = undefined;
+var localStatsCounter = undefined;
 
 /**
  * Asynchronous callback function to set up config and storage defaults.
+ * This initializes all browser local and sync storage objects if undefined.
  * @param {Object} resp  Default configuration
  */
 const setupDefaults = async function(defaultConfig) {
@@ -23,19 +28,9 @@ const setupDefaults = async function(defaultConfig) {
     setUpdateLimit(ulimit);
   }
 
-  let stats = (await browser.storage.local.get("cblk_counter"))["cblk_counter"];
-  if (stats === undefined) {
-    setStatsCounter([0,0,0,0,0]);
-  }
-
   let debugState = (await browser.storage.local.get("cblk_debug"))["cblk_debug"];
   if (debugState === undefined) {
     setDebugState(false);
-  }
-
-  let storage = (await browser.storage.local.get("cblk_storage"))["cblk_storage"];
-  if (storage === undefined) {
-    setCookieStorage({});
   }
 
   let excdefFunc = async (sKey) => {
@@ -50,18 +45,27 @@ const setupDefaults = async function(defaultConfig) {
   excdefFunc("cblk_exanal");
   excdefFunc("cblk_exadvert");
 
+  // Cookie store is local as an object, initialized at launch and periodically saved to extension storage.
+  localCookieStorage = (await browser.storage.local.get("cblk_storage"))["cblk_storage"];
+  if (localCookieStorage === undefined) {
+    localCookieStorage = {};
+    setCookieStorage(localCookieStorage);
+  }
+
+  localStatsCounter = (await browser.storage.local.get("cblk_counter"))["cblk_counter"];
+  if (localStatsCounter === undefined) {
+      localStatsCounter = [0,0,0,0,0];
+      setStatsCounter(localStatsCounter);
+  }
+
 }
-
-
-var httpRemovalCounter = 0;
-var httpsRemovalCounter = 0;
 
 /**
 * Creates a new feature extraction input object from the raw cookie data.
 * @param  {Object} cookie    Raw cookie data as received from the browser.
 * @return {Promise<object>}  Feature Extraction input object.
 */
-const createFEInput = async function(cookie) {
+const createFEInput = function(cookie) {
     return {
       "name": escapeString(cookie.name),
       "domain": escapeString(cookie.domain),
@@ -109,7 +113,7 @@ const updateFEInput = async function(prevCookie, newCookie) {
 
     // remove head if limit reached
     if (updateArray.length === updateLimit)
-        updateArray.shift()
+        updateArray.shift();
 
     updateArray.push(updateStruct);
     console.assert(updateArray.length <= updateLimit, "Error: cookie update limit still exceeded!");
@@ -131,7 +135,7 @@ const retrieveUpdatedCookie = async function(ckey, cookieDat, cookieStore) {
     if (ckey in cookieStore) {
         transformedCookie = await updateFEInput(cookieStore[ckey], cookieDat);
     } else {
-        transformedCookie = await createFEInput(cookieDat);
+        transformedCookie = createFEInput(cookieDat);
     }
     return transformedCookie;
 };
@@ -145,8 +149,8 @@ const retrieveUpdatedCookie = async function(ckey, cookieDat, cookieStore) {
 const classifyCookie = async function(feature_input) {
     let features = extractFeatures(feature_input);
     let label = await predictClass(features);
-    console.assert(label >= 0 && label < 4, "Predicted label exceeded valid range: %d", label)
-    return label
+    console.assert(label >= 0 && label < 4, "Predicted label exceeded valid range: %d", label);
+    return label;
 };
 
 
@@ -224,29 +228,19 @@ const makePolicyDecision = async function(cookieDat, label) {
  * @param {Object} cookieDat Object that contains the data for the current cookie update.
  */
 const enforcePolicy = async function (ckey, cookieDat){
+    // Update the current cookie storage
+    let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, localCookieStorage);
+    localCookieStorage[ckey] = serializedCookie;
 
-    // TODO: Resolve race condition here:
-    let cookieDict = await getCookieStorage();
-    let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, cookieDict);
-    cookieDict[ckey] = serializedCookie;
-    setCookieStorage(cookieDict);
-
-    // TODO: Another possible race condition here:
     let ckDomain = sanitizeDomain(serializedCookie.domain);
-    let updateCounters = async (idx) => {
-        let stats = await getStatsCounter();
-        stats[idx] += 1;
-        setStatsCounter(stats);
-    };
-
     let globalExcepts = await getExceptionsList("cblk_exglobal");
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
-        updateCounters(4);
+        localStatsCounter[4] += 1;
     } else {
         // classify the cookie
         let label = await classifyCookie(serializedCookie);
-        updateCounters(label);
+        localStatsCounter[label] += 1;
 
         // make a decision
         let dstate = await getDebugState();
@@ -258,12 +252,13 @@ const enforcePolicy = async function (ckey, cookieDat){
     }
 }
 
+
 /**
 * Listener that is executed any time a cookie is added, updated or removed.
 * Classifies the cookie and rejects it based on user policy.
 * @param {Object} changeInfo  Contains the cookie itself, and cause info.
 */
-const cookieChangeListener = async function(changeInfo) {
+const cookieChangeListener = function(changeInfo) {
     // do nothing in this case
     if (changeInfo.removed) {
         return;
@@ -277,6 +272,44 @@ const cookieChangeListener = async function(changeInfo) {
 
 
 /**
+ * Synchronous variant of policy enforcement used for the "classify current cookies" button.
+ * Does not append cookie updates if the cookie already is recorded.
+ * @param {String} ckey String that identifies the cookie uniquely.
+ * @param {Object} cookieDat Object that contains the data for the current cookie.
+ */
+ const enforcePolicyWithoutUpdates = function (ckey, cookieDat){
+
+    let serializedCookie;
+    if (ckey in localCookieStorage) {
+        serializedCookie = localCookieStorage[ckey];
+    } else {
+        serializedCookie = createFEInput(cookieDat);
+        localCookieStorage[ckey] = serializedCookie;
+    }
+
+    getExceptionsList("cblk_exglobal").then(async (globalExcepts) => {
+        let ckDomain = sanitizeDomain(serializedCookie.domain);
+        if (globalExcepts.includes(ckDomain)) {
+            console.debug(`Cookie found in domain whitelist: (${ckey})`);
+            localStatsCounter[4] += 1;
+        } else {
+            // classify the cookie
+            let label = await classifyCookie(serializedCookie).then(() =>{});
+            localStatsCounter[label] += 1;
+
+            // make a decision
+            let dstate = await getDebugState();
+            if (dstate) {
+                console.debug(`Debug Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${label}`);
+            } else {
+                makePolicyDecision(cookieDat, label);
+            }
+        }
+    });
+}
+
+
+/**
  * Listener function that opens the first time setup when the extension is installed.
  * @param {Object} details Contains the reason for the change.
  */
@@ -286,13 +319,40 @@ const firstTimeSetup = function(details) {
   }
 }
 
+
+/**
+ * Handle messages from other content scripts within the extension.
+ * @param {Object} request Request object, containing the function type.
+ * @param {Object} sender Sender origin.
+ * @param {*} sendResponse response function
+ */
+const handleInternalMessage = function(request, sender, sendResponse) {
+    console.debug(`Received a message from ${sender} : ` + request.classify_all)
+    if (request.classify_all) {
+        browser.cookies.getAll({}).then( (allCookies) => {
+            for (let cookieDat of allCookies) {
+                let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
+                enforcePolicyWithoutUpdates(ckey, cookieDat);
+            }
+            sendResponse({response: "All cookies classified and policy enforced."});
+        });
+        return true;
+    } else if (request.get_stats) {
+        sendResponse({response: localStatsCounter})
+    } else {
+        sendResponse({response: undefined});
+    }
+}
+
+// Periodically save the current cookie store (every 2 minutes)
+setInterval( async () => {
+  await setCookieStorage(localCookieStorage);
+  await setStatsCounter(localStatsCounter);
+  console.debug("Saved current cookie store and stats counter.");
+}, 120_000);
+
+// set up defaults and listeners
 getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", setupDefaults);
 browser.cookies.onChanged.addListener(cookieChangeListener);
 browser.runtime.onInstalled.addListener(firstTimeSetup);
-
-/*
-setInterval(()=>{
-  setCookieStorage({});
-  console.log("Saved current cookies.")
-}, 5000);
-*/
+browser.runtime.onMessage.addListener(handleInternalMessage);

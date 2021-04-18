@@ -8,6 +8,7 @@ getLocalData(browser.extension.getURL("ext_data/model/forest_class1.json"), "jso
 getLocalData(browser.extension.getURL("ext_data/model/forest_class2.json"), "json", (f) => forests[2] = f);
 getLocalData(browser.extension.getURL("ext_data/model/forest_class3.json"), "json", (f) => forests[3] = f);
 
+
 /**
  * Given a tree node and corresponding features, retrieve the weight from the decision tree.
  * Recursive function. Recursion depth is limited to the maximum tree depth in the forest.

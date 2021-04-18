@@ -101,29 +101,6 @@ const getUserPolicy = async function() {
     return policy;
 }
 
-/**
- * Set cookie storage to the specified object value.
- * @param {Object} newStorage
- */
-const setCookieStorage = async function(newStorage) {
-    await browser.storage.local.set({ "cblk_storage": newStorage });
-}
-
-/**
- * Retrieve the cookie data from local storage.
- * @returns {Promise<object>} Cookie data object, storing each cookie.
- */
-const getCookieStorage = async function() {
-    let storage = (await browser.storage.local.get("cblk_storage"))["cblk_storage"];
-    if (storage === undefined) {
-        console.warn("Warning: CookieBlock cookie store was not found. Initializing empty storage.");
-        console.trace();
-        storage = {};
-        setCookieStorage(storage);
-    }
-    console.assert(typeof storage === "object", `Error in CookieBlock cookie storage: ${typeof storage}`);
-    return storage;
-}
 
 /**
  * Set the update limit to the specified value.
@@ -149,6 +126,15 @@ const getUpdateLimit = async function() {
     }
     console.assert(typeof ulimit === "number", `Stored update limit was not a number: ${typeof ulimit}`);
     return ulimit;
+}
+
+
+/**
+ * Set cookie storage to the specified object value.
+ * @param {Object} newStorage
+ */
+const setCookieStorage = async function(newStorage) {
+    await browser.storage.local.set({ "cblk_storage": newStorage });
 }
 
 
