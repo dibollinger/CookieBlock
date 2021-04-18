@@ -30,7 +30,7 @@ const getDebugState = async function() {
  * @param {String} sKey
  * @param {Array} newExcs
  */
-const setExceptionsList = async function(sKey, newExcs) {
+const setExceptionsListStore = async function(sKey, newExcs) {
     let sobj = {}; sobj[sKey] = newExcs;
     await browser.storage.sync.set(sobj);
 }
@@ -47,7 +47,7 @@ const getExceptionsList = async function(sKey) {
         console.warn(`Warning: Exceptions list for key ${sKey} not in sync storage. Using empty array default.`);
         console.trace();
         exceptionsList = [];
-        await setExceptionsList(sKey, exceptionsList);
+        await setExceptionsListStore(sKey, exceptionsList);
     }
     console.assert(Array.isArray(exceptionsList), `Error: Stored exception list was not an array: ${typeof exceptionsList}`);
     return exceptionsList;

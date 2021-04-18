@@ -8,7 +8,7 @@
  */
 const toggleDebug = function() {
     let debugStatus = document.getElementById("debug_checkbox").checked;
-    browser.storage.local.set({ "cblk_debug": debugStatus});
+    await setDebugState(debugStatus);
 }
 
 /**
@@ -20,15 +20,15 @@ const updateAndClassify = async function() {
     let cF = document.getElementById("func_checkbox").checked;
     let cAn = document.getElementById("anal_checkbox").checked;
     let cAd = document.getElementById("advert_checkbox").checked;
-    await browser.storage.sync.set({ "cblk_userpolicy": [cN, cF, cAn, cAd] })
-
+    await setUserPolicy([cN, cF, cAn, cAd]);
 
     // Disabled for now
-    let allCookies = await browser.cookies.getAll({});
+    /*let allCookies = await browser.cookies.getAll({});
     for (let cookieDat of allCookies) {
         let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-        enforcePolicy(ckey, cookieDat);
-    }
+        // TODO: Need to pass a message to the background script
+        //enforcePolicy(ckey, cookieDat);
+    }*/
 
     // close tab
     browser.tabs.getCurrent(function(tab) {

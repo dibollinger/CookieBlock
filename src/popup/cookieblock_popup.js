@@ -81,12 +81,12 @@ const addGlobalException = async function() {
                 } else {
                     throw new Error("Could somehow not find the domain in the array?!");
                 }
-                await browser.storage.sync.set({"cblk_exglobal": domainList});
+                await setExceptionsListStore("cblk_exglobal", domainList);
                 document.getElementById("add-exception").textContent = addText;
             } else {
                 potentialErrMsg = "Adding exception failed!";
                 domainList.push(sanitizedDomain);
-                await browser.storage.sync.set({"cblk_exglobal": domainList});
+                await setExceptionsListStore("cblk_exglobal", domainList);
                 document.getElementById("add-exception").textContent = removeText;
             }
         } catch (error) {

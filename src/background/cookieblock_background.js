@@ -41,7 +41,7 @@ const setupDefaults = async function(defaultConfig) {
   let excdefFunc = async (sKey) => {
     let exceptionsList = (await browser.storage.sync.get(sKey))[sKey];
     if (exceptionsList === undefined) {
-        await setExceptionsList(sKey, []);
+        await setExceptionsListStore(sKey, []);
     }
   };
 

@@ -17,9 +17,7 @@
     domainList.splice(index, 1)
 
     // update storage
-    let to_store = {};
-    to_store[storageID] = domainList;
-    browser.storage.sync.set(to_store);
+    setExceptionsListStore(storageID, domainList);
 
     // finally, remove the element from the visible list
     exlist.removeChild(listItem);
@@ -71,12 +69,9 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
             sanitizedDomain = urlToUniformDomain(domainOrURL);
         }
 
-        let domain_list = await getExceptionsList(storageID);
-        domain_list.push(domainOrURL);
-
-        let to_store = {};
-        to_store[storageID] = domain_list;
-        browser.storage.sync.set(to_store);
+        let domainList = await getExceptionsList(storageID);
+        domainList.push(domainOrURL);
+        setExceptionsListStore(storageID, domainList);
 
         appendExceptionToList(sanitizedDomain, listID, storageID);
 
@@ -130,7 +125,7 @@ const updateUserPolicy = async function(event) {
     let cAn = document.getElementById("anal_checkbox").checked;
     let cAd = document.getElementById("advert_checkbox").checked;
 
-    browser.storage.sync.set( { "cblk_userpolicy": [cN, cF, cAn, cAd] } );
+    await setUserPolicy([cN, cF, cAn, cAd]);
     document.getElementById("submit_text").hidden = false;
 }
 
@@ -139,7 +134,7 @@ const updateUserPolicy = async function(event) {
  */
 const toggleDebugging = async function() {
     let debugStatus = document.getElementById("debug_checkbox").checked;
-    browser.storage.local.set({ "cblk_debug": debugStatus});
+    await setDebugState(debugStatus);
 }
 
 /**

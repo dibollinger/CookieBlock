@@ -178,13 +178,13 @@ const enforcePolicy = async function (ckey, cookieDat){
     let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, cookieDict);
     cookieDict[ckey] = serializedCookie;
     setCookieStorage(cookieDict);
-    // TODO: end race condition
 
+    // TODO: Another possible race condition here:
     let ckDomain = sanitizeDomain(serializedCookie.domain);
     let updateCounters = async (idx) => {
         let stats = await getStatsCounter();
         stats[idx] += 1;
-        browser.storage.local.set({"cblk_counter": stats});
+        setStatsCounter(stats);
     };
 
     let globalExcepts = await getExceptionsList("cblk_exglobal");
