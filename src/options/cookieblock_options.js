@@ -1,118 +1,66 @@
 // Author: Dino Bollinger
 // License: MIT
-// Script that controls the preferences section of the extension
-
-const onError = function(error) {
-    console.error(`error: ${error}`);
-}
-
-// to be executed when opening the preferences screen
-const restoreOptions = function() {
-
-    function restoreExceptionList(storageID, listID){
-        let fexceptions = browser.storage.sync.get(storageID);
-        fexceptions.then((r) => {
-            let storedExc = r[storageID]
-            if (storedExc !== undefined) {
-                let numEntries = storedExc.length;
-                for (let i = 0; i < numEntries; i++) {
-                    appendExceptionToList(storedExc[i], listID, storageID);
-                }
-            }
-        }, onError);
-    }
-
-    browser.storage.sync.get("cblk_userpolicy").then((r) => {
-        console.assert(r.cblk_userpolicy !== undefined, "User policy is undefined!")
-        document.getElementById("func_checkbox").checked = r.cblk_userpolicy[1];
-        document.getElementById("anal_checkbox").checked = r.cblk_userpolicy[2];
-        document.getElementById("advert_checkbox").checked = r.cblk_userpolicy[3];
-    }, onError);
-
-    restoreExceptionList("cblk_exglobal", "website_exceptions");
-    restoreExceptionList("cblk_exfunc", "functional_exceptions");
-    restoreExceptionList("cblk_exanal", "analytics_exceptions");
-    restoreExceptionList("cblk_exadvert", "advertising_exceptions");
-
-    browser.storage.local.get("cblk_debug").then((r) => {
-        console.assert(r.cblk_debug !== undefined, "Debug mode toggle is undefined!")
-        document.getElementById("debug_checkbox").checked = r["cblk_debug"] || false;
-    }, onError);
 
 
-    let counts = browser.storage.local.get(["cblk_counter"]);
-    counts.then((r) => {
-        document.getElementById("num_necessary").textContent += `${r["cblk_counter"][0] || 0}    Necessary`
-        document.getElementById("num_functional").textContent += `${r["cblk_counter"][1] || 0}    Functional`
-        document.getElementById("num_analytics").textContent += `${r["cblk_counter"][2] || 0}    Performance/Analytics`
-        document.getElementById("num_advertising").textContent += `${r["cblk_counter"][3] || 0}    Advertisement/Tracking`
-        document.getElementById("num_uncat").textContent += `${r["cblk_counter"][4] || 0}    Skipped`
-    }, onError);
-}
-
-
-// user policy is a fixed-size array of 4 booleans (necessary is always false)
-function updateUserPolicy(e) {
-    console.log("Updated Policy")
-    let rejectFunctional = document.getElementById("func_checkbox").checked;
-    let rejectAnalytical = document.getElementById("anal_checkbox").checked;
-    let rejectAdvertising = document.getElementById("advert_checkbox").checked;
-
-    browser.storage.sync.set({
-        cblk_userpolicy: [false, rejectFunctional, rejectAnalytical, rejectAdvertising]
-    });
-    document.getElementById("submit_text").hidden = false;
-}
-
-// remove an item from a dynamically generated exception list
-function removeListItem(listItem, storageID, removed_domain) {
+/**
+ * Remove an item from a dynamically generated exception list.
+ * @param {String} listItem List item to be removed.
+ * @param {String} storageID Extension storage id for exception list.
+ * @param {String} removedDomain
+ */
+ const removeExceptionFromList = async function(removedDomain, listItem, storageID) {
     let exlist = listItem.parentElement;
 
-    // remove the internal stored string
-    let fexceptions = browser.storage.sync.get(storageID);
-    fexceptions.then((r) => {
-        let domain_list = r[storageID];
-        if (domain_list !== undefined) {
-            let index = domain_list.indexOf(removed_domain);
-            domain_list.splice(index, 1)
+    // remove the internal stored string (async with promise)
+    domainList = await getExceptionsList(storageID);
+    let index = domainList.indexOf(removedDomain);
+    domainList.splice(index, 1)
 
-            let to_store = {};
-            to_store[storageID] = domain_list;
-            browser.storage.sync.set(to_store);
-        }
-        else {
-            console.error(`Error: Domain list for '${storageID}' empty.`)
-        }
-    }, onError);
+    // update storage
+    let to_store = {};
+    to_store[storageID] = domainList;
+    browser.storage.sync.set(to_store);
 
     // finally, remove the element from the visible list
     exlist.removeChild(listItem);
 }
 
-// append an item to a dynamically generated exception list
-function appendExceptionToList(exception_domain, list_id, storageID) {
+
+/**
+ * Append an item to a dynamically generated exception list.
+ * @param {String} exceptionDomain Domain to add an exception for.
+ * @param {String} listID HTML List identity
+ * @param {String} storageID Extension storage id for exception list.
+ */
+const appendExceptionToList = async function(exceptionDomain, listID, storageID) {
     let node = document.createElement("li")
 
     // button has the remove event set up directly
     let button = document.createElement("button");
-    button.textContent = "X";
-    button.addEventListener("click", () => {removeListItem(node, storageID, exception_domain)});
+    button.textContent = "x";
+    button.addEventListener("click", () => { removeExceptionFromList(exceptionDomain, node, storageID) });
 
     let textdiv = document.createElement("div");
-    let textnode = document.createTextNode(exception_domain);
+    let textnode = document.createTextNode(exceptionDomain);
 
     textdiv.appendChild(textnode);
     textdiv.class = "text_content";
 
     node.appendChild(button);
     node.appendChild(textnode);
-    document.getElementById(list_id).appendChild(node);
+    document.getElementById(listID).appendChild(node);
 }
 
-//
-function handleExceptionSubmit(input_id, storageID, listID){
-    let iElem = document.querySelector(input_id);
 
+
+/**
+ * Handle the mouse click event to submit a custom domain exception to the list.
+ * @param {String} inputID    Identity of the input box.
+ * @param {String} storageID  Storage identity for the exception list.
+ * @param {String} listID     Identity of the list to append the exception to.
+ */
+const handleExceptionSubmit =  function(inputID, storageID, listID) {
+    let iElem = document.querySelector(inputID);
     if (iElem.value != null && iElem.value != "")
     {
         let domainOrURL = (' ' + iElem.value).slice(1);
@@ -123,32 +71,75 @@ function handleExceptionSubmit(input_id, storageID, listID){
             sanitizedDomain = urlToUniformDomain(domainOrURL);
         }
 
+        let domain_list = await getExceptionsList(storageID);
+        domain_list.push(domainOrURL);
+
+        let to_store = {};
+        to_store[storageID] = domain_list;
+        browser.storage.sync.set(to_store);
+
         appendExceptionToList(sanitizedDomain, listID, storageID);
-
-        let fexceptions = browser.storage.sync.get(storageID);
-        fexceptions.then((r) => {
-            let domain_list = r[storageID];
-
-            if (domain_list === undefined) {
-                domain_list = [];
-            }
-            domain_list.push(domainOrURL);
-
-            let to_store = {};
-            to_store[storageID] = domain_list;
-            browser.storage.sync.set(to_store);
-        }, (error) => {
-            console.error(`An Error occurred ${error}`);
-        });
 
         // empty the input box
         iElem.value = "";
     }
 }
 
-const enableDebugging = function() {
+
+/**
+ * This function is executed when opening the settings page.
+ */
+const setupSettingsPage = async function() {
+    let restoreExceptionList = async function (storageID, listID) {
+        let storedExc = await getExceptionsList(storageID);
+        let numEntries = storedExc.length;
+        for (let i = 0; i < numEntries; i++) {
+            appendExceptionToList(storedExc[i], listID, storageID);
+        }
+    }
+    restoreExceptionList("cblk_exglobal", "website_exceptions");
+    restoreExceptionList("cblk_exfunc", "functional_exceptions");
+    restoreExceptionList("cblk_exanal", "analytics_exceptions");
+    restoreExceptionList("cblk_exadvert", "advertising_exceptions");
+
+    let policy = await getUserPolicy();
+    // document.getElementById("nec_checkbox").checked = policy[0];
+    document.getElementById("func_checkbox").checked = policy[1];
+    document.getElementById("anal_checkbox").checked = policy[2];
+    document.getElementById("advert_checkbox").checked = policy[3];
+
+    let debugState = await getDebugState();
+    document.getElementById("debug_checkbox").checked = debugState;
+
+    let stats = await getStatsCounter();
+    document.getElementById("num_necessary").textContent += `${stats[0]} Necessary`
+    document.getElementById("num_functional").textContent += `${stats[1]} Functional`
+    document.getElementById("num_analytics").textContent += `${stats[2]} Performance/Analytics`
+    document.getElementById("num_advertising").textContent += `${stats[3]} Advertisement/Tracking`
+    document.getElementById("num_uncat").textContent += `${stats[4]} from Whitelist`
+}
+
+
+/**
+ * The user policy is a fixed-size array of 4 booleans.
+ * @param {Object} event Unused
+ */
+const updateUserPolicy = function(event) {
+    let cN = true;
+    //let cN = document.getElementById("nec_checkbox").checked;
+    let cF = document.getElementById("func_checkbox").checked;
+    let cAn = document.getElementById("anal_checkbox").checked;
+    let cAd = document.getElementById("advert_checkbox").checked;
+
+    browser.storage.sync.set( { "cblk_userpolicy": [cN, cF, cAn, cAd] } );
+    document.getElementById("submit_text").hidden = false;
+}
+
+/**
+ * Event for clicking the debug checkbox
+ */
+const toggleDebugging = function() {
     let debugStatus = document.getElementById("debug_checkbox").checked;
-    console.log("Debug Status: " + debugStatus);
     browser.storage.local.set({ "cblk_debug": debugStatus});
 }
 
@@ -156,26 +147,41 @@ const enableDebugging = function() {
 /**
  * Runs the classification on all current browser cookies
  */
-const classifyAllCurrentCookies = function() {
-    console.log("Classified all current cookies");
-    let allCookies = browser.cookies.getAll({});
-
-    allCookies.then((cookies) => {
-      for (let cookieDat of cookies){
-        let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.firstPartyDomain + ";" + cookieDat.path;
-
+const classifyAllCurrentCookies = async function() {
+    let allCookies = await browser.cookies.getAll({});
+    for (let cookieDat of allCookies){
+        let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
         enforcePolicy(ckey, cookieDat);
-
-      }
-    });
+    }
     document.getElementById("apply_text").hidden = false;
 }
 
+/**
+ * Log the storage area that changed, then for each item changed,
+ * log its old value and its new value.
+ * @param {Object} changes Object containing the storage changes.
+ * @param {String} area String for the storage area.
+ */
+const logStorageChange = function(changes, area) {
+    console.log("Change in storage area: " + area);
+
+    let changedItems = Object.keys(changes);
+
+    for (let item of changedItems) {
+      console.log(item + " has changed:");
+      console.log("Old value: ");
+      console.log(changes[item].oldValue);
+      console.log("New value: ");
+      console.log(changes[item].newValue);
+    }
+}
+browser.storage.onChanged.addListener(logStorageChange);
 
 // Listeners
-document.addEventListener("DOMContentLoaded", restoreOptions);
+document.addEventListener("DOMContentLoaded", setupSettingsPage);
+
 document.querySelector("#submit_prefs").addEventListener("click", updateUserPolicy);
-document.querySelector("#debug_checkbox").addEventListener("click", enableDebugging);
+document.querySelector("#debug_checkbox").addEventListener("click", toggleDebugging);
 document.querySelector("#classify_all").addEventListener("click", classifyAllCurrentCookies);
 
 

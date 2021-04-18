@@ -3,38 +3,38 @@
 
 // Script that controls the first-time setup of the extension
 
-
-const enableDebugging = function() {
+/**
+ * Toggle the debug state
+ */
+const toggleDebug = function() {
     let debugStatus = document.getElementById("debug_checkbox").checked;
-    console.log("Debug Status: " + debugStatus);
     browser.storage.local.set({ "cblk_debug": debugStatus});
 }
 
-const updateAndClassify = function() {
-    console.log("Update and Classify Executed");
+/**
+ * Button to update the settings.
+ */
+const updateAndClassify = async function() {
+    let cN = true;
+    //let cN = document.getElementById("nec_checkbox").checked;
+    let cF = document.getElementById("func_checkbox").checked;
+    let cAn = document.getElementById("anal_checkbox").checked;
+    let cAd = document.getElementById("advert_checkbox").checked;
+    await browser.storage.sync.set({ "cblk_userpolicy": [cN, cF, cAn, cAd] })
 
-    let rejectFunctional = document.getElementById("func_checkbox").checked;
-    let rejectAnalytical = document.getElementById("anal_checkbox").checked;
-    let rejectAdvertising = document.getElementById("advert_checkbox").checked;
 
-    browser.storage.sync.set({
-        cblk_userpolicy: [false, rejectFunctional, rejectAnalytical, rejectAdvertising]
-    }).then( () => {
-        // Disabled for now
-        /*let allCookies = browser.cookies.getAll({});
+    // Disabled for now
+    let allCookies = await browser.cookies.getAll({});
+    for (let cookieDat of allCookies) {
+        let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
+        enforcePolicy(ckey, cookieDat);
+    }
 
-        allCookies.then((cookies) => {
-          for (let cookieDat of cookies){
-            let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.firstPartyDomain + ";" + cookieDat.path;
-
-            enforcePolicy(ckey, cookieDat);
-          }
-        });*/
-    });
+    // close tab
     browser.tabs.getCurrent(function(tab) {
-        browser.tabs.remove(tab.id, function() { });
+        browser.tabs.remove(tab.id, () => {});
     });
 }
 
-document.querySelector("#debug_checkbox").addEventListener("click", enableDebugging);
+document.querySelector("#debug_checkbox").addEventListener("click", toggleDebug);
 document.querySelector("#set_policy").addEventListener("click", updateAndClassify);

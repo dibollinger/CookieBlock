@@ -1,8 +1,6 @@
 // Author: Dino Bollinger
 // License: MIT
 
-/** Global Variables */
-
 // Loaded in from a JSON file, stores the configuration on which features to extract from a cookie
 var feature_config;
 
