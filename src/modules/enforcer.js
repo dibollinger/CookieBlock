@@ -173,14 +173,14 @@ const makePolicyDecision = async function(cookieDat, label) {
  */
 const enforcePolicy = async function (ckey, cookieDat){
 
-    let cblk_store = await getCookieStorage();
-    let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, cblk_store);
-
-    cblk_store[ckey] = serializedCookie;
-    browser.storage.local.set({"cblk_storage": cblk_store});
+    // TODO: Resolve race condition here:
+    let cookieDict = await getCookieStorage();
+    let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, cookieDict);
+    cookieDict[ckey] = serializedCookie;
+    setCookieStorage(cookieDict);
+    // TODO: end race condition
 
     let ckDomain = sanitizeDomain(serializedCookie.domain);
-
     let updateCounters = async (idx) => {
         let stats = await getStatsCounter();
         stats[idx] += 1;

@@ -149,7 +149,8 @@ const classifyAllCurrentCookies = async function() {
     let allCookies = await browser.cookies.getAll({});
     for (let cookieDat of allCookies){
         let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-        enforcePolicy(ckey, cookieDat);
+        //TODO: Replace with a message event that is received by the background script.
+        //enforcePolicy(ckey, cookieDat);
     }
     document.getElementById("apply_text").hidden = false;
 }

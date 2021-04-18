@@ -83,3 +83,10 @@ const firstTimeSetup = function(details) {
 getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", setupDefaults);
 browser.cookies.onChanged.addListener(cookieChangeListener);
 browser.runtime.onInstalled.addListener(firstTimeSetup);
+
+/*
+setInterval(()=>{
+  setCookieStorage({});
+  console.log("Saved current cookies.")
+}, 5000);
+*/
