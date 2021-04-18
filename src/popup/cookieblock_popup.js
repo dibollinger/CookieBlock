@@ -4,6 +4,8 @@
 const addText = "Add Site Exception";
 const removeText = "Remove Site Exception";
 
+const ignoredPages = /^(view-source:|moz-extension:|about:|chrome-extension:|chrome:)/;
+
 /**
  * Hide the error text message.
  */
@@ -18,24 +20,24 @@ const hideErrorBox = function() {
  * @param {String} msg Message to show.
  */
 const showErrorBox = function(error, msg) {
+    console.error(`An error occurred: ${error}`);
     document.getElementById("desc-box").hidden = true;
     let errorBox = document.getElementById("error-box");
     errorBox.hidden = false;
     errorBox.textContent = msg;
-    console.error(`An error occurred: ${error}`);
 }
 
 /**
  * Updates the "Add Exception" button when the popup is opened.
  * Disables the button if on a browser-internal page. Changes the text if exception already present.
  */
-const popupSetup = function() {
+const popupSetup = async function() {
 
     let exceptionButton = document.getElementById("add-exception");
 
     browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         let currentURL = tabs[0].url
-        if (currentURL.match(/^(moz-extension:|about:|chrome-extension:|chrome:)/)){
+        if (currentURL.match(ignoredPages)){
             exceptionButton.disabled = true;
             exceptionButton.style.opacity = "0.5";
         }
@@ -59,40 +61,40 @@ const popupSetup = function() {
 /**
  * Add the exception on click and update the button text once done.
  */
-const addGlobalException = function() {
+const addGlobalException = async function() {
     hideErrorBox();
     browser.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         let currentURL = tabs[0].url
 
-        // safety
-        if (currentURL.match(/^(moz-extension:|about:|chrome-extension:|chrome:)/)){
+        // ignore the following types of pages
+        if (currentURL.match(ignoredPages)){
+            console.warn("Tried to add an exception to an invalid URL.")
             return;
         }
 
+        let potentialErrMsg = "Something went wrong!";
         let sanitizedDomain = urlToUniformDomain(new URL(currentURL).hostname);
-        browser.storage.sync.get("cblk_exglobal").then((r) => {
-            let domain_list = r["cblk_exglobal"];
-            console.assert(domain_list !== undefined, "Global exception array was not initialized!");
-
-            if (domain_list.includes(sanitizedDomain)){
-                let index = domain_list.indexOf(sanitizedDomain);
+        try {
+            let domainList = await getExceptionsList("cblk_exglobal");
+            if (domainList.includes(sanitizedDomain)){
+                potentialErrMsg = "Removing exception failed!";
+                let index = domainList.indexOf(sanitizedDomain);
                 if (index > -1) {
-                    domain_list.splice(index, 1);
+                    domainList.splice(index, 1);
                 } else {
-                    console.error("Could somehow not find the domain in the array?!")
+                    throw new Error("Could somehow not find the domain in the array?!");
                 }
-                browser.storage.sync.set({"cblk_exglobal": domain_list}).then(
-                    () => document.getElementById("add-exception").textContent = addText
-                    , (error) => showErrorBox(error, "Removing Site Exception Failed!")
-                );
+                await browser.storage.sync.set({"cblk_exglobal": domainList});
+                document.getElementById("add-exception").textContent = addText;
             } else {
-                domain_list.push(sanitizedDomain);
-                browser.storage.sync.set({"cblk_exglobal": domain_list}).then(
-                    () => document.getElementById("add-exception").textContent = removeText
-                    , (error) => showErrorBox(error, "Adding Site Exception Failed!")
-                );
+                potentialErrMsg = "Adding exception failed!";
+                domainList.push(sanitizedDomain);
+                await browser.storage.sync.set({"cblk_exglobal": domainList});
+                document.getElementById("add-exception").textContent = removeText;
             }
-        }, (error) => showErrorBox(error, "Something went wrong!"));
+        } catch (error) {
+            showErrorBox(error, potentialErrMsg)
+        }
     });
 }
 
