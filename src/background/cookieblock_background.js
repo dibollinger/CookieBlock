@@ -16,8 +16,8 @@ const setupDefaults = async function(defaultConfig) {
   }
 
   let ulimit = (await browser.storage.sync.get("cblk_ulimit"))["cblk_ulimit"];
-  if (ulimit == undefined) {
-    ulimit = dp["update_limit"];
+  if (ulimit === undefined) {
+    ulimit = defaultConfig["update_limit"];
     browser.storage.sync.set({"cblk_ulimit": ulimit });
   }
 }

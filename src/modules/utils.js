@@ -10,9 +10,9 @@ const getDebugState = async function() {
     if (debugToggle === undefined) {
         console.warn(`Warning: Debug toggle not found in local storage. Using 'false' as default.`);
         debugToggle = false;
-        browser.storage.local.set({"cblk_debug": debugToggle });
+        await browser.storage.local.set({"cblk_debug": debugToggle });
     }
-    console.assert(typeof debugToggle === "boolean", "Error: Stored debug mode value wasn't a boolean!");
+    console.assert(typeof debugToggle === "boolean", `Error: Stored debug mode value wasn't a boolean: ${typeof debugToggle}`);
     return debugToggle;
 }
 
@@ -28,9 +28,9 @@ const getExceptionsList = async function(sKey) {
         console.warn(`Warning: Exceptions list for key ${sKey} not in sync storage. Using empty array default.`);
         exceptionsList = [];
         let sobj = {}; sobj[sKey] = exceptionsList;
-        browser.storage.sync.set(sobj);
+        await browser.storage.sync.set(sobj);
     }
-    console.assert(Array.isArray(exceptionsList), "Error: Stored exception list was not an array!");
+    console.assert(Array.isArray(exceptionsList), `Error: Stored exception list was not an array: ${typeof exceptionsList}`);
     return exceptionsList;
 }
 
@@ -43,9 +43,9 @@ const getStatsCounter = async function() {
     if (stats === undefined) {
         console.warn("Warning: Stats not found in local storage. Using zero init array.");
         stats = [0,0,0,0,0];
-        browser.storage.local.set({"cblk_counter": stats });
+        await browser.storage.local.set({"cblk_counter": stats });
     }
-    console.assert(Array.isArray(stats), "Error: Stored stats was not an array!");
+    console.assert(Array.isArray(stats), `Error: Stored stats was not an array: ${typeof stats}`);
     return stats;
 }
 
@@ -58,9 +58,9 @@ const getUserPolicy = async function() {
     if (policy === undefined) {
         console.warn("Warning: User policy not found in sync storage. Using strict config as default.");
         policy = [1, 0, 0, 0];
-        browser.storage.sync.set({"cblk_userpolicy": policy });
+        await browser.storage.sync.set({"cblk_userpolicy": policy });
     }
-    console.assert(Array.isArray(policy), "Error: Stored user policy was not an array!");
+    console.assert(Array.isArray(policy), `Error: Stored user policy was not an array: ${typeof policy}`);
     return policy;
 }
 
@@ -73,9 +73,9 @@ const getCookieStorage = async function() {
     if (storage === undefined) {
         console.warn("Warning: CookieBlock cookie store was not found. Initializing empty storage.");
         storage = {};
-        browser.storage.local.set({ "cblk_storage": storage });
+        await browser.storage.local.set({ "cblk_storage": storage });
     }
-    console.assert(typeof storage === "object", "Error in CookieBlock cookie storage!");
+    console.assert(typeof storage === "object", `Error in CookieBlock cookie storage: ${typeof storage}`);
     return storage;
 }
 
@@ -84,13 +84,14 @@ const getCookieStorage = async function() {
  * @returns {Promise<number>} Maximum number of updates to store for each cookie.
  */
 const getUpdateLimit = async function() {
+
     let ulimit = (await browser.storage.sync.get("cblk_ulimit"))["cblk_ulimit"];
     if (ulimit === undefined) {
         console.warn("Warning: CookieBlock update limit was undefined. Initializing limit of 10 updates.");
         ulimit = 10;
-        browser.storage.sync.set({"cblk_ulimit": ulimit });
+        await browser.storage.sync.set({"cblk_ulimit": ulimit });
     }
-    console.assert(typeof ulimit === "number", "Stored update limit was not a number!");
+    console.assert(typeof ulimit === "number", `Stored update limit was not a number: ${typeof ulimit}`);
     return ulimit;
 }
 

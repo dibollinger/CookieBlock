@@ -107,6 +107,7 @@ const makePolicyDecision = async function(cookieDat, label) {
 
     let cName = classIndexToString(label);
 
+    let ckDomain = sanitizeDomain(escapeString(cookieDat.domain));
     let skipRejection = false;
     switch(label) {
         case 1: // functionality
@@ -120,8 +121,6 @@ const makePolicyDecision = async function(cookieDat, label) {
             break;
     }
 
-
-    let ckDomain = sanitizeDomain(escapeString(cookieDat.domain));
     if (skipRejection) {
         console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
     } else {

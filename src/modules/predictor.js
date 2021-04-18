@@ -53,7 +53,7 @@ const getForestScore = async function(forest, features) {
 */
 const predictClass = async function (features){
 
-    let existsUndefined = forests.reduce((total, f) => {return total || (f === undefined)})
+    let existsUndefined = forests.reduce((total, f) => {return total || (f === undefined)}, false)
     if (existsUndefined) {
         throw new Error("At least one internal forest model was undefined!");
     }
@@ -68,11 +68,11 @@ const predictClass = async function (features){
 
     // TODO: Implement Bayesian Decision Theory function here instead of argmax
     let maxIndex = 0;
-    let maxRatio = 0;
+    let maxProb = 0;
     for (let i = 0; i < probabilities.length; i++){
-        if (ratio > maxRatio){
+        if (probabilities[i] > maxProb){
             maxIndex = i;
-            maxRatio = ratio;
+            maxProb = probabilities[i];
         }
     }
     //{"predicted_probabilities": predProbabilities, "prediction": maxIndex};
