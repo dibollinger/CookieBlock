@@ -75,10 +75,12 @@ const updateAndClassify = async function() {
     let sending = browser.runtime.sendMessage({"classify_all": true});
     sending.then((msg) => {console.log("Process completed.")});
 
+    /*
     // close tab
     browser.tabs.getCurrent(function(tab) {
         browser.tabs.remove(tab.id, () => {});
     });
+    */
 }
 
 // Listeners

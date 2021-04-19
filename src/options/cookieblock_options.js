@@ -58,7 +58,7 @@ const appendExceptionToList = async function(exceptionDomain, listID, storageID)
  * @param {String} listID     Identity of the list to append the exception to.
  */
 const handleExceptionSubmit = async function(inputID, storageID, listID) {
-    let iElem = document.querySelector(inputID);
+    let iElem = document.getElementById(inputID);
     if (iElem.value != null && iElem.value != "")
     {
         let domainOrURL = (' ' + iElem.value).slice(1);
@@ -247,31 +247,24 @@ browser.storage.onChanged.addListener(logStorageChange);
 // Listeners
 document.addEventListener("DOMContentLoaded", setupSettingsPage);
 
-document.querySelector("#submit_prefs").addEventListener("click", updateUserPolicy);
-document.querySelector("#debug_checkbox").addEventListener("click", toggleDebugging);
-document.querySelector("#classify_button").addEventListener("click", classifyAllCurrentCookies);
+document.getElementById("submit_prefs").addEventListener("click", updateUserPolicy);
+document.getElementById("debug_checkbox").addEventListener("click", toggleDebugging);
+document.getElementById("classify_button").addEventListener("click", classifyAllCurrentCookies);
 
+/**
+ * Helper for adding click listeners.
+ */
+const addExcClickListener = function (buttonID, inputID, storageID, listID) {
+    document.getElementById(buttonID).addEventListener("click", (e) => {
+        e.preventDefault();
+        handleExceptionSubmit(inputID, storageID, listID);
+    });
+}
 
-document.querySelector("#website_excepts_submit").addEventListener("click", (e) => {
-    e.preventDefault();
-    handleExceptionSubmit("#website_excepts_input", "cblk_exglobal", "website_exceptions");
-});
-
-document.querySelector("#func_excepts_submit").addEventListener("click", (e) => {
-    e.preventDefault();
-    handleExceptionSubmit("#func_excepts_input", "cblk_exfunc", "functional_exceptions");
-});
-
-document.querySelector("#analytics_excepts_submit").addEventListener("click", (e) => {
-    e.preventDefault();
-    handleExceptionSubmit("#analytics_excepts_input", "cblk_exanal", "analytics_exceptions");
-});
-
-document.querySelector("#advert_excepts_submit").addEventListener("click", (e) => {
-    e.preventDefault();
-    handleExceptionSubmit("#advert_excepts_input", "cblk_exadvert", "advertising_exceptions");
-});
-
+addExcClickListener("website_excepts_submit", "website_excepts_input", "cblk_exglobal", "website_exceptions");
+addExcClickListener("func_excepts_submit", "func_excepts_input", "cblk_exfunc", "functional_exceptions");
+addExcClickListener("analytics_excepts_submit", "analytics_excepts_input", "cblk_exanal", "analytics_exceptions");
+addExcClickListener("advert_excepts_submit", "advert_excepts_input", "cblk_exadvert", "advertising_exceptions");
 
 /**
  * Helper function for setting up enter events on the text input fields.

@@ -100,7 +100,7 @@
   },
 
   "buttonExitSetup" : {
-    "message": "Define policy and close",
+    "message": "Apply Policy to Current Cookies",
     "description": "Label for the close button on the first time setup"
   },
 
