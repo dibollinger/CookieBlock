@@ -54,30 +54,6 @@ const getExceptionsList = async function(sKey) {
 }
 
 /**
- * Set the statistics array.
- * @param {Array} newStats New stats array
- */
- const setStatsCounter = async function(newStats) {
-    await browser.storage.local.set({"cblk_counter": newStats });
-}
-
-/**
- * Retrieve statistics counter from extension local storage. zero array if not present.
- * @returns {Promise<object>} Array of statistics counters.
- */
-const getStatsCounter = async function() {
-    let stats = (await browser.storage.local.get("cblk_counter"))["cblk_counter"];
-    if (stats === undefined) {
-        console.warn("Warning: Stats not found in local storage. Using zero init array.");
-        console.trace();
-        stats = [0,0,0,0,0];
-        await setStatsCounter();
-    }
-    console.assert(Array.isArray(stats), `Error: Stored stats was not an array: ${typeof stats}`);
-    return stats;
-}
-
-/**
  * Set the user policy.
  * @param {Array} newPolicy New policy array.
  */
@@ -126,15 +102,6 @@ const getUpdateLimit = async function() {
     }
     console.assert(typeof ulimit === "number", `Stored update limit was not a number: ${typeof ulimit}`);
     return ulimit;
-}
-
-
-/**
- * Set cookie storage to the specified object value.
- * @param {Object} newStorage
- */
-const setCookieStorage = async function(newStorage) {
-    await browser.storage.local.set({ "cblk_storage": newStorage });
 }
 
 

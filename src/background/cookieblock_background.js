@@ -7,6 +7,24 @@ var httpsRemovalCounter = 0;
 var localCookieStorage = undefined;
 var localStatsCounter = undefined;
 
+
+/**
+ * Set cookie storage to the specified object value.
+ * @param {Object} newStorage
+ */
+ const setCookieStorage = async function(newStorage) {
+    await browser.storage.local.set({ "cblk_storage": newStorage });
+}
+
+/**
+ * Set the statistics array.
+ * @param {Array} newStats New stats array
+ */
+ const setStatsCounter = async function(newStats) {
+    await browser.storage.local.set({"cblk_counter": newStats });
+}
+
+
 /**
  * Asynchronous callback function to set up config and storage defaults.
  * This initializes all browser local and sync storage objects if undefined.

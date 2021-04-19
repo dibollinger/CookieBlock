@@ -10,114 +10,103 @@
 <div class="header">
     <img src="/icons/cookieblock-128.png">
     <div class="title">
-        <h1>CookieBlock</h1>
-        <h2>Settings and Preferences</h2>
+        <h1 id="settings_title"></h1>
+        <h2 id="settings_subtitle"></h2>
     </div>
 </div>
 <div class="contents">
     <div class="settings_group">
         <fieldset class="preference_form">
-            <legend style="margin-top: .75em;">Consent Preferences</legend>
-            <div class="overview_description">CookieBlock automatically sorts cookies into different consent purposes.
-                Here you can select which types of cookies you would like to prevent from being stored in your browser.</div>
+            <legend id="cprefs_legend" style="margin-top: .75em;"></legend>
+            <div id="cprefs_desc" class="overview_description"></div>
             <hr class="thin">
             <input id="nec_checkbox" type="checkbox" class="checkbox disabled" disabled checked></input>
-            <label for="nec_checkbox" class="catname">Strictly Necessary Cookies</label>
-            <div class=class_desc>This category includes cookies that are typically required for essential services to operate.
-                Deleting these may cause websites to break.</div>
+            <label id="nec_title" for="nec_checkbox" class="catname"></label>
+            <div id="nec_desc" class=class_desc></div>
             <hr class="thin">
             <input id="func_checkbox" type="checkbox" class="checkbox"></input>
-            <label for="func_checkbox" class="catname">Functionality Cookies</label>
-            <div class=class_desc>
-                Functionality cookies usually serve to remember user preferences, such as language or website style,
-                or enable non-essential functionality which can improve the user experience. Such cookies are usually
-                persistent to keep settings stored across multiple browsing sessions.</div>
+            <label id="func_title" for="func_checkbox" class="catname"></label>
+            <div id="func_desc"  class=class_desc></div>
             <hr class="thin">
             <input id="anal_checkbox" type="checkbox" class="checkbox"></input>
-            <label for="anal_checkbox" class="catname">Performance/Analytics Cookies</label>
-            <div class=class_desc> Analytics cookies serve to collect statistical information about how visitors use
-                the current website. This is generally used to measure the website performance, and to improve the service.
-                Measurements include page visits, bounce rate, dwell time and more. Under normal circumstances, the
-                collected data should not contain sensitive information that could identify the user.</div>
+            <label id="anal_title" for="anal_checkbox" class="catname"></label>
+            <div id="anal_desc" class=class_desc></div>
             <hr class="thin">
             <input id="advert_checkbox" type="checkbox" class="checkbox"></input>
-            <label for="advert_checkbox" class="catname">Advertising/Tracking Cookies</label>
-            <div class=class_desc> Advertising cookies track visitors across multiple websites and collect sensitive,
-                personally identifiable information. The goal is to display optimized advertisements that best match
-                the personal interests of the users, or to sell the data that has been collected to other interested
-                parties.</div>
+            <label id="advert_title" for="advert_checkbox" class="catname"></label>
+            <div id="advert_desc" class=class_desc></div>
             <div class=submit_field>
-                <button id="submit_prefs" type="submit" style="float:left;">Update Policy</button>
-                <div id="submit_text" class="button_clicktext" hidden>Preferences updated!</div>
+                <button id="submit_prefs" type="submit" style="float:left;"></button>
+                <div id="submit_text" class="button_clicktext" hidden></div>
             </div>
         </fieldset>
     </div>
     <hr class="thick">
     <div class="settings_group">
         <fieldset>
-        <legend>Additional Options</legend>
-        <div class="overview_description">Options that control the extension behavior.</div>
+        <legend id="extra_opts_legend"></legend>
+        <div id="extra_opts_desc" class="overview_description"></div>
         <hr class="thin">
         <input id="debug_checkbox" type="checkbox" class="checkbox">
-        <label for="debug_checkbox" class="catname">Enable Debug Mode</label>
-        <div class="class_desc">Debug mode will disable cookie removal and enable debug output in the browser console. Only used for testing purposes.</div>
+        <label id="debug_title" for="debug_checkbox" class="catname"></label>
+        <div id="debug_desc" class="class_desc"></div>
         <hr class="thin">
-        <div class="catname missing_checkbox">Enforce Policy on Current Cookies</div>
-        <div class="class_desc">
-            The button below will run the classification and policy enforcement
-            on all cookies that are currently stored by the browser. This will
-            remove all current cookies that belong to purposes you did not agree to.</div>
+        <div id="classify_title" class="catname missing_checkbox"></div>
+        <div id="classify_desc" class="class_desc"></div>
         <div class=submit_field>
-            <button id="classify_all" type="submit" style="float:left;">Apply Policy</button>
-            <div id="apply_text" class="button_clicktext" hidden> All current cookies classified!</div>
+            <button id="classify_button" type="submit" style="float:left;"></button>
+            <div id="apply_text" class="button_clicktext" hidden></div>
         </div>
     </fieldset>
     </div>
     <hr class="thick">
     <div class="settings_group">
         <fieldset>
-        <legend>Website Exceptions</legend>
-        <div class="overview_description">Cookies that originate from the following domains will always be allowed in the browser, regardless of preferences.</div>
+        <legend id="wheader_title"></legend>
+        <div id="wheader_desc" class="overview_description"></div>
         <ul id="website_exceptions" class=rulelist></ul>
-        <input id="website_excepts_input" type="text", placeholder="Add Exception">
-        <button id="website_excepts_submit" type="submit"> Add</button>
+        <input id="website_excepts_input" type="text">
+        <button id="website_excepts_submit" type="submit"></button>
         </fieldset>
     </div>
     <hr class="thick">
     <div class="settings_group">
         <fieldset>
-        <legend>Domain Exceptions for Functional Category</legend>
-        <div class="overview_description">Do not reject Functional Cookies from the following domains:</div>
+        <legend id="fheader_title"></legend>
+        <div id="fheader_desc" class="overview_description"></div>
         <ul id="functional_exceptions" class=rulelist></ul>
-        <input id="func_excepts_input" type="text", placeholder="Add Exception">
-        <button id="func_excepts_submit" type="submit"> Add</button>
+        <input id="func_excepts_input" type="text">
+        <button id="func_excepts_submit" type="submit"></button>
         </fieldset>
     </div>
+
     <hr class="thick">
     <div class="settings_group">
         <fieldset>
-        <legend>Domain Exceptions for Analytics Category</legend>
-        <div class="overview_description">Do not reject Analytics Cookies from the following domains:</div>
+        <legend id="anheader_title"></legend>
+        <div id="anheader_desc" class="overview_description"></div>
         <ul id="analytics_exceptions" class=rulelist></ul>
-        <input id="analytics_excepts_input" type="text", placeholder="Add Exception">
-        <button id="analytics_excepts_submit" type="submit">Add</button>
+        <input id="analytics_excepts_input" type="text">
+        <button id="analytics_excepts_submit" type="submit"></button>
         </fieldset>
     </div>
+
     <hr class="thick">
     <div class="settings_group">
         <fieldset>
-        <legend>Domain Exceptions for Advertising Category</legend>
-        <div class="overview_description">Do not reject Advertising Cookies from the following domains:</div>
+        <legend id="adheader_title"></legend>
+        <div id="adheader_desc" class="overview_description"></div>
         <ul id="advertising_exceptions" class=rulelist></ul>
-        <input id="advert_excepts_input" type="text", placeholder="Add Exception">
-        <button id="advert_excepts_submit" type="submit">Add</button>
+        <input id="advert_excepts_input" type="text">
+        <button id="advert_excepts_submit" type="submit"></button>
         </fieldset>
     </div>
+
     <hr class="thick">
     <div class="settings_group">
         <fieldset>
-        <legend>Category Statistics</legend>
-        <div class="overview_description">Number of cookies that were classified, separated by category:</div>
+        <legend id="stats_title">Category Statistics</legend>
+        <div id="stats_desc" class="overview_description">Number of cookies that were classified, separated by category:</div>
         <ul class="nexcepts">
             <li> <div id="num_necessary" class="stat_text"></div> </li>
             <li> <div id="num_functional" class="stat_text"></div> </li>
@@ -127,6 +116,8 @@
         </ul>
         </fieldset>
     </div>
+
+
     <script type="text/javascript" src="../modules/utils.js"></script>
     <script type="text/javascript" src="cookieblock_options.js"></script>
 

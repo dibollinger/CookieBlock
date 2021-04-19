@@ -1,6 +1,11 @@
 {
-    "extensionDescription": {
+    "manifestDescription": {
       "message": "Blockiert Browser-Cookies deren Nutzung der Benutzer nicht zustimmt.",
       "description": "Description of the extension."
+    },
+
+    "settingsSubtitle": {
+      "message": "Einstellungen",
+      "description": "Subtitle of the settings page."
     }
   }

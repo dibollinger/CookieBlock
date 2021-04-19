@@ -14,6 +14,11 @@
     "description": "Subtitle of the first time setup page."
   },
 
+  "settingsSubtitle": {
+    "message": "Settings and Preferences",
+    "description": "Subtitle of the settings page."
+  },
+
   "firstTimeGreeting": {
     "message": "Thank you for installing CookieBlock!",
     "description": "Greeting message on the first time setup."
@@ -44,22 +49,22 @@
     "description": "Text next to the 'Advertising' checkbox."
   },
 
-  "catNecessaryDescription": {
+  "catNecessaryDesc": {
     "message": "This category includes cookies that are typically required for essential services to operate. Deleting these may cause websites to break.",
     "description": "Description of the 'Necessary' category."
   },
 
-  "catFunctionalityDescription": {
+  "catFunctionalityDesc": {
     "message": "Functionality cookies serve to remember optional user preferences, such as language or website style, and to improve the user experience. They are not required for essential services to work.",
     "description": "Description of the 'Functionality' category."
   },
 
-  "catAnalyticsDescription" : {
+  "catAnalyticsDesc" : {
     "message": "Analytics cookies are used to collect statistical information about how visitors use a website. Normally the collected data should be anonymized and not be sensitive.",
     "description": "Description of the 'Analytics' category."
   },
 
-  "catAdvertisingDescription" : {
+  "catAdvertisingDesc" : {
     "message": "Advertising cookies track visitors across multiple websites and collect sensitive, personally identifiable information. This is commonly used to construct a user profile for targeted advertising.",
     "description": "Description of the 'Advertising' category."
   },
@@ -70,12 +75,12 @@
   },
 
   "headerAdditionalOptions" : {
-    "message": "Additional Options",
+    "message": "General Settings",
     "description": "Additional options header text."
   },
 
   "additionalOptionsDesc" : {
-    "message": "Additional extension settings:",
+    "message": "General extension settings:",
     "description": "Additional options description."
   },
 
@@ -119,13 +124,8 @@
     "description": "Header for the consent category options"
   },
 
-  "optionsConsentUpdate" : {
-    "message": "Update Policy",
-    "description": "Text on the update button"
-  },
-
   "currentCookieEnforceTitle" : {
-    "message": "Enforce Policy on Existing Cookies",
+    "message": "Enforce policy on current cookies.",
     "description": "Header for the policy enforcement button."
   },
 
@@ -137,6 +137,11 @@
   "currentCookieEnforceButton" : {
     "message" : "Apply Policy",
     "description" : "Label on the button that performs the current cookie classification."
+  },
+
+  "currentCookieEnforceMsg" : {
+    "message" : "All current cookies classified!",
+    "description" : "Message that appears after classifier was applied."
   },
 
   "globalExceptionsHeader" : {
@@ -193,6 +198,57 @@
   "categoryStatisticsDesc" : {
     "message" : "Number of cookies that were assigned to which category:",
     "description" : "Description of the statistics."
+  },
+
+  "buttonSuccessMsg" : {
+    "message" : "Preferences updated!",
+    "description" : "Text displayed when the policy update button is clicked."
+  },
+
+  "addButton" : {
+    "message" : "Add",
+    "description" : "Text on button for adding exceptions"
+  },
+
+  "statsNecessary": {
+    "message": "$COUNT$ Necessary",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsFunctional": {
+    "message": "$COUNT$ Functional",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsAnalytics": {
+    "message": "$COUNT$ Analytics",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsAdvertising": {
+    "message": "$COUNT$ Advertising",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsWhitelist": {
+    "message": "$COUNT$ Whitelisted",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
   }
 
 }

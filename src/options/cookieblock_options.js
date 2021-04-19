@@ -82,9 +82,78 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
 
 
 /**
+ * Function that contains most of the localization text assignments.
+ */
+const setupLocalization = function () {
+    const setLocText = (id, loc) => {
+        document.getElementById(id).textContent = browser.i18n.getMessage(loc);
+    };
+
+    // Title
+    setLocText("settings_title", "extensionName");
+    setLocText("settings_subtitle", "settingsSubtitle");
+
+    // Consent Preference Text
+    setLocText("cprefs_legend", "optionsHeaderConsent");
+    setLocText("cprefs_desc","firstTimeDesc");
+    setLocText("nec_title","catNecessaryTitle");
+    setLocText("nec_desc","catNecessaryDesc");
+    setLocText("func_title","catFunctionalityTitle");
+    setLocText("func_desc","catFunctionalityDesc");
+    setLocText("anal_title","catAnalyticsTitle");
+    setLocText("anal_desc","catAnalyticsDesc");
+    setLocText("advert_title","catAdvertisingTitle");
+    setLocText("advert_desc","catAdvertisingDesc");
+    setLocText("submit_prefs","buttonUpdatePolicy");
+    setLocText("submit_text","buttonSuccessMsg");
+
+    // Additional Options
+    setLocText("extra_opts_legend","headerAdditionalOptions");
+    setLocText("extra_opts_desc","additionalOptionsDesc");
+    setLocText("debug_title", "enableDebugMode");
+    setLocText("debug_desc", "debugDescription");
+    setLocText("classify_title", "currentCookieEnforceTitle");
+    setLocText("classify_desc", "currentCookieEnforceDescription");
+    setLocText("classify_button", "currentCookieEnforceButton");
+    setLocText("apply_text", "currentCookieEnforceMsg");
+
+    // Website exception text
+    setLocText("wheader_title", "globalExceptionsHeader");
+    setLocText("wheader_desc", "globalExceptionsDescription");
+    document.getElementById("website_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
+    setLocText("website_excepts_submit", "addButton");
+
+    // Functionality exceptions
+    setLocText("fheader_title", "functionalExceptionsHeader");
+    setLocText("fheader_desc", "functionalExceptionsDescription");
+    document.getElementById("func_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
+    setLocText("func_excepts_submit", "addButton");
+
+    // Analytics exceptions
+    setLocText("anheader_title", "analyticsExceptionsHeader");
+    setLocText("anheader_desc", "analyticsExceptionsDescription");
+    document.getElementById("analytics_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
+    setLocText("analytics_excepts_submit", "addButton");
+
+    // Advertising exceptions
+    setLocText("adheader_title", "advertExceptionsHeader");
+    setLocText("adheader_desc", "advertExceptionsDescription");
+    document.getElementById("advert_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
+    setLocText("advert_excepts_submit", "addButton");
+
+    // Statistics Stuff
+    setLocText("stats_title", "categoryStatisticsHeader");
+    setLocText("stats_desc", "categoryStatisticsDesc");
+
+}
+
+/**
  * This function is executed when opening the settings page.
  */
 const setupSettingsPage = async function() {
+
+    setupLocalization();
+
     let restoreExceptionList = async function (storageID, listID) {
         let storedExc = await getExceptionsList(storageID);
         let numEntries = storedExc.length;
@@ -106,12 +175,16 @@ const setupSettingsPage = async function() {
     let debugState = await getDebugState();
     document.getElementById("debug_checkbox").checked = debugState;
 
-    let stats = await getStatsCounter();
-    document.getElementById("num_necessary").textContent += `${stats[0]} Necessary`
-    document.getElementById("num_functional").textContent += `${stats[1]} Functional`
-    document.getElementById("num_analytics").textContent += `${stats[2]} Performance/Analytics`
-    document.getElementById("num_advertising").textContent += `${stats[3]} Advertisement/Tracking`
-    document.getElementById("num_uncat").textContent += `${stats[4]} from Whitelist`
+    // Statistics
+    let sending = browser.runtime.sendMessage({"get_stats": true});
+    sending.then((msg) => {
+        let stats = msg.response;
+        document.getElementById("num_necessary").textContent = browser.i18n.getMessage("statsNecessary", stats[0]);
+        document.getElementById("num_functional").textContent = browser.i18n.getMessage("statsFunctional", stats[1]);
+        document.getElementById("num_analytics").textContent = browser.i18n.getMessage("statsAnalytics", stats[2]);
+        document.getElementById("num_advertising").textContent = browser.i18n.getMessage("statsAdvertising", stats[3]);
+        document.getElementById("num_uncat").textContent = browser.i18n.getMessage("statsWhitelist", stats[4]);
+    });
 }
 
 
@@ -174,7 +247,7 @@ document.addEventListener("DOMContentLoaded", setupSettingsPage);
 
 document.querySelector("#submit_prefs").addEventListener("click", updateUserPolicy);
 document.querySelector("#debug_checkbox").addEventListener("click", toggleDebugging);
-document.querySelector("#classify_all").addEventListener("click", classifyAllCurrentCookies);
+document.querySelector("#classify_button").addEventListener("click", classifyAllCurrentCookies);
 
 
 document.querySelector("#website_excepts_submit").addEventListener("click", (e) => {
