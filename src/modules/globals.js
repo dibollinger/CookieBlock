@@ -73,7 +73,7 @@ const getUserPolicy = async function() {
     if (policy === undefined) {
         console.warn("Warning: User policy not found in sync storage. Using strict config as default.");
         console.trace();
-        policy = [1, 0, 0, 0];
+        policy = [true, false, false, false];
         setUserPolicy(policy);
     }
     console.assert(Array.isArray(policy), `Error: Stored user policy was not an array: ${typeof policy}`);
@@ -215,3 +215,18 @@ const classIndexToString = (idx) => {
         default: return "Invalid Category Index"
     }
 }
+
+/**
+ * Helper function to assign static localization text to an element's textContent field.
+ * @param {String} elemID Element ID
+ * @param {String} locID Localization ID
+ * @param {Array} args List of positional arguments for the localization.
+ */
+const setStaticLocaleText = (elemID, locID, args=[]) => {
+    try{
+        document.getElementById(elemID).textContent = browser.i18n.getMessage(locID, args);
+    } catch (err) {
+        console.error(`Failed to apply localization for id '${elemID}' with text '${locID}'.`)
+        console.error("Original Error Message: " + err.message)
+    }
+};

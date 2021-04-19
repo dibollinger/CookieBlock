@@ -85,65 +85,59 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
  * Function that contains most of the localization text assignments.
  */
 const setupLocalization = function () {
-    const setLocText = (id, loc) => {
-        document.getElementById(id).textContent = browser.i18n.getMessage(loc);
-    };
-
     // Title
-    setLocText("settings_title", "extensionName");
-    setLocText("settings_subtitle", "settingsSubtitle");
+    setStaticLocaleText("settings_title", "extensionName");
+    setStaticLocaleText("settings_subtitle", "settingsSubtitle");
 
     // Consent Preference Text
-    setLocText("cprefs_legend", "optionsHeaderConsent");
-    setLocText("cprefs_desc","consentDescription");
-    setLocText("nec_title","catNecessaryTitle");
-    setLocText("nec_desc","catNecessaryDesc");
-    setLocText("func_title","catFunctionalityTitle");
-    setLocText("func_desc","catFunctionalityDesc");
-    setLocText("anal_title","catAnalyticsTitle");
-    setLocText("anal_desc","catAnalyticsDesc");
-    setLocText("advert_title","catAdvertisingTitle");
-    setLocText("advert_desc","catAdvertisingDesc");
-    setLocText("submit_prefs","buttonUpdatePolicy");
-    setLocText("submit_text","buttonSuccessMsg");
+    setStaticLocaleText("cprefs_legend", "optionsHeaderConsent");
+    setStaticLocaleText("cprefs_desc","consentDescription");
+    setStaticLocaleText("nec_title","catNecessaryTitle");
+    setStaticLocaleText("nec_desc","catNecessaryDesc");
+    setStaticLocaleText("func_title","catFunctionalityTitle");
+    setStaticLocaleText("func_desc","catFunctionalityDesc");
+    setStaticLocaleText("anal_title","catAnalyticsTitle");
+    setStaticLocaleText("anal_desc","catAnalyticsDesc");
+    setStaticLocaleText("advert_title","catAdvertisingTitle");
+    setStaticLocaleText("advert_desc","catAdvertisingDesc");
 
     // Additional Options
-    setLocText("extra_opts_legend","headerAdditionalOptions");
-    setLocText("extra_opts_desc","additionalOptionsDesc");
-    setLocText("debug_title", "enableDebugMode");
-    setLocText("debug_desc", "debugDescription");
-    setLocText("classify_title", "currentCookieEnforceTitle");
-    setLocText("classify_desc", "currentCookieEnforceDescription");
-    setLocText("classify_button", "currentCookieEnforceButton");
-    setLocText("apply_text", "currentCookieEnforceMsg");
+    setStaticLocaleText("extra_opts_legend","headerAdditionalOptions");
+    setStaticLocaleText("extra_opts_desc","additionalOptionsDesc");
+    setStaticLocaleText("debug_title", "enableDebugMode");
+    setStaticLocaleText("debug_desc", "debugDescription");
+    setStaticLocaleText("classify_title", "currentCookieEnforceTitle");
+    setStaticLocaleText("classify_desc", "currentCookieEnforceDescription");
+    setStaticLocaleText("classify_button", "currentCookieEnforceButton");
+    setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
 
     // Website exception text
-    setLocText("wheader_title", "globalExceptionsHeader");
-    setLocText("wheader_desc", "globalExceptionsDescription");
+    setStaticLocaleText("wheader_title", "globalExceptionsHeader");
+    setStaticLocaleText("wheader_desc", "globalExceptionsDescription");
     document.getElementById("website_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
-    setLocText("website_excepts_submit", "addButton");
+    setStaticLocaleText("website_excepts_submit", "addButton");
 
     // Functionality exceptions
-    setLocText("fheader_title", "functionalExceptionsHeader");
-    setLocText("fheader_desc", "functionalExceptionsDescription");
+    setStaticLocaleText("fheader_title", "functionalExceptionsHeader");
+    setStaticLocaleText("fheader_desc", "functionalExceptionsDescription");
     document.getElementById("func_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
-    setLocText("func_excepts_submit", "addButton");
+    setStaticLocaleText("func_excepts_submit", "addButton");
 
     // Analytics exceptions
-    setLocText("anheader_title", "analyticsExceptionsHeader");
-    setLocText("anheader_desc", "analyticsExceptionsDescription");
+    setStaticLocaleText("anheader_title", "analyticsExceptionsHeader");
+    setStaticLocaleText("anheader_desc", "analyticsExceptionsDescription");
     document.getElementById("analytics_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
-    setLocText("analytics_excepts_submit", "addButton");
+    setStaticLocaleText("analytics_excepts_submit", "addButton");
 
     // Advertising exceptions
-    setLocText("adheader_title", "advertExceptionsHeader");
-    setLocText("adheader_desc", "advertExceptionsDescription");
+    setStaticLocaleText("adheader_title", "advertExceptionsHeader");
+    setStaticLocaleText("adheader_desc", "advertExceptionsDescription");
     document.getElementById("advert_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
-    setLocText("advert_excepts_submit", "addButton");
+    setStaticLocaleText("advert_excepts_submit", "addButton");
 
     // Statistics Stuff
-    setLocText("stats_title", "categoryStatisticsHeader");
-    setLocText("stats_desc", "categoryStatisticsDesc");
+    setStaticLocaleText("stats_title", "categoryStatisticsHeader");
+    setStaticLocaleText("stats_desc", "categoryStatisticsDesc");
 
 }
 
@@ -179,30 +173,15 @@ const setupSettingsPage = async function() {
     let sending = browser.runtime.sendMessage({"get_stats": true});
     sending.then((msg) => {
         let stats = msg.response;
-        document.getElementById("num_necessary").textContent = browser.i18n.getMessage("statsNecessary", stats[0]);
-        document.getElementById("num_functional").textContent = browser.i18n.getMessage("statsFunctional", stats[1]);
-        document.getElementById("num_analytics").textContent = browser.i18n.getMessage("statsAnalytics", stats[2]);
-        document.getElementById("num_advertising").textContent = browser.i18n.getMessage("statsAdvertising", stats[3]);
-        document.getElementById("num_uncat").textContent = browser.i18n.getMessage("statsWhitelist", stats[4]);
+        setStaticLocaleText("num_necessary", "statsNecessary", stats[0]);
+        setStaticLocaleText("num_functional", "statsFunctional", stats[1]);
+        setStaticLocaleText("num_analytics", "statsAnalytics", stats[2]);
+        setStaticLocaleText("num_advertising", "statsAdvertising", stats[3]);
+        setStaticLocaleText("num_uncat", "statsWhitelist", stats[4]);
     });
 
-
 }
 
-
-/**
- * The user policy is a fixed-size array of 4 booleans.
- * @param {Object} event Unused
- */
-const updateUserPolicy = async function(event) {
-    let cN = document.getElementById("nec_checkbox").checked;
-    let cF = document.getElementById("func_checkbox").checked;
-    let cAn = document.getElementById("anal_checkbox").checked;
-    let cAd = document.getElementById("advert_checkbox").checked;
-
-    await setUserPolicy([cN, cF, cAn, cAd]);
-    document.getElementById("submit_text").hidden = false;
-}
 
 /**
  * Event for clicking the debug checkbox
@@ -247,13 +226,37 @@ browser.storage.onChanged.addListener(logStorageChange);
 // Listeners
 document.addEventListener("DOMContentLoaded", setupSettingsPage);
 
-document.getElementById("submit_prefs").addEventListener("click", updateUserPolicy);
+/**
+ * Helper for adding consent toggle listeners
+ */
+ const addPrefClickListener = function (checkboxID, idx) {
+    let cb = document.getElementById(checkboxID);
+    cb.addEventListener("click", async (event) => {
+        policy = await getUserPolicy();
+        policy[idx] = cb.checked;
+        setUserPolicy(policy);
+    });
+}
+
+addPrefClickListener("nec_checkbox", 0);
+addPrefClickListener("func_checkbox", 1);
+addPrefClickListener("anal_checkbox", 2);
+addPrefClickListener("advert_checkbox", 3);
+
+// debug checkbox
 document.getElementById("debug_checkbox").addEventListener("click", toggleDebugging);
+
+// classify all cookies button
 document.getElementById("classify_button").addEventListener("click", classifyAllCurrentCookies);
 
+
 /**
- * Helper for adding click listeners.
- */
+ * Helper for adding exception add click listeners.
+ * @param {String} buttonID
+ * @param {String} inputID
+ * @param {String} storageID
+ * @param {String} listID
+*/
 const addExcClickListener = function (buttonID, inputID, storageID, listID) {
     document.getElementById(buttonID).addEventListener("click", (e) => {
         e.preventDefault();

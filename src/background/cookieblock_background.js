@@ -362,12 +362,12 @@ const handleInternalMessage = function(request, sender, sendResponse) {
     }
 }
 
-// Periodically save the current cookie store (every 2 minutes)
+// Periodically save the current cookie store (every minute)
 setInterval( async () => {
   await setCookieStorage(localCookieStorage);
   await setStatsCounter(localStatsCounter);
   console.debug("Saved current cookie store and stats counter.");
-}, 120_000);
+}, 60_000);
 
 // set up defaults and listeners
 getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", setupDefaults);

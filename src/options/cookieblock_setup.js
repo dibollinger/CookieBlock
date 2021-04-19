@@ -15,31 +15,31 @@ const toggleDebug = async function() {
  * Function that contains the localization text assignments.
  */
  const setupLocalization = function () {
-    const setLocText = (id, loc) => {
-        document.getElementById(id).textContent = browser.i18n.getMessage(loc);
-    };
+    setStaticLocaleText("init_title", "extensionName");
+    setStaticLocaleText("init_subtitle", "firstTimeSubtitle");
 
-    setLocText("init_title", "extensionName");
-    setLocText("init_subtitle", "firstTimeSubtitle");
+    setStaticLocaleText("setup_greet", "firstTimeGreeting");
+    setStaticLocaleText("setup_desc","firstTimeDesc");
 
-    setLocText("setup_greet", "firstTimeGreeting");
-    setLocText("setup_desc","firstTimeDesc");
+    setStaticLocaleText("cprefs_legend", "optionsHeaderConsent");
+    setStaticLocaleText("cprefs_desc","consentDescription");
+    setStaticLocaleText("nec_title","catNecessaryTitle");
+    setStaticLocaleText("nec_desc","catNecessaryDesc");
+    setStaticLocaleText("func_title","catFunctionalityTitle");
+    setStaticLocaleText("func_desc","catFunctionalityDesc");
+    setStaticLocaleText("anal_title","catAnalyticsTitle");
+    setStaticLocaleText("anal_desc","catAnalyticsDesc");
+    setStaticLocaleText("advert_title","catAdvertisingTitle");
+    setStaticLocaleText("advert_desc","catAdvertisingDesc");
 
-    setLocText("cprefs_legend", "optionsHeaderConsent");
-    setLocText("cprefs_desc","consentDescription");
-    setLocText("nec_title","catNecessaryTitle");
-    setLocText("nec_desc","catNecessaryDesc");
-    setLocText("func_title","catFunctionalityTitle");
-    setLocText("func_desc","catFunctionalityDesc");
-    setLocText("anal_title","catAnalyticsTitle");
-    setLocText("anal_desc","catAnalyticsDesc");
-    setLocText("advert_title","catAdvertisingTitle");
-    setLocText("advert_desc","catAdvertisingDesc");
+    setStaticLocaleText("debug_title", "enableDebugMode");
+    setStaticLocaleText("debug_desc", "debugDescription");
 
-    setLocText("debug_title", "enableDebugMode");
-    setLocText("debug_desc", "debugDescription");
+    setStaticLocaleText("classify_title", "currentCookieEnforceTitle");
+    setStaticLocaleText("classify_desc", "currentCookieEnforceDescription");
+    setStaticLocaleText("set_policy","currentCookieEnforceButton");
+    setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
 
-    setLocText("set_policy","buttonExitSetup");
 }
 
 /**
@@ -49,14 +49,11 @@ const setupInitPage = async function() {
 
     setupLocalization();
 
-    let policy = await getUserPolicy();
-    document.getElementById("nec_checkbox").checked = policy[0];
-    document.getElementById("func_checkbox").checked = policy[1];
-    document.getElementById("anal_checkbox").checked = policy[2];
-    document.getElementById("advert_checkbox").checked = policy[3];
-
-    let debugState = await getDebugState();
-    document.getElementById("debug_checkbox").checked = debugState;
+    document.getElementById("nec_checkbox").checked = true;
+    document.getElementById("func_checkbox").checked = false;
+    document.getElementById("anal_checkbox").checked = false;
+    document.getElementById("advert_checkbox").checked = false;
+    document.getElementById("debug_checkbox").checked = false;
 
     // Debug stuff
     document.getElementById("debug-div").hidden = isReleaseVersion;
@@ -66,14 +63,12 @@ const setupInitPage = async function() {
  * Button to update the settings.
  */
 const updateAndClassify = async function() {
-    let cN = document.getElementById("nec_checkbox").checked;
-    let cF = document.getElementById("func_checkbox").checked;
-    let cAn = document.getElementById("anal_checkbox").checked;
-    let cAd = document.getElementById("advert_checkbox").checked;
-    await setUserPolicy([cN, cF, cAn, cAd]);
-
+    document.getElementById("apply_text").hidden = true;
     let sending = browser.runtime.sendMessage({"classify_all": true});
-    sending.then((msg) => {console.log("Process completed.")});
+    sending.then((msg) => {
+        document.getElementById("apply_text").hidden = false;
+        console.log("Process completed.");
+    });
 
     /*
     // close tab
@@ -82,6 +77,46 @@ const updateAndClassify = async function() {
     });
     */
 }
+
+
+/**
+ * Log the storage area that changed, then for each item changed,
+ * log its old value and its new value.
+ * @param {Object} changes Object containing the storage changes.
+ * @param {String} area String for the storage area.
+ */
+ const logStorageChange = function(changes, area) {
+    console.log("Change in storage area: " + area);
+
+    let changedItems = Object.keys(changes);
+
+    for (let item of changedItems) {
+      console.log(item + " has changed:");
+      console.log("Old value: ");
+      console.log(changes[item].oldValue);
+      console.log("New value: ");
+      console.log(changes[item].newValue);
+    }
+}
+browser.storage.onChanged.addListener(logStorageChange);
+
+/**
+ * Helper for adding click listeners.
+ */
+ const addPrefClickListener = function (checkboxID, idx) {
+    let cb = document.getElementById(checkboxID);
+    cb.addEventListener("click", async (event) => {
+        policy = await getUserPolicy();
+        policy[idx] = cb.checked;
+        setUserPolicy(policy);
+    });
+}
+
+addPrefClickListener("nec_checkbox", 0);
+addPrefClickListener("func_checkbox", 1);
+addPrefClickListener("anal_checkbox", 2);
+addPrefClickListener("advert_checkbox", 3);
+
 
 // Listeners
 document.addEventListener("DOMContentLoaded", setupInitPage);

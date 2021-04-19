@@ -35,12 +35,9 @@ const showErrorBox = function(error, msg) {
  */
 const popupSetup = async function() {
 
-    const setLocText = (id, loc) => {
-        document.getElementById(id).textContent = browser.i18n.getMessage(loc);
-    };
-    setLocText("popup-title", "extensionName");
-    setLocText("desc-box", "popupText");
-    setLocText("options", "popupButtonOptions");
+    setStaticLocaleText("popup-title", "extensionName");
+    setStaticLocaleText("desc-box", "popupText");
+    setStaticLocaleText("options", "popupButtonOptions");
 
     let exceptionButton = document.getElementById("add-exception");
 

@@ -130,7 +130,7 @@
   },
 
   "currentCookieEnforceTitle" : {
-    "message": "Enforce policy on current cookies.",
+    "message": "Enforce Policy on Current Cookies",
     "description": "Header for the policy enforcement button."
   },
 

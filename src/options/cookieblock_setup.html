@@ -32,7 +32,7 @@
             <hr class="thin">
 
 
-            <input id="func_checkbox" type="checkbox" class="checkbox" checked>
+            <input id="func_checkbox" type="checkbox" class="checkbox">
             <label id="func_title" for="func_checkbox" class="catname"></label>
             <div id="func_desc" class=class_desc></div>
             <hr class="thin">
@@ -53,10 +53,14 @@
                 <input id="debug_checkbox" type="checkbox" class="checkbox">
                 <label id="debug_title" for="debug_checkbox" class="catname"></label>
                 <div id="debug_desc" class="class_desc"></div>
+                <hr class="thin">
             </div>
 
-            <div class="submit_field">
-                <button id="set_policy" type="submit"></button>
+            <div id="classify_title" class="catname missing_checkbox" style="margin-top: 1.25em;"></div>
+            <div id="classify_desc" class="class_desc"></div>
+            <div class=submit_field>
+                <button id="set_policy" type="submit" style="float:left;"></button>
+                <div id="apply_text" class="button_clicktext" hidden></div>
             </div>
         </fieldset>
     </div>
