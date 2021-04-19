@@ -254,6 +254,21 @@
         "content" : "$1"
       }
     }
+  },
+
+  "popupErrorTextGeneric": {
+    "message": "Something Went Wrong!",
+    "description": "Generic error message."
+  },
+
+  "popupErrorTextRemove": {
+    "message": "Removing exception failed!",
+    "description": "Error message when trying to remove exception."
+  },
+
+  "popupErrorTextAdd": {
+    "message": "Adding exception failed!",
+    "description": "Error message when trying to add exception."
   }
 
 }

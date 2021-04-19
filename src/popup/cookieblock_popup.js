@@ -1,8 +1,8 @@
 // Author: Dino Bollinger
 // License: MIT
 
-const addText = "Add Site Exception";
-const removeText = "Remove Site Exception";
+const addText = browser.i18n.getMessage("popupButtonAdd");
+const removeText = browser.i18n.getMessage("popupButtonRemove");
 
 const ignoredPages = /^(view-source:|moz-extension:|about:|chrome-extension:|chrome:)/;
 
@@ -27,28 +27,36 @@ const showErrorBox = function(error, msg) {
     errorBox.textContent = msg;
 }
 
+
 /**
  * Updates the "Add Exception" button when the popup is opened.
  * Disables the button if on a browser-internal page. Changes the text if exception already present.
+ * Also performs localization
  */
 const popupSetup = async function() {
+
+    const setLocText = (id, loc) => {
+        document.getElementById(id).textContent = browser.i18n.getMessage(loc);
+    };
+    setLocText("popup-title", "extensionName");
+    setLocText("desc-box", "popupText");
+    setLocText("options", "popupButtonOptions");
 
     let exceptionButton = document.getElementById("add-exception");
 
     browser.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
         let currentURL = tabs[0].url;
+        exceptionButton.textContent = addText;
         if (currentURL.match(ignoredPages)){
             exceptionButton.disabled = true;
             exceptionButton.style.opacity = "0.5";
-        }
-
-        let sanitizedDomain = urlToUniformDomain(new URL(currentURL).hostname);
-        if (sanitizedDomain){
-            let exglobal = await getExceptionsList("cblk_exglobal");
-            if (exglobal.includes(sanitizedDomain)){
-                exceptionButton.textContent = removeText;
-            } else {
-                exceptionButton.textContent = addText;
+        } else {
+            let sanitizedDomain = urlToUniformDomain(new URL(currentURL).hostname);
+            if (sanitizedDomain) {
+                let exglobal = await getExceptionsList("cblk_exglobal");
+                if (exglobal.includes(sanitizedDomain)){
+                    exceptionButton.textContent = removeText;
+                }
             }
         }
     });
@@ -69,12 +77,12 @@ const addGlobalException = async function() {
             return;
         }
 
-        let potentialErrMsg = "Something went wrong!";
+        let potentialErrMsg = browser.i18n.getMessage("popupErrorTextGeneric");
         let sanitizedDomain = urlToUniformDomain(new URL(currentURL).hostname);
         try {
             let domainList = await getExceptionsList("cblk_exglobal");
             if (domainList.includes(sanitizedDomain)){
-                potentialErrMsg = "Removing exception failed!";
+                potentialErrMsg = browser.i18n.getMessage("popupErrorTextRemove");
                 let index = domainList.indexOf(sanitizedDomain);
                 if (index > -1) {
                     domainList.splice(index, 1);
@@ -84,7 +92,7 @@ const addGlobalException = async function() {
                 await setExceptionsListStore("cblk_exglobal", domainList);
                 document.getElementById("add-exception").textContent = addText;
             } else {
-                potentialErrMsg = "Adding exception failed!";
+                potentialErrMsg = browser.i18n.getMessage("popupErrorTextAdd");
                 domainList.push(sanitizedDomain);
                 await setExceptionsListStore("cblk_exglobal", domainList);
                 document.getElementById("add-exception").textContent = removeText;
