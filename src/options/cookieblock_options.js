@@ -35,7 +35,7 @@ const appendExceptionToList = async function(exceptionDomain, listID, storageID)
 
     // button has the remove event set up directly
     let button = document.createElement("button");
-    button.textContent = "x";
+    button.textContent = "X";
     button.addEventListener("click", () => { removeExceptionFromList(exceptionDomain, node, storageID) });
 
     let textdiv = document.createElement("div");
@@ -195,6 +195,7 @@ const toggleDebugging = async function() {
  * Runs the classification on all current browser cookies
  */
 const classifyAllCurrentCookies = async function() {
+    document.getElementById("apply_text").hidden = true;
     let sending = browser.runtime.sendMessage({"classify_all": true});
     sending.then((msg) => {
         console.debug(msg.response);
@@ -209,16 +210,43 @@ const classifyAllCurrentCookies = async function() {
  * @param {String} area String for the storage area.
  */
 const logStorageChange = function(changes, area) {
-    console.log("Change in storage area: " + area);
+    let emptyAndRestoreList = async function (storedExc, storageID, listID) {
+        let e = document.getElementById(listID);
+        let child = e.lastElementChild;
+        while (child) {
+            e.removeChild(child);
+            child = e.lastElementChild;
+        }
+
+        let numEntries = storedExc.length;
+        for (let i = 0; i < numEntries; i++) {
+            appendExceptionToList(storedExc[i], listID, storageID);
+        }
+    }
 
     let changedItems = Object.keys(changes);
-
-    for (let item of changedItems) {
-      console.log(item + " has changed:");
-      console.log("Old value: ");
-      console.log(changes[item].oldValue);
-      console.log("New value: ");
-      console.log(changes[item].newValue);
+    console.debug(`Changes for area '${area}' in: ${changedItems}`);
+    if (area === "sync") {
+        if (changedItems.includes("cblk_userpolicy")) {
+            newPolicy = changes["cblk_userpolicy"].newValue;
+            document.getElementById("nec_checkbox").checked = newPolicy[0];
+            document.getElementById("func_checkbox").checked = newPolicy[1];
+            document.getElementById("anal_checkbox").checked = newPolicy[2];
+            document.getElementById("advert_checkbox").checked = newPolicy[3];
+        } else if (changedItems.includes("cblk_exglobal")) {
+            emptyAndRestoreList(changes["cblk_exglobal"].newValue, "cblk_exglobal", "website_exceptions");
+        }
+    } else if (area === "local") {
+        if (changedItems.includes("cblk_debug")){
+            document.getElementById("nec_checkbox").checked = changes["cblk_debug"].newValue;
+        } else if (changedItems.includes("cblk_counter")) {
+            stats = changes["cblk_counter"].newValue;
+            setStaticLocaleText("num_necessary", "statsNecessary", stats[0]);
+            setStaticLocaleText("num_functional", "statsFunctional", stats[1]);
+            setStaticLocaleText("num_analytics", "statsAnalytics", stats[2]);
+            setStaticLocaleText("num_advertising", "statsAdvertising", stats[3]);
+            setStaticLocaleText("num_uncat", "statsWhitelist", stats[4]);
+        }
     }
 }
 browser.storage.onChanged.addListener(logStorageChange);

@@ -255,10 +255,12 @@ const enforcePolicy = async function (ckey, cookieDat){
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
         localStatsCounter[4] += 1;
+        //await setStatsCounter(localStatsCounter);
     } else {
         // classify the cookie
         let label = await classifyCookie(serializedCookie);
         localStatsCounter[label] += 1;
+        //await setStatsCounter(localStatsCounter);
 
         // make a decision
         let dstate = await getDebugState();
@@ -310,10 +312,12 @@ const cookieChangeListener = function(changeInfo) {
         if (globalExcepts.includes(ckDomain)) {
             console.debug(`Cookie found in domain whitelist: (${ckey})`);
             localStatsCounter[4] += 1;
+            //setStatsCounter(localStatsCounter);
         } else {
             // classify the cookie
-            let label = await classifyCookie(serializedCookie).then(() =>{});
+            let label = await classifyCookie(serializedCookie);
             localStatsCounter[label] += 1;
+            //setStatsCounter(localStatsCounter);
 
             // make a decision
             let dstate = await getDebugState();
@@ -345,7 +349,7 @@ const firstTimeSetup = function(details) {
  * @param {*} sendResponse response function
  */
 const handleInternalMessage = function(request, sender, sendResponse) {
-    console.debug(`Received a message from ${sender} : ` + request.classify_all)
+    console.debug("Background script received a message.")
     if (request.classify_all) {
         browser.cookies.getAll({}).then( (allCookies) => {
             for (let cookieDat of allCookies) {

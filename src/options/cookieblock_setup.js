@@ -78,27 +78,26 @@ const updateAndClassify = async function() {
     */
 }
 
-
 /**
  * Log the storage area that changed, then for each item changed,
  * log its old value and its new value.
  * @param {Object} changes Object containing the storage changes.
  * @param {String} area String for the storage area.
  */
- const logStorageChange = function(changes, area) {
-    console.log("Change in storage area: " + area);
-
+ const updateSelectionOnChange = function(changes, area) {
     let changedItems = Object.keys(changes);
+    if (area === "sync") {
+        if (changedItems.includes("cblk_userpolicy")) {
+            newPolicy = changes["cblk_userpolicy"].newValue;
+            document.getElementById("nec_checkbox").checked = newPolicy[0];
+            document.getElementById("func_checkbox").checked = newPolicy[1];
+            document.getElementById("anal_checkbox").checked = newPolicy[2];
+            document.getElementById("advert_checkbox").checked = newPolicy[3];
 
-    for (let item of changedItems) {
-      console.log(item + " has changed:");
-      console.log("Old value: ");
-      console.log(changes[item].oldValue);
-      console.log("New value: ");
-      console.log(changes[item].newValue);
+        }
     }
 }
-browser.storage.onChanged.addListener(logStorageChange);
+browser.storage.onChanged.addListener(updateSelectionOnChange);
 
 /**
  * Helper for adding click listeners.
