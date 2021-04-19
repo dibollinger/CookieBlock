@@ -1,6 +1,9 @@
 // Author: Dino Bollinger
 // License: MIT
 
+const isReleaseVersion = true;
+
+
 /**
  * Set the debug status toggle.
  * @param {Boolean} dstate current state

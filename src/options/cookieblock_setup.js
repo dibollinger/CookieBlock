@@ -57,6 +57,9 @@ const setupInitPage = async function() {
 
     let debugState = await getDebugState();
     document.getElementById("debug_checkbox").checked = debugState;
+
+    // Debug stuff
+    document.getElementById("debug-div").hidden = isReleaseVersion;
 }
 
 /**
