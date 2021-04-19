@@ -71,55 +71,61 @@
         </fieldset>
     </div>
     <hr class="thick">
-    <div class="settings_group">
-        <fieldset>
-        <legend id="fheader_title"></legend>
-        <div id="fheader_desc" class="overview_description"></div>
-        <ul id="functional_exceptions" class=rulelist></ul>
-        <input id="func_excepts_input" type="text">
-        <button id="func_excepts_submit" type="submit"></button>
-        </fieldset>
+
+    <!-- Per Category Exceptions Disabled for now-->
+    <div hidden>
+        <div class="settings_group">
+            <fieldset>
+            <legend id="fheader_title"></legend>
+            <div id="fheader_desc" class="overview_description"></div>
+            <ul id="functional_exceptions" class=rulelist></ul>
+            <input id="func_excepts_input" type="text">
+            <button id="func_excepts_submit" type="submit"></button>
+            </fieldset>
+        </div>
+        <hr class="thick">
+
+        <div class="settings_group">
+            <fieldset>
+            <legend id="anheader_title"></legend>
+            <div id="anheader_desc" class="overview_description"></div>
+            <ul id="analytics_exceptions" class=rulelist></ul>
+            <input id="analytics_excepts_input" type="text">
+            <button id="analytics_excepts_submit" type="submit"></button>
+            </fieldset>
+        </div>
+        <hr class="thick">
+
+        <div class="settings_group">
+            <fieldset>
+            <legend id="adheader_title"></legend>
+            <div id="adheader_desc" class="overview_description"></div>
+            <ul id="advertising_exceptions" class=rulelist></ul>
+            <input id="advert_excepts_input" type="text">
+            <button id="advert_excepts_submit" type="submit"></button>
+            </fieldset>
+        </div>
+        <hr class="thick">
     </div>
 
-    <hr class="thick">
-    <div class="settings_group">
-        <fieldset>
-        <legend id="anheader_title"></legend>
-        <div id="anheader_desc" class="overview_description"></div>
-        <ul id="analytics_exceptions" class=rulelist></ul>
-        <input id="analytics_excepts_input" type="text">
-        <button id="analytics_excepts_submit" type="submit"></button>
-        </fieldset>
+    <!-- Statistics, will be replaced by a better system later -->
+    <div>
+        <div class="settings_group">
+            <fieldset>
+            <legend id="stats_title">Category Statistics</legend>
+            <div id="stats_desc" class="overview_description">Number of cookies that were classified, separated by category:</div>
+            <ul class="nexcepts">
+                <li> <div id="num_necessary" class="stat_text"></div> </li>
+                <li> <div id="num_functional" class="stat_text"></div> </li>
+                <li> <div id="num_analytics" class="stat_text"></div> </li>
+                <li> <div id="num_advertising" class="stat_text"></div> </li>
+                <li> <div id="num_uncat" class="stat_text"></div> </li>
+            </ul>
+            </fieldset>
+        </div>
     </div>
 
-    <hr class="thick">
-    <div class="settings_group">
-        <fieldset>
-        <legend id="adheader_title"></legend>
-        <div id="adheader_desc" class="overview_description"></div>
-        <ul id="advertising_exceptions" class=rulelist></ul>
-        <input id="advert_excepts_input" type="text">
-        <button id="advert_excepts_submit" type="submit"></button>
-        </fieldset>
-    </div>
-
-    <hr class="thick">
-    <div class="settings_group">
-        <fieldset>
-        <legend id="stats_title">Category Statistics</legend>
-        <div id="stats_desc" class="overview_description">Number of cookies that were classified, separated by category:</div>
-        <ul class="nexcepts">
-            <li> <div id="num_necessary" class="stat_text"></div> </li>
-            <li> <div id="num_functional" class="stat_text"></div> </li>
-            <li> <div id="num_analytics" class="stat_text"></div> </li>
-            <li> <div id="num_advertising" class="stat_text"></div> </li>
-            <li> <div id="num_uncat" class="stat_text"></div> </li>
-        </ul>
-        </fieldset>
-    </div>
-
-
-    <script type="text/javascript" src="../modules/utils.js"></script>
+    <script type="text/javascript" src="../modules/globals.js"></script>
     <script type="text/javascript" src="cookieblock_options.js"></script>
 
     </div>

@@ -185,6 +185,8 @@ const setupSettingsPage = async function() {
         document.getElementById("num_advertising").textContent = browser.i18n.getMessage("statsAdvertising", stats[3]);
         document.getElementById("num_uncat").textContent = browser.i18n.getMessage("statsWhitelist", stats[4]);
     });
+
+
 }
 
 
