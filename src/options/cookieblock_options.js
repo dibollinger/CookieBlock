@@ -269,3 +269,23 @@ document.querySelector("#advert_excepts_submit").addEventListener("click", (e) =
     e.preventDefault();
     handleExceptionSubmit("#advert_excepts_input", "cblk_exadvert", "advertising_exceptions");
 });
+
+
+/**
+ * Helper function for setting up enter events on the text input fields.
+ * @param {String} inputFieldID Identity of the input field.
+ * @param {String} buttonID Identity of the button to click.
+ */
+const addEnterListener = function(inputFieldID, buttonID) {
+    document.getElementById(inputFieldID).addEventListener("keydown", function(event) {
+        if (!event.repeat && event.key === "Enter") {
+            event.preventDefault();
+            document.getElementById(buttonID).click();
+        }
+    });
+}
+
+addEnterListener("website_excepts_input", "website_excepts_submit");
+addEnterListener("func_excepts_input", "func_excepts_submit");
+addEnterListener("analytics_excepts_input", "analytics_excepts_submit");
+addEnterListener("advert_excepts_input", "advert_excepts_submit");
