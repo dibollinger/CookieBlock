@@ -10,57 +10,51 @@
 <div class="header">
     <img src="/icons/cookieblock-128.png">
     <div class="title">
-        <h1>CookieBlock</h1>
-        <h2>First Time Setup</h2>
+        <h1 id="init_title"></h1>
+        <h2 id="init_subtitle"></h2>
     </div>
 </div>
 
 <div class="contents">
     <div class="description">
-        <div style="font-size: 1.75em; font-weight: bold;">Thank you for installing CookieBlock!</div>
-        <div class="overview_description">
-                CookieBlock automatically sorts cookies into different consent purposes.
-                Please select which types of cookies you would like to prevent from being stored in your browser.
-                This can be changed at any time by opening the extension settings page.</div>
+        <div id="setup_greet" style="font-size: 1.75em; font-weight: bold;"></div>
+        <div id="setup_desc" class="overview_description"></div>
     </div>
-    <hr class="thick">
-    <div id="settings_group">
+    <hr class="thin">
+    <div class="settings_group">
         <fieldset class="preference_form">
+            <legend id="cprefs_legend" style="margin-top: .75em;"></legend>
+            <div id="cprefs_desc" class="overview_description"></div>
+
             <input id="nec_checkbox" type="checkbox" class="checkbox disabled" disabled checked>
-            <label for="nec_checkbox" class="catname">Strictly Necessary Cookies</label>
-            <br>
-            <div class=class_desc> This category includes cookies that are typically required for essential services to operate.
-                Deleting these may cause websites to break.</div>
-            <br>
+            <label id="nec_title" for="nec_checkbox" class="catname"></label>
+            <div id="nec_desc" class=class_desc></div>
+            <hr class="thin">
+
+
             <input id="func_checkbox" type="checkbox" class="checkbox" checked>
-            <label for="func_checkbox" class="catname">Functionality Cookies</label>
-            <br>
-            <div class=class_desc> Functionality cookies usually serve to remember user preferences, such as language or website style,
-                or enable non-essential functionality which can improve the user experience. Such cookies are usually
-                persistent to keep settings stored across multiple browsing sessions. </div>
-            <br>
+            <label id="func_title" for="func_checkbox" class="catname"></label>
+            <div id="func_desc" class=class_desc></div>
+            <hr class="thin">
+
+
             <input id="anal_checkbox" type="checkbox" class="checkbox">
-            <label for="anal_checkbox" class="catname">Performance/Analytics Cookies</label>
-            <br>
-            <div class=class_desc>Analytics cookies serve to collect statistical information about how visitors use
-                the current website. This is generally used to measure the website performance, and to improve the service.
-                Measurements include page visits, bounce rate, dwell time and more. Under normal circumstances, the
-                collected data should not contain sensitive information that could identify the user.
-                </div>
-            <br>
+            <label id="anal_title" for="anal_checkbox" class="catname"></label>
+            <div id="anal_desc" class=class_desc></div>
+            <hr class="thin">
+
+
             <input id="advert_checkbox" type="checkbox" class="checkbox">
-            <label for="advert_checkbox" class="catname">Advertising/Tracking Cookies</label>
-            <br>
-            <div class=class_desc> Advertising cookies track visitors across multiple websites and collect sensitive,
-                personally identifiable information. The goal is to display optimized advertisements that best match
-                the personal interests of the users, or to sell the data that has been collected to other interested
-                parties. </div>
-            <br>
+            <label id="advert_title" for="advert_checkbox" class="catname"></label>
+            <div id="advert_desc" class=class_desc></div>
+            <hr class="thin">
+
+
             <input id="debug_checkbox" type="checkbox" class="checkbox">
-            <label for="debug_checkbox" class="catname">Enable Debug Mode</label>
-            <div class="class_desc">Debug mode will disable cookie removal and enable debug output in the browser console. Only used for testing purposes.</div>
+            <label id="debug_title" for="debug_checkbox" class="catname"></label>
+            <div id="debug_desc" class="class_desc"></div>
             <div class="submit_field">
-                <button id="set_policy" type="submit">Define Policy and Close</button>
+                <button id="set_policy" type="submit"></button>
             </div>
         </fieldset>
     </div>

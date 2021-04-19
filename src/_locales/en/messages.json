@@ -25,8 +25,13 @@
   },
 
   "firstTimeDesc": {
-    "message": "CookieBlock attempts to automatically enforce your cookie consent preferences on all websites you visit. This is done through the user of a pre-trained machine learning classifier. Please select the categories you consent towards.",
+    "message": "CookieBlock attempts to automatically enforce your cookie consent preferences on all websites you visit. This is done through the user of a pre-trained machine learning classifier.",
     "description": "Description seen on the first time setup page."
+  },
+
+  "consentDescription" : {
+    "message" : "Select the types of cookies that you would like websites to be able to set.",
+    "description" : "Description of the consent choices."
   },
 
   "catNecessaryTitle": {

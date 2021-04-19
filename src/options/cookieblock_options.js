@@ -95,7 +95,7 @@ const setupLocalization = function () {
 
     // Consent Preference Text
     setLocText("cprefs_legend", "optionsHeaderConsent");
-    setLocText("cprefs_desc","firstTimeDesc");
+    setLocText("cprefs_desc","consentDescription");
     setLocText("nec_title","catNecessaryTitle");
     setLocText("nec_desc","catNecessaryDesc");
     setLocText("func_title","catFunctionalityTitle");
