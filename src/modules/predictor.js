@@ -24,11 +24,11 @@ const traverseDecisionTree = async function(treeNode, features){
     } else {
         let fidx = treeNode["f"];
         if (!(fidx in features)) {
-            return await traverseDecisionTree(treeNode[treeNode["u"]], features);
+            return traverseDecisionTree(treeNode[treeNode["u"]], features);
         } else if (features[fidx] < treeNode["c"]) {
-            return await traverseDecisionTree(treeNode["l"], features);
+            return traverseDecisionTree(treeNode["l"], features);
         } else {
-            return await traverseDecisionTree(treeNode["r"], features);
+            return traverseDecisionTree(treeNode["r"], features);
         }
     }
 }
@@ -40,8 +40,7 @@ const traverseDecisionTree = async function(treeNode, features){
  * @returns {Promise<Number>}  Total score for the forest.
  */
 const getForestScore = async function(forest, features) {
-    let treeScorePromises = forest.map((root) => traverseDecisionTree(root, features));
-    let treeScores = await Promise.all(treeScorePromises);
+    let treeScores = forest.map((root) => traverseDecisionTree(root, features));
     return treeScores.reduce((total, nv) => {return total + nv}, 0);
 }
 
