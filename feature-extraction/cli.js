@@ -2,59 +2,135 @@
 // Author: Dino Bollinger
 // MIT License
 
-// This command line script can either perform feature extraction, which is necessary to
-// produce a new model for the extension or it can perform predictions on a validation set
-// to gain validation statistics.
+/**
+ * This command line script can either perform feature extraction, which is necessary to
+ * produce a new model for the extension or it can perform predictions on a validation set
+ * to gain validation statistics.
+ */
 
 let fs = require('fs');
 let utils = require("./modules/utils.js");
 let extractor = require("./modules/feature_extraction.js");
 let predictor = require("./modules/predictor.js");
+let process = require('process');
 
 const skippedNamesRegex = new RegExp("(OptanonConsent|CookieConsent)");
 
-// get arguments (I have no idea why the syntax is like this, don't ask me)
+const sparseMatrixPath = "./outputs/processed.libsvm";
+const classWeightPath = "./outputs/class_weights.txt";
+const predictionLogPath = "./outputs/prediction_stats.log";
+const featureMapPath = "./outputs/feature_map.txt";
+
+
+/**
+ * Write the feature map to disk
+ */
+const writeFeatureMapOutput = function(fconfig) {
+    let feat_cnt = 0;
+
+    // feature extraction for per-cookie features
+    for (let entry of fconfig["per_cookie_features"]) {
+        if (entry["enabled"]) {
+            for (let i = 0; i < entry["vector_size"]; i++) {
+                fs.appendFileSync(featureMapPath, `${feat_cnt + i} ${entry["name"]}-${i} i\n`);
+            }
+        feat_cnt += entry["vector_size"];
+        }
+    }
+
+    // feature extraction for per-update features
+    for (let entry of fconfig["per_update_features"]) {
+        if (entry["enabled"]) {
+            for (let u = 0; u < fconfig["num_updates"]; u++){
+                for (let i = 0; i < entry["vector_size"]; i++) {
+                    fs.appendFileSync(featureMapPath, `${feat_cnt + i} update_${u}_${entry["name"]}-${i} i\n`);
+                }
+                feat_cnt += entry["vector_size"];
+            }
+        }
+    }
+
+    // feature extraction for per-diff features
+    for (const entry of fconfig["per_diff_features"]) {
+        if (entry["enabled"]) {
+            for (let u = 0; u < fconfig["num_updates"] - 1; u++){
+                for (let i = 0; i < entry["vector_size"]; i++) {
+                    fs.appendFileSync(featureMapPath, `${feat_cnt + i} diff_${u}_${entry["name"]}-${i} i\n`);
+                }
+                feat_cnt += entry["vector_size"];
+            }
+        }
+    }
+    console.info("Feature map written to path: " + featureMapPath);
+}
+
+
+
+// retrieve cmdline arguments
 const [,, ... args] = process.argv;
 
-const featurePath = "./outputs/processed.libsvm"
-const weightPath = "./outputs/class_weights.txt"
-const predictionLogPath = "./outputs/prediction_stats.log"
 
 if (args[0] === "extract"){
+
+    console.info("Feature extraction mode selected.")
+
     // Load the feature extraction datasets
-    // TODO: Output feature map
     let datasets = [];
     let ctr = 0;
 
-    // POINT THESE TOWARDS THE TRAINING DATA JSON FILES
-    // TODO: Command line input
-    utils.getLocalData("CHANGEME", "json", (r) => datasets.push(r));
-    utils.getLocalData("CHANGEME", "json", (r) => datasets.push(r));
+    // Check if at least second argument present
+    if (args.length < 2) {
+        console.error("Not enough arguments passed. Need path to at least 1 training data json file.");
+        process.exit(1);
+    }
 
-    // Overwrite old file
-    fs.writeFileSync(featurePath, "");
-    fs.writeFileSync(weightPath, "");
+    // Read input JSON training data files
+    let readStatus;
+    json_filepaths = args.slice(1);
+    for (let jspath of json_filepaths) {
+        console.info("Reading data from input json document at: " + jspath)
+        readStatus = utils.getLocalData(jspath, "json", (r) => datasets.push(r));
+        if (readStatus) {
+            console.error(`Failed to read file at: '${jspath}'`);
+            process.exit(1);
+        }
+    }
+    console.info("Input parsing completed.")
 
-    // First compute the class weights
-    let labelCounts = [0,0,0,0]
+    // Overwrite old output files
+    console.info("Clearing old outputs.")
+    fs.writeFileSync(sparseMatrixPath, "");
+    fs.writeFileSync(classWeightPath, "");
+    fs.writeFileSync(featureMapPath, "");
+
+    // create the feature map file
+    console.info("Writing feature map...")
+    utils.getLocalData("data/features.json", "json", writeFeatureMapOutput);
+
+    console.info("Writing class weight file...")
+    // first compute the class weights
+    let labelCounts = [0,0,0,0];
     for (let d of datasets) {
-        for (const [cookieKey, cookieValue] of Object.entries(d)) {
+        for (let [cookieKey, cookieValue] of Object.entries(d)) {
             let categoryLabel = Number.parseInt(cookieValue["label"]);
             labelCounts[categoryLabel] += 1;
         }
     }
+
     let totalCount = labelCounts.reduce((p,c) => p + c, 0)
     let classWeights = labelCounts.map((v) => totalCount / v)
     for (let c of classWeights){
-        fs.appendFileSync(weightPath, c + "\n")
+        fs.appendFileSync(classWeightPath, c + "\n")
     }
+    console.info("Class weights written to path: " + classWeightPath);
 
+    console.info("Performing feature extraction...")
     for (let d of datasets) {
-        // Then extract the features
         for (const [cookieKey, cookieValue] of Object.entries(d)) {
 
             let categoryLabel = Number.parseInt(cookieValue["label"]);
-            // Make sure we only consider desired labels
+
+            // Skip labels that aren't useful
             if (categoryLabel < 0 || categoryLabel > 3) {
                 continue;
             }
@@ -64,36 +140,47 @@ if (args[0] === "extract"){
                 continue
             }
 
+            // extract features for this cookie
             let features = extractor.extractFeatures(cookieValue);
 
-            let outputLine = `${cookieValue["label"]}`;
+            let outputLine = `${categoryLabel}`;
             for (let [idx, val] of Object.entries(features)){
                 outputLine = `${outputLine} ${idx}:${val}`;
             }
             outputLine += "\n";
-            fs.appendFileSync(featurePath, outputLine);
+            fs.appendFileSync(sparseMatrixPath, outputLine);
 
             ctr++;
             if (ctr % 1000 == 0){
                 console.log(`Completed: ${ctr}`)
             }
+
         }
     }
+    console.info("Features written to path: " + sparseMatrixPath);
 } else if (args[0] === "predict") {
+
     // Get validation stats
-    let validationLibSVM = undefined;
+    let validationLibSVM;
     let validationTransformed = [];
     let trueLabels = [];
+
+    // Check if at least second argument present
+    if (args.length < 2) {
+        console.error("Not enough arguments passed. Requires path to the validation LIBSVM file.");
+        process.exit(1);
+    }
+
+    // Overwrite old output file
     fs.writeFileSync(predictionLogPath, "");
 
-    // EDIT ME: NEED TO PROVIDE PATH TO THE VALIDATION LIBSVM FILE, AS OUTPUT BY XGBOOST
-    // TODO: Change to command line input
-    utils.getLocalData("CHANGEME", "text", (r) => validationLibSVM = r);
+    // Sequential callback
+    console.info("Loading validation LibSVM");
+    utils.getLocalData(args[1], "text", (r) => { validationLibSVM = r; });
+
     let lines = validationLibSVM.split("\n");
     for (let l of lines){
-        if (!l) {
-            continue;
-        }
+        if (!l) continue;
         validEntry = {};
         let tokens = l.split(" ");
         trueLabels.push(tokens[0]);
@@ -103,18 +190,21 @@ if (args[0] === "extract"){
         }
         validationTransformed.push(validEntry);
     }
+    console.info("Validation data loaded.");
 
+    console.info("Computing predictions...");
     let predictedLabels = [];
     for (let j = 0; j < validationTransformed.length; j++) {
         let label = predictor.predictClass(validationTransformed[j]);
         predictedLabels.push(label);
         if (j % 1000 == 0)
-            console.log("Progress: " + j + "/" + validationTransformed.length)
+            console.info("Progress: " + j + "/" + validationTransformed.length)
     }
+    console.info("Predictions complete.");
 
     console.assert((trueLabels.length == predictedLabels.length),
                     "Number of true labels %d did not match number of predicted labels %d!",
-                        trueLabels.length, predictedLabels.length);
+                    trueLabels.length, predictedLabels.length);
 
 
     let rightCount = 0;
@@ -150,17 +240,17 @@ if (args[0] === "extract"){
         f1ScoreVector[i] = 2 * ((precisionVector[i] * recallVector[i]) / (precisionVector[i] + recallVector[i]));
     }
 
-    console.log("Confusion Matrix:")
-    console.log(confusionMatrix)
+    console.info("Confusion Matrix:")
+    console.info(confusionMatrix)
 
-    console.log("Accuracy: " + (100 * (rightCount / (rightCount + wrongCount))) + "%")
+    console.info("Accuracy: " + (100 * (rightCount / (rightCount + wrongCount))) + "%")
 
-    console.log("Precision:")
-    console.log(precisionVector)
-    console.log("Recall:")
-    console.log(recallVector)
-    console.log("F1 Score:")
-    console.log(f1ScoreVector)
+    console.info("Precision:")
+    console.info(precisionVector)
+    console.info("Recall:")
+    console.info(recallVector)
+    console.info("F1 Score:")
+    console.info(f1ScoreVector)
     fs.appendFileSync(predictionLogPath, "Confusion Matrix:\n");
     fs.appendFileSync(predictionLogPath, confusionMatrix[0] + "\n");
     fs.appendFileSync(predictionLogPath, confusionMatrix[1] + "\n");
@@ -174,5 +264,5 @@ if (args[0] === "extract"){
     fs.appendFileSync(predictionLogPath, "F1 Score: \n");
     fs.appendFileSync(predictionLogPath, f1ScoreVector + "\n");
 } else {
-    console.error("Valid arguments: 'extract' | 'predict'")
+    console.info("Usage: cli.js (extract <json>... | predict <validation_file>)")
 }

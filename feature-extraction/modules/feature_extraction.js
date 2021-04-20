@@ -6,8 +6,6 @@ var difflib = require('difflib');
 var levenshtein = require('levenshtein');
 var lz_string = require('lz-string');
 
-/** Global Variables */
-
 // Loaded in from a JSON file, stores the configuration on which features to extract from a cookie
 var feature_config;
 
@@ -41,10 +39,6 @@ const patternAlpha3DaysEng = new RegExp("(Mon|Tue|Wed|Thu|Fri|Sat|Sun)", 'i');
 const patternAlpha3MonthsEng = new RegExp("(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)", 'i');
 const patternFullDaysEng = new RegExp("(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)", 'i');
 const patternFullMonthsEng = new RegExp("(January|February|March|April|May|June|July|August|September|October|November|December)", 'i');
-
-
-/* Utility functions */
-
 
 /**
  * Takes a URL or a domain string and transforms it into a uniform format.
@@ -320,9 +314,6 @@ const setupFeatureResourcesCallback = function(fconfig) {
 
 // retrieve the configuration
 utils.getLocalData("data/features.json", "json", setupFeatureResourcesCallback);
-
-
-/* Feature Extraction Functions */
 
 // Features extracted for each unique cookie
 const perCookieFeatures = {

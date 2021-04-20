@@ -11,18 +11,22 @@ let fs = require('fs');
 * @param {Function} callback   Callback function that will be executed as soon as the data is available, receives data as first argument.
 */
 const getLocalData = function(url, dtype, callback) {
-    if (dtype === "json"){
-        let raw_data = fs.readFileSync(url);
-        let json_dat = JSON.parse(raw_data);
-        callback(json_dat);
-    } else if (dtype === "text"){
-        let text_data = fs.readFileSync(url, "utf-8");
-        callback(text_data);
-    } else{
-        let raw_data = fs.readFileSync(url);
-        callback(raw_data);
+    let read_data;
+    try {
+        if (dtype === "json"){
+            let raw_data = fs.readFileSync(url);
+            read_data = JSON.parse(raw_data);
+        } else if (dtype === "text"){
+            read_data = fs.readFileSync(url, "utf-8");
+        } else{
+            read_data = fs.readFileSync(url);
+        }
+        callback(read_data);
+    } catch (err) {
+        console.error(err.message);
+        return 1;
     }
-
+    return 0;
 };
 
 

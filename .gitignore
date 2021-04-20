@@ -7,3 +7,4 @@ feature-extraction/node_modules/*
 feature-extraction/outputs/class_weights.txt
 feature-extraction/outputs/prediction_stats.log
 feature-extraction/outputs/processed.libsvm
+feature-extraction/outputs/feature_map.txt
