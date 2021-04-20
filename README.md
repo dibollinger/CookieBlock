@@ -23,7 +23,7 @@ Note that CookieBlock does not handle the cookie banner itself. In order to remo
 
 ## Repository Contents
 
-* `feature-extraction/`:  Contains the NodeJS feature extractor. Used to extract features with the same JavaScript code as the extension.
+* `nodejs-feature-extractor/`:  Contains the NodeJS feature extractor. Used to extract features with the same JavaScript code as the extension.
     - `/data/`: Contains the feature configuration, external resources used with the feature extraction, trained models for prediction, and training and validation data folders.
     - `/modules/`: Contains code modules used to perform the feature extraction and prediction.
     - `/outputs/`: Output directory for the feature extraction.
@@ -76,7 +76,7 @@ __Related Repositories:__
 * Prototype Crawler: https://github.com/dibollinger/CookieBlock-Crawler-Prototype
 * Final Crawler: https://github.com/dibollinger/CookieBlock-Consent-Crawler
 * Cookie Classifier: https://github.com/dibollinger/CookieBlock-Consent-Classifier
-* Violation Detection & More: https://github.com/dibollinger/CookieBlock-Other-Scripts 
+* Violation Detection & More: https://github.com/dibollinger/CookieBlock-Other-Scripts
 * Collected Data: https://drive.google.com/drive/folders/1P2ikGlnb3Kbb-FhxrGYUPvGpvHeHy5ao
 
 __Thesis Supervision and Assistance:__
