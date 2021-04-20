@@ -39,9 +39,9 @@ const patternFullMonthsEng = new RegExp("(January|February|March|April|May|June|
 /**
  * Checks if given flag (by key) differs between cookie updates.
  * If so, return True, else False. May iterate over all updates.
- * @param {*} cookieUpdates    Cookie update array
- * @param {*} flag             Key for the flag to check between updates
- * @return                     True if differs between at least 1 update.
+ * @param {Array} cookieUpdates    Cookie update array
+ * @param {String} flag            Key for the flag to check between updates
+ * @return                         True if differs between at least 1 update.
  */
 const checkFlagChanged = function(cookieUpdates, flag) {
     for (let i = 0; i < cookieUpdates.length - 1; i++) {

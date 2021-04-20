@@ -1,5 +1,6 @@
 {
   "num_updates": 1,
+  "num_diffs": 1,
   "per_cookie_features":
   [
     {
@@ -336,7 +337,7 @@
       "enabled": true,
       "vector_size": 1,
       "args": {
-        "min_seps": 3
+        "min_seps": 2
       }
     },
     {
@@ -380,7 +381,7 @@
       "desc": "Binary Vector. Check if the cookie content is CSV separated, and if so, check if the columns contain numerical, hexadecimal, alphabetical or alphanumerical entries.",
       "function": "feature_csv_content",
       "enabled": true,
-      "vector_size": 6,
+      "vector_size": 5,
       "args": {
         "min_seps": 2
       }
@@ -390,7 +391,7 @@
       "desc": "Binary Vector. Check if the cookie content is a json/javascript object, and check if the elements contain a range of different types of content. \n Includes: Alphabetical, Alphanumerical, hexadecimal, numerical content, 'id' strings, empty content, boolean subobject and lists. Note: does not recursively check subobjects and lists yet.",
       "function": "feature_js_content",
       "enabled": true,
-      "vector_size": 12,
+      "vector_size": 11,
       "args": {}
     },
     {
@@ -458,14 +459,6 @@
       "args": {}
     },
     {
-      "name": "locale_content",
-      "desc": "Binary Feature. Set to 1 if the cookie content is a country, language or currency identifier. Unfortunately, does not check whether it contains such an identifier, due to the large number of tokens.",
-      "function": "feature_locale_term",
-      "enabled": true,
-      "vector_size": 1,
-      "args": {}
-    },
-    {
       "name": "timestamp_content",
       "desc": "Binary Feature. Set to 1 if the cookie contains a Unix timestamp (second or millisecond) anywhere inside the string.",
       "function": "feature_timestamp_content",
@@ -504,7 +497,7 @@
       "name": "time_difference",
       "desc": "Ordinal Feature. Compute the expiration time difference in seconds between updates.",
       "function": "feature_time_diff",
-      "enabled": false,
+      "enabled": true,
       "vector_size": 1,
       "args": {}
     },
@@ -512,7 +505,7 @@
       "name": "gestalt_similarity",
       "desc": "Ordinal Feature. Compute the ratio of similarity between consecutive cookie updates based on Gestalt-Pattern matching. \n NOTE: might not be available for the extension.",
       "function": "feature_gestalt_pattern_ratio",
-      "enabled": false,
+      "enabled": true,
       "vector_size": 1,
       "args": {}
     },
@@ -520,7 +513,7 @@
       "name": "lev_distance",
       "desc": "Ordinal Feature. Compute the Levenshtein Distance between consecutive cookie updates.",
       "function": "feature_levenshtein_dist",
-      "enabled": false,
+      "enabled": true,
       "vector_size": 1,
       "args": {}
     }

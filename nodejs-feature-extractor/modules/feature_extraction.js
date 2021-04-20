@@ -5,6 +5,7 @@ let utils = require('./utils.js');
 var difflib = require('difflib');
 var levenshtein = require('levenshtein');
 var lz_string = require('lz-string');
+var atob = require('atob');
 
 // Loaded in from a JSON file, stores the configuration on which features to extract from a cookie
 var feature_config;
@@ -23,13 +24,16 @@ const numRegex = new RegExp("^[0-9]+$");
 const hexRegex = new RegExp("^[0-9A-Fa-f]+$")
 const alnumRegex = new RegExp("^[A-Za-z0-9]+$");
 const idRegex = new RegExp("(id|ident)", 'i');
-const truthValueRegex = new RegExp("\b(true|false|yes|no|0|1|on|off)\b", 'i');
+const truthValueRegex = new RegExp("\\b(true|false|yes|no|0|1|on|off)\\b", 'i');
 const codeIdentRegex = new RegExp("^[A-Za-z0-9_]+$", 'i');
 const alphaAnyRegex = new RegExp("[A-Za-z]");
-const unixTimestampRegex = new RegExp("16[0-9]{8}([0-9]{3})?");
 const uuidRegex = new RegExp("[0-9a-f]{8}-[0-9a-f]{4}-([0-9a-f])[0-9a-f]{3}-[0-9a-f]{4}-[0-9a-f]{12}", 'i');
 const httpRegex = new RegExp("http(s)?://.*\.");
 const wwwRegex  = new RegExp("www(2-9)?\..*\.");
+
+// Recognize Unix timestamps around range of collection
+let _tsd = parseInt(`${Date.now()}`.slice(0,2));
+const unixTimestampRegex = new RegExp(`\\b(${_tsd-1}|${_tsd}|${_tsd+1})[0-9]{8}([0-9]{3})?\\b`);
 
 // Date related Feature Extraction patterns
 const patternYearMonthDay = new RegExp("(19[7-9][0-9]|20[0-3][0-9]|[0-9][0-9])-[01][0-9]-[0-3][0-9]");
@@ -58,9 +62,9 @@ const urlToUniformDomain = function(url) {
 /**
  * Checks if given flag (by key) differs between cookie updates.
  * If so, return True, else False. May iterate over all updates.
- * @param {*} cookieUpdates    Cookie update array
- * @param {*} flag             Key for the flag to check between updates
- * @return                     True if differs between at least 1 update.
+ * @param {Array} cookieUpdates    Cookie update array
+ * @param {String} flag            Key for the flag to check between updates
+ * @return                         True if differs between at least 1 update.
  */
 const checkFlagChanged = function(cookieUpdates, flag) {
     for (let i = 0; i < cookieUpdates.length - 1; i++) {
@@ -68,15 +72,6 @@ const checkFlagChanged = function(cookieUpdates, flag) {
             return true;
     }
     return false;
-}
-
-/**
- * Get string size in bytes
- * @param {String} str  String to convert
- * @return {Number}     Num bytes of string.
- */
-const getStringSizeInBytes = function(str) {
-    return (new TextEncoder().encode(str)).length;
 }
 
 /**
@@ -169,20 +164,6 @@ const maybeRemoveURLEncoding = function(str) {
 
 
 /**
- * Returns true if the given string is potentially a locale string, such as "en-US" or "fr".
- * @param {String} str     String to check for locale structure.
- * @return {Boolean}       True if potentially a locale, false otherwise.
- */
-const maybeLocaleString = function(str) {
-    try {
-        Intl.getCanonicalLocales(str);
-    } catch (err) {
-        return false;
-    }
-    return true;
-}
-
-/**
  * Check if the given cookie content contains a date string
  * @param {String} cookieContent   Cookie content with URL encoding removed
  * @return {Boolean}               True if the content contains a date string.
@@ -192,11 +173,8 @@ const maybeDateContent = function(cookieContent) {
             || patternDayMonthYear.test(cookieContent)
             || patternMonthDayYear.test(cookieContent)
             || ((patternAlpha3DaysEng.test(cookieContent) || patternFullDaysEng.test(cookieContent))
-            && (patternAlpha3MonthsEng.test(cookieContent) || patternFullMonthsEng.test(cookieContent)))
+                && (patternAlpha3MonthsEng.test(cookieContent) || patternFullMonthsEng.test(cookieContent)))
 }
-
-
-/* SETUP FUNCTIONS */
 
 
 // Stores all the feature setup functions. These initialize the objects for the above variables.
@@ -257,7 +235,7 @@ const setupFunctions = {
             for (let i = 0; i < Math.min(lines.length, vector_size); i++) {
                 let l = lines[i];
                 if (lines[i]) {
-                    content_terms.push(new RegExp(l.split(',')[1]));
+                    content_terms.push(new RegExp(l.split(',')[1], 'i'));
                 }
             }
         });
@@ -324,8 +302,8 @@ const perCookieFeatures = {
         }
     },
     "feature_top_domains": (sparse, curr_idx, cookie_data, args) => {
-        if (cookie_data["domain"] in top_domains) {
-            let transf_domain = urlToUniformDomain(cookie_data["domain"]);
+        let transf_domain = urlToUniformDomain(cookie_data["domain"]);
+        if (transf_domain in top_domains) {
             let rank = top_domains[transf_domain];
             sparse[curr_idx + rank] = 1.0;
         }
@@ -428,7 +406,7 @@ const perCookieFeatures = {
         let cookieUpdates = cookie_data["variable_data"];
         for (let i = 0; i < cookieUpdates.length; i++) {
             let decodedValue = maybeRemoveURLEncoding(cookieUpdates[i]["value"]);
-            contentLengths.push(getStringSizeInBytes(decodedValue));
+            contentLengths.push(decodedValue.length);
         }
 
         let result = computeMeanAndStdev(contentLengths)
@@ -441,8 +419,9 @@ const perCookieFeatures = {
         let values = [];
         let cookieUpdates = cookie_data["variable_data"];
         for (let i = 0; i < cookieUpdates.length; i++) {
-            let compressed = lz_string.compressToUTF16(cookieUpdates[i]["value"]);
-            values.push(getStringSizeInBytes(compressed));
+            let decodedValue = maybeRemoveURLEncoding(cookieUpdates[i]["value"]);
+            let compressed = lz_string.compressToUTF16(decodedValue);
+            values.push(compressed.length);
         }
 
         let result = computeMeanAndStdev(values)
@@ -565,14 +544,14 @@ const perUpdateFeatures = {
     },
     "feature_content_length": (sparse, curr_idx, var_data, args) => {
         let decodedValue = maybeRemoveURLEncoding(var_data["value"]);
-        sparse[curr_idx] = getStringSizeInBytes(decodedValue);
+        sparse[curr_idx] = decodedValue.length;
     },
     "feature_compressed_content": (sparse, curr_idx, var_data, args) => {
         let compressed = lz_string.compress(var_data["value"]);
-        let compSize = getStringSizeInBytes(compressed);
+        let compSize = compressed.length;
 
         sparse[curr_idx] = compSize;
-        let reduction = getStringSizeInBytes(var_data["value"]) - compSize;
+        let reduction = var_data["value"].length - compSize;
         sparse[curr_idx + 1] = reduction;
     },
     "feature_shannon_entropy": (sparse, curr_idx, var_data, args) => {
@@ -631,9 +610,7 @@ const perUpdateFeatures = {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
 
         for (let i = 0; i < content_terms.length; i++){
-            if (content_terms[i].test(cookieContent)) {
-                sparse[curr_idx + i] = 1.0;
-            }
+            sparse[curr_idx + i] = content_terms[i].test(cookieContent) ? 1.0 : -1.0;
         }
     },
     "feature_csv_content": (sparse, curr_idx, var_data, args) => {
@@ -645,7 +622,6 @@ const perUpdateFeatures = {
         let containsAlpha = false;
         let containsAlnum = false;
         let containsHex = false;
-        let containsLocale = false;
 
         if (result["sep"]) {
             let csv_split = cookieContent.split(result["sep"]);
@@ -655,7 +631,6 @@ const perUpdateFeatures = {
                 containsAlpha |= alphaRegex.test(entry);
                 containsAlnum |= alnumRegex.test(entry);
                 containsBool |= truthValueRegex.test(entry);
-                containsLocale |= maybeLocaleString(entry);
             }
         }
         sparse[curr_idx] = containsNum ? 1.0 : -1.0;
@@ -663,7 +638,6 @@ const perUpdateFeatures = {
         sparse[curr_idx + 2] = containsAlpha ? 1.0 : -1.0;
         sparse[curr_idx + 3] = containsAlnum ? 1.0 : -1.0;
         sparse[curr_idx + 4] = containsBool ? 1.0 : -1.0;
-        sparse[curr_idx + 5] = containsLocale ? 1.0 : -1.0;
     },
     "feature_js_content": (sparse, curr_idx, var_data, args) => {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
@@ -689,13 +663,12 @@ const perUpdateFeatures = {
         let containsList = false;
         let containsNull = false;
         let containsHex = false;
-        let containsLocale = false;
 
         let checkContent = function(value) {
             if (typeof value === 'object'){
                 if (Array.isArray(value)){
                     containsList = true;
-                } else if (typeof value !== null){
+                } else if (value !== null){
                     containsSubobject = true;
                 } else {
                     containsNull = true;
@@ -709,7 +682,6 @@ const perUpdateFeatures = {
                 containsAlpha |= alphaRegex.test(entry);
                 containsAlnum |= alnumRegex.test(entry);
                 containsBool |= truthValueRegex.test(entry);
-                containsLocale |= maybeLocaleString(entry);
             } else if (typeof value === "number") {
                 containsNum = true;
             } else if (typeof value === "boolean") {
@@ -749,7 +721,6 @@ const perUpdateFeatures = {
         sparse[curr_idx + 8] = containsList ? 1.0 : -1.0;
         sparse[curr_idx + 9] = containsNull ? 1.0 : -1.0;
         sparse[curr_idx + 10] = containsHex ? 1.0 : -1.0;
-        sparse[curr_idx + 11] = containsLocale ? 1.0 : -1.0;
     },
     "feature_numerical_content": (sparse, curr_idx, var_data, args) => {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
@@ -783,9 +754,6 @@ const perUpdateFeatures = {
     "feature_boolean_content": (sparse, curr_idx, var_data, args) => {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
         sparse[curr_idx] = truthValueRegex.test(cookieContent) ? 1.0 : -1.0;
-    },
-    "feature_locale_term": (sparse, curr_idx, var_data, args) => {
-        sparse[curr_idx] = maybeLocaleString(var_data["value"]) ? 1.0 : -1.0;
     },
     "feature_timestamp_content": (sparse, curr_idx, var_data, args) => {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
@@ -846,7 +814,7 @@ const extractFeatures = function(cookieDat) {
     let cfunc = undefined;
     let var_data = cookieDat["variable_data"]
     let max_updates = Math.min(feature_config["num_updates"], cookieDat["variable_data"].length);
-    let max_diffs = Math.min(feature_config["num_updates"], cookieDat["variable_data"].length) - 1;
+    let max_diffs = Math.min(feature_config["num_diffs"], cookieDat["variable_data"].length - 1);
 
     // feature extraction for per-cookie features
     for (const entry of feature_config["per_cookie_features"]) {
@@ -864,6 +832,13 @@ const extractFeatures = function(cookieDat) {
             for (let i = 0; i < max_updates ; i++) {
                 cfunc = perUpdateFeatures[entry['function']];
                 cfunc(sparseFeatures, temp_idx, var_data[i], entry["args"]);
+
+                // remove -1 entries with only one update (distinction between negative entry and missing entry not needed)
+                for (let j = temp_idx; j < temp_idx + entry["vector_size"]; j++){
+                    if (max_updates === 1 && sparseFeatures[j] === -1) {
+                        delete sparseFeatures[j];
+                    }
+                }
                 temp_idx += entry["vector_size"];
             }
             // update it as such to make the size of the vector consistent
@@ -883,7 +858,7 @@ const extractFeatures = function(cookieDat) {
             }
 
             // update it as such to make the size of the vector consistent
-            curr_idx += entry["vector_size"] * (feature_config["num_updates"] - 1);
+            curr_idx += entry["vector_size"] * (feature_config["num_diffs"]);
         }
     }
 

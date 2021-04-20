@@ -51,9 +51,9 @@ const writeFeatureMapOutput = function(fconfig) {
     }
 
     // feature extraction for per-diff features
-    for (const entry of fconfig["per_diff_features"]) {
+    for (let entry of fconfig["per_diff_features"]) {
         if (entry["enabled"]) {
-            for (let u = 0; u < fconfig["num_updates"] - 1; u++){
+            for (let u = 0; u < fconfig["num_diffs"]; u++){
                 for (let i = 0; i < entry["vector_size"]; i++) {
                     fs.appendFileSync(featureMapPath, `${feat_cnt + i} diff_${u}_${entry["name"]}-${i} i\n`);
                 }
