@@ -10,7 +10,7 @@
 
 let fs = require('fs');
 let utils = require("./modules/utils.js");
-let extractor = require("./modules/feature_extraction.js");
+let extractor = require("./modules/extractor.js");
 let predictor = require("./modules/predictor.js");
 let process = require('process');
 
