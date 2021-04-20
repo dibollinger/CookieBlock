@@ -200,7 +200,6 @@ if (args[0] === "extract"){
             predictedLabels.push(label);
             if (j % 1000 == 0){
                 console.info("Progress: " + j + "/" + validationTransformed.length);
-                process.exit(0);
             }
         }
         console.info("Predictions complete.");

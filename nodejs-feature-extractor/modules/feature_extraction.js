@@ -177,7 +177,7 @@ const maybeDateContent = function(cookieContent) {
 }
 
 
-// Stores all the feature setup functions. These initialize the objects for the above variables.
+// Object that stores all the feature setup functions. These initialize the objects for the above variables.
 // Which functions are executed on startup is determined by the feature config.
 const setupFunctions = {
     "setup_top_names": (source, vector_size, args) => {
@@ -649,8 +649,7 @@ const perUpdateFeatures = {
             try{
                 decoded = atob(var_data["value"]);
                 jsobj = JSON.parse(decoded);
-            } catch(serror){
-            }
+            } catch(serror){}
         }
 
         let foundIdentifier = false;
@@ -708,7 +707,6 @@ const perUpdateFeatures = {
         else if (jsobj !== undefined && typeof jsobj != "number" && typeof jsobj != "string" && typeof jsobj != "boolean" && jsobj !== null ){
             console.warn("Unexpected type: " + (typeof jsobj))
         }
-
 
         sparse[curr_idx] = (jsobj && typeof jsobj === 'object') ? Object.keys(jsobj).length : -1.0;
         sparse[curr_idx + 1] = foundIdentifier ? 1.0 : -1.0;

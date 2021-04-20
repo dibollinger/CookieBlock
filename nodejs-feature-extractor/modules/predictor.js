@@ -2,8 +2,8 @@
 // License: MIT
 let utils = require('./utils.js')
 
-/* Initialization */
-var forests = [null, null, null, null];
+// initialize the forests
+var forests = [undefined, undefined, undefined, undefined];
 utils.getLocalData("../src/ext_data/model/forest_class0.json", "json", (f) => forests[0] = f);
 utils.getLocalData("../src/ext_data/model/forest_class1.json", "json", (f) => forests[1] = f);
 utils.getLocalData("../src/ext_data/model/forest_class2.json", "json", (f) => forests[2] = f);
@@ -39,7 +39,7 @@ utils.getLocalData("../src/ext_data/model/forest_class3.json", "json", (f) => fo
  * @param {Object} features: Extracted features in sparse object representation. {"index": value}
  * @returns {Promise<Number>}  Total score for the forest.
  */
- const getForestScore = async function(forest, features) {
+const getForestScore = async function(forest, features) {
     let treeScores = forest.map((root) => traverseDecisionTree(root, features));
     return treeScores.reduce((total, nv) => {return total + nv}, 0);
 }
@@ -76,7 +76,6 @@ const predictClass = async function (features){
             maxProb = probabilities[i];
         }
     }
-    console.log(probabilities);
     //{"predicted_probabilities": predProbabilities, "prediction": maxIndex};
     return maxIndex;
 }

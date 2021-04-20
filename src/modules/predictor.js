@@ -18,7 +18,7 @@ getLocalData(browser.extension.getURL("ext_data/model/forest_class3.json"), "jso
  * @param {Object} features:  Features to base decisions on. Any key not found is missing data.
  * @return {Promise<Number>}           The score resulting from the input features.
  */
-const traverseDecisionTree = async function(treeNode, features){
+ const traverseDecisionTree = function(treeNode, features){
     if ("v" in treeNode) {
         return treeNode["v"];
     } else {
@@ -43,6 +43,7 @@ const getForestScore = async function(forest, features) {
     let treeScores = forest.map((root) => traverseDecisionTree(root, features));
     return treeScores.reduce((total, nv) => {return total + nv}, 0);
 }
+
 
 /**
 * Predicts the category of the cookie using the extracted features.
