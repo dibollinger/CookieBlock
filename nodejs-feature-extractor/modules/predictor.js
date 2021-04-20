@@ -4,10 +4,10 @@ let utils = require('./utils.js')
 
 /* Initialization */
 var forests = [null, null, null, null];
-utils.getLocalData("data/model/forest_class0.json", "json", (f) => forests[0] = f);
-utils.getLocalData("data/model/forest_class1.json", "json", (f) => forests[1] = f);
-utils.getLocalData("data/model/forest_class2.json", "json", (f) => forests[2] = f);
-utils.getLocalData("data/model/forest_class3.json", "json", (f) => forests[3] = f);
+utils.getLocalData("../src/ext_data/model/forest_class0.json", "json", (f) => forests[0] = f);
+utils.getLocalData("../src/ext_data/model/forest_class1.json", "json", (f) => forests[1] = f);
+utils.getLocalData("../src/ext_data/model/forest_class2.json", "json", (f) => forests[2] = f);
+utils.getLocalData("../src/ext_data/model/forest_class3.json", "json", (f) => forests[3] = f);
 
 
 /* Prediction Functions */

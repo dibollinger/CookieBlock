@@ -302,7 +302,7 @@ const setupFeatureResourcesCallback = function(fconfig) {
     let maybeRunSetup = function(featArray) {
         for (const entry of featArray) {
             if (entry["enabled"] && "setup" in entry) {
-                setupFunctions[entry['setup']](entry["source"], entry["vector_size"], entry["args"])
+                setupFunctions[entry['setup']]("../src/" + entry["source"], entry["vector_size"], entry["args"])
             }
         }
     };
@@ -313,7 +313,7 @@ const setupFeatureResourcesCallback = function(fconfig) {
 };
 
 // retrieve the configuration
-utils.getLocalData("data/features.json", "json", setupFeatureResourcesCallback);
+utils.getLocalData("../src/ext_data/features.json", "json", setupFeatureResourcesCallback);
 
 // Features extracted for each unique cookie
 const perCookieFeatures = {

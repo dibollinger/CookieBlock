@@ -105,7 +105,7 @@ if (args[0] === "extract"){
 
     // create the feature map file
     console.info("Writing feature map...")
-    utils.getLocalData("data/features.json", "json", writeFeatureMapOutput);
+    utils.getLocalData("../src/ext_data/features.json", "json", writeFeatureMapOutput);
 
     console.info("Writing class weight file...")
     // first compute the class weights
