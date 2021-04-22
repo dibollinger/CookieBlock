@@ -401,7 +401,7 @@ const perCookieFeatures = {
         let cookieUpdates = cookie_data["variable_data"];
         for (let i = 0; i < cookieUpdates.length; i++) {
             let decodedValue = maybeRemoveURLEncoding(cookieUpdates[i]["value"]);
-            let compressed = lz_string.compressToUTF16(decodedValue);
+            let compressed = LZString.compressToUTF16(decodedValue);
             values.push(compressed.length);
         }
 
