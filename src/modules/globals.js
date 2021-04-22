@@ -112,6 +112,9 @@ const escapeString = function(str) {
  * @return {String}        Cleaned domain string.
  */
 const urlToUniformDomain = function(url) {
+    if (url === null) {
+        return null;
+    }
     let new_url = url.trim();
     new_url = new_url.replace(/^\./, ""); // cookies can start like .www.example.com
     new_url = new_url.replace(/^http(s)?:\/\//, "");

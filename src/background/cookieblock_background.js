@@ -58,7 +58,7 @@ const createFEInput = function(cookie) {
       "domain": escapeString(cookie.domain),
       "path": escapeString(cookie.path),
       // empty string if browser does not have first party isolation active
-      "first_party_domain": escapeString(cookie.firstPartyDomain),
+      "first_party_domain": null,
       "storeId": escapeString(cookie.storeId),
       "variable_data":
       [
@@ -180,7 +180,6 @@ const makePolicyDecision = async function(cookieDat, label) {
             let remResult = await chrome.cookies.remove({
                 "name": cookieDat.name,
                 "url": "https://" + cookieDat.domain + cookieDat.path,
-                "firstPartyDomain": cookieDat.firstPartyDomain,
                 "storeId": cookieDat.storeId
             });
 
@@ -189,7 +188,6 @@ const makePolicyDecision = async function(cookieDat, label) {
                 remResult = await chrome.cookies.remove({
                     "name": cookieDat.name,
                     "url": "http://" + cookieDat.domain + cookieDat.path,
-                    "firstPartyDomain": cookieDat.firstPartyDomain,
                     "storeId": cookieDat.storeId
                 });
 
