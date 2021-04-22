@@ -37,8 +37,7 @@ const toggleDebug = async function() {
 
     setStaticLocaleText("classify_title", "currentCookieEnforceTitle");
     setStaticLocaleText("classify_desc", "currentCookieEnforceDescription");
-    setStaticLocaleText("set_policy","currentCookieEnforceButton");
-    setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
+    setStaticLocaleText("set_policy","buttonExitSetup");
 
 }
 
@@ -63,19 +62,21 @@ const setupInitPage = async function() {
  * Button to update the settings.
  */
 const updateAndClassify = async function() {
-    document.getElementById("apply_text").hidden = true;
+
+    document.getElementById("apply_text").hidden = false;
+    setStaticLocaleText("apply_text", "currentCookieProgressMsg");
     let sending = browser.runtime.sendMessage({"classify_all": true});
     sending.then((msg) => {
-        document.getElementById("apply_text").hidden = false;
         console.log("Process completed.");
+        setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
     });
 
-    /*
-    // close tab
+    await sending;
+
+    // close once done
     browser.tabs.getCurrent(function(tab) {
         browser.tabs.remove(tab.id, () => {});
-    });
-    */
+    })
 }
 
 /**

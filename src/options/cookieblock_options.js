@@ -195,11 +195,12 @@ const toggleDebugging = async function() {
  * Runs the classification on all current browser cookies
  */
 const classifyAllCurrentCookies = async function() {
-    document.getElementById("apply_text").hidden = true;
+    setStaticLocaleText("apply_text", "currentCookieProgressMsg");
+    document.getElementById("apply_text").hidden = false;
     let sending = browser.runtime.sendMessage({"classify_all": true});
     sending.then((msg) => {
         console.debug(msg.response);
-        document.getElementById("apply_text").hidden = false;
+        setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
     });
 }
 

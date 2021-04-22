@@ -100,7 +100,7 @@
   },
 
   "buttonExitSetup" : {
-    "message": "Apply Policy to Current Cookies",
+    "message": "Apply Policy and Close",
     "description": "Label for the close button on the first time setup"
   },
 
@@ -144,8 +144,13 @@
     "description" : "Label on the button that performs the current cookie classification."
   },
 
+  "currentCookieProgressMsg" : {
+    "message" : "Policy enforcement in progress...",
+    "description" : "Message that appears after classifier was applied."
+  },
+
   "currentCookieEnforceMsg" : {
-    "message" : "All current cookies classified!",
+    "message" : "Policy was enforced!",
     "description" : "Message that appears after classifier was applied."
   },
 
