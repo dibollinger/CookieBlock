@@ -196,15 +196,15 @@ const makePolicyDecision = async function(cookieDat, label) {
     }
 
     if (skipRejection) {
-        console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
+        //console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
     } else {
         let consentArray = await getUserPolicy();
         console.assert(consentArray !== undefined, "User policy was somehow undefined!")
         if (consentArray[label]) {
             // spare the cookie
-            console.debug("Affirmative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+            //console.debug("Affirmative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
         } else {
-            console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+            //console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
 
             // First try to remove the cookie, using https as the protocol
             let remResult = await browser.cookies.remove({
@@ -227,13 +227,11 @@ const makePolicyDecision = async function(cookieDat, label) {
                     // If failed again, report error.
                     console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                 } else {
-                    console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-                    console.debug(remResult);
+                    //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                     httpRemovalCounter += 1;
                 }
             } else {
-                console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-                console.debug(remResult);
+                //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                 httpsRemovalCounter += 1;
             }
         }
@@ -322,7 +320,8 @@ const cookieChangeListener = function(changeInfo) {
             // make a decision
             let dstate = await getDebugState();
             if (dstate) {
-                console.debug(`Debug Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${label}`);
+                let cName = classIndexToString(label);
+                console.debug(`Debug Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${cName}`);
             } else {
                 makePolicyDecision(cookieDat, label);
             }
