@@ -2,6 +2,8 @@
 
 Repository for the CookieBlock browser extension, which automatically enforces user privacy policy on browser cookies.
 
+The main branch is the Firefox branch of the extension -- see `chromium` for the Chrome-compatible version.
+
 ## Description
 
 __CookieBlock__ is an extension that allows the user to apply their cookie consent preferences to any website, no matter if the website has a cookie banner. The user specifies their consent options once when the extension is first installed, and then CookieBlock will try to remove any cookies that do not align with the user's policy.
