@@ -19,7 +19,9 @@ const toggleDebug = async function() {
     setStaticLocaleText("init_subtitle", "firstTimeSubtitle");
 
     setStaticLocaleText("setup_greet", "firstTimeGreeting");
-    setStaticLocaleText("setup_desc","firstTimeDesc");
+    setStaticLocaleText("setup_desc1","firstTimeDescPG1");
+    setStaticLocaleText("setup_desc2","firstTimeDescPG2");
+    setStaticLocaleText("setup_desc3","firstTimeDescPG3");
 
     setStaticLocaleText("cprefs_legend", "optionsHeaderConsent");
     setStaticLocaleText("cprefs_desc","consentDescription");
@@ -36,7 +38,7 @@ const toggleDebug = async function() {
     setStaticLocaleText("debug_desc", "debugDescription");
 
     setStaticLocaleText("classify_title", "currentCookieEnforceTitle");
-    setStaticLocaleText("classify_desc", "currentCookieEnforceDescription");
+    setStaticLocaleText("classify_desc", "currentCookieEnforceDescriptionSetup");
     setStaticLocaleText("set_policy","buttonExitSetup");
 
 }
@@ -67,16 +69,16 @@ const updateAndClassify = async function() {
     setStaticLocaleText("apply_text", "currentCookieProgressMsg");
     let sending = browser.runtime.sendMessage({"classify_all": true});
     sending.then((msg) => {
-        console.log("Process completed.");
+        console.log(`Process completed with message: ${msg}.`);
         setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
     });
 
     await sending;
 
     // close once done
-    browser.tabs.getCurrent(function(tab) {
-        browser.tabs.remove(tab.id, () => {});
-    })
+    //browser.tabs.getCurrent(function(tab) {
+    //    browser.tabs.remove(tab.id, () => {});
+    //})
 }
 
 /**

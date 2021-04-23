@@ -10,7 +10,7 @@
   },
 
   "firstTimeSubtitle": {
-    "message": "First Time Setup",
+    "message": "Initial Setup",
     "description": "Subtitle of the first time setup page."
   },
 
@@ -24,13 +24,33 @@
     "description": "Greeting message on the first time setup."
   },
 
-  "firstTimeDesc": {
-    "message": "CookieBlock attempts to automatically enforce your cookie consent preferences on all websites you visit. This is done through the user of a pre-trained machine learning classifier.",
-    "description": "Description seen on the first time setup page."
+  "optionsDescriptionPG1": {
+    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you do not consent towards. The categories you can choose from are listed below.",
+    "description": "Description paragraph 1 seen on the options page."
+  },
+
+  "optionsDescriptionPG2": {
+    "message": "Note that CookieBlock is still in early development, and the classifier may not be completely accurate. We would appreciate any feedback on the performance of the extension.",
+    "description": "Description paragraph 1 seen on the options page."
+  },
+
+  "firstTimeDescPG1": {
+    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you do not consent towards. The categories you can choose from are listed below.",
+    "description": "Description paragraph 1 seen on the first time setup page."
+  },
+
+  "firstTimeDescPG2": {
+    "message": "COOKIEBLOCK IS STILL IN EARLY DEVELOPMENT! It uses machine learning techniques to perform the classification, so the prediction may not always be accurate. If you notice that a website breaks, you can try to add an exception for that domain through the CookieBlock icon in the browser bar. This will prevent cookies originating from that website (but not third-parties) from being deleted. More fine-grained controls may be added in future versions.",
+    "description": "Description paragraph 2 seen on the first time setup page."
+  },
+
+  "firstTimeDescPG3": {
+    "message": "We would greatly appreciate feedback on the performance of the extension and whether there are any concrete cases of websites breaking.",
+    "description": "Description paragraph 3 seen on the first time setup page."
   },
 
   "consentDescription" : {
-    "message" : "Select the types of cookies that you would like websites to be able to set.",
+    "message" : "Select the types of cookies that you consent towards:",
     "description" : "Description of the consent choices."
   },
 
@@ -55,22 +75,22 @@
   },
 
   "catNecessaryDesc": {
-    "message": "This category includes cookies that are typically required for essential services to operate. Deleting these may cause websites to break.",
+    "message": "Strictly necessary cookies are required for essential services of the website to operate. Examples are cookies used for keeping track of the login state, or cookies used to keep track of shopping cart contents. Rejecting these cookies would cause websites to break, hence they are always enabled.",
     "description": "Description of the 'Necessary' category."
   },
 
   "catFunctionalityDesc": {
-    "message": "Functionality cookies serve to remember optional user preferences, such as language or website style, and to improve the user experience. They are not required for essential services to work.",
+    "message": "Functionality cookies serve to remember optional user preferences, such as language or website style. They are typically not required for essential services to work, but we recommend enabling them to improve the user experience.",
     "description": "Description of the 'Functionality' category."
   },
 
   "catAnalyticsDesc" : {
-    "message": "Analytics cookies are used to collect statistical information about how visitors use a website. Normally the collected data should be anonymized and not be sensitive.",
+    "message": "Analytics cookies are used to collect statistical information about how visitors use a website. This data is used to improve the site, and in principle does not require personal information. However, some websites may still collect sensitive data with these cookies.",
     "description": "Description of the 'Analytics' category."
   },
 
   "catAdvertisingDesc" : {
-    "message": "Advertising cookies track visitors across multiple websites and collect sensitive, personally identifiable information. This is commonly used to construct a user profile for targeted advertising.",
+    "message": "Advertising cookies track visitors across the web to display personalized advertisements. This also encompasses all cookies that are used to collect sensitive, personally identifiable information for the purpose of tracking and the sale of data. To protect the user's privacy, we recommend rejecting consent for these types of cookies.",
     "description": "Description of the 'Advertising' category."
   },
 
@@ -95,7 +115,7 @@
   },
 
   "debugDescription" : {
-    "message": "ONLY USE THIS WHEN TESTING! Debug mode will skip the removal of cookies such that the assigned category can be verified manually.",
+    "message": "ONLY USE THIS FOR TESTING! Debug mode will skip the removal of cookies, and output debug information to the log, such that the assigned category can be verified manually.",
     "description": "Debug Description."
   },
 
@@ -135,7 +155,12 @@
   },
 
   "currentCookieEnforceDescription" : {
-    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all current cookies that the automatic classifier assigns to cookies you did not agree to.",
+    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all cookies that the automatic classifier assigns to cookies you did not consent towards.",
+    "description" : "Description of the policy enforcement on current cookies."
+  },
+
+  "currentCookieEnforceDescriptionSetup" : {
+    "message" : "The button below will enforce the policy you selected above on all cookies currently stored in your browser. This will remove any cookies that the classifier assigns to categories you did not consent towards. You can also skip this step if you want to keep the current cookies.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
@@ -160,7 +185,7 @@
   },
 
   "globalExceptionsDescription" : {
-    "message" : "Cookies that originate from one of the domains in this list will always be permitted, regardless of the current consent policy.",
+    "message" : "Cookies that originate from the domains in this list will always be permitted, regardless of the current consent policy. Use this to add exceptions to domains you trust, or if website functionality breaks.",
     "description" : "Decription for the global website exceptions."
   },
 

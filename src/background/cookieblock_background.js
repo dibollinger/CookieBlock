@@ -253,12 +253,12 @@ const enforcePolicy = async function (ckey, cookieDat){
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
         localStatsCounter[4] += 1;
-        //await setStatsCounter(localStatsCounter);
+        await setStatsCounter(localStatsCounter);
     } else {
         // classify the cookie
         let label = await classifyCookie(serializedCookie);
         localStatsCounter[label] += 1;
-        //await setStatsCounter(localStatsCounter);
+        await setStatsCounter(localStatsCounter);
 
         // make a decision
         let dstate = await getDebugState();
@@ -310,12 +310,12 @@ const cookieChangeListener = function(changeInfo) {
         if (globalExcepts.includes(ckDomain)) {
             console.debug(`Cookie found in domain whitelist: (${ckey})`);
             localStatsCounter[4] += 1;
-            //setStatsCounter(localStatsCounter);
+            await setStatsCounter(localStatsCounter);
         } else {
             // classify the cookie
             let label = await classifyCookie(serializedCookie);
             localStatsCounter[label] += 1;
-            //setStatsCounter(localStatsCounter);
+            await setStatsCounter(localStatsCounter);
 
             // make a decision
             let dstate = await getDebugState();

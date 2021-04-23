@@ -4,7 +4,7 @@
   "name": "__MSG_extensionName__",
   "author": "Dino Bollinger",
   "homepage_url": "https://github.com/dibollinger/CookieBlock",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "incognito": "spanning",
   "default_locale": "en",
 
@@ -52,7 +52,7 @@
   "browser_specific_settings": {
     // Firefox
     "gecko": {
-      "id": "cookieblock@example.com" // intentionally not the real address
+      "id": "cookie.block.extension@gmail.com"
     }
   }
 }

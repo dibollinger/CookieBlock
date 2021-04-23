@@ -140,7 +140,6 @@ fieldset {
 
 .disabled {
     opacity: 0.5;
-    filter: grayscale(100%);
 }
 
 .preference_form {

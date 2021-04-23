@@ -80,6 +80,22 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
     }
 }
 
+/**
+ * Helper to enable the necessary checkbox
+ * @param {Boolean} debugState
+ */
+ const enableNecessaryCheckbox = async function(debugState) {
+    document.getElementById("debug_checkbox").checked = debugState;
+    let nCB = document.getElementById("nec_checkbox");
+    nCB.disabled = !debugState;
+    nCB.style.opacity = debugState ? "1.0" : "0.5";
+    nCB.style.filter = debugState ? "grayscale(0%)" : "grayscale(100%)";
+    if (!debugState) {
+        let policy = await getUserPolicy();
+        policy[0] = true;
+        setUserPolicy(policy);
+    }
+}
 
 /**
  * Function that contains most of the localization text assignments.
@@ -168,6 +184,7 @@ const setupSettingsPage = async function() {
 
     let debugState = await getDebugState();
     document.getElementById("debug_checkbox").checked = debugState;
+    enableNecessaryCheckbox(debugState);
 
     // Statistics
     let sending = browser.runtime.sendMessage({"get_stats": true});
@@ -179,6 +196,8 @@ const setupSettingsPage = async function() {
         setStaticLocaleText("num_advertising", "statsAdvertising", stats[3]);
         setStaticLocaleText("num_uncat", "statsWhitelist", stats[4]);
     });
+
+
 
 }
 
@@ -239,7 +258,9 @@ const logStorageChange = function(changes, area) {
         }
     } else if (area === "local") {
         if (changedItems.includes("cblk_debug")){
-            document.getElementById("nec_checkbox").checked = changes["cblk_debug"].newValue;
+            let debugState = changes["cblk_debug"].newValue;
+            enableNecessaryCheckbox(debugState);
+
         } else if (changedItems.includes("cblk_counter")) {
             stats = changes["cblk_counter"].newValue;
             setStaticLocaleText("num_necessary", "statsNecessary", stats[0]);
