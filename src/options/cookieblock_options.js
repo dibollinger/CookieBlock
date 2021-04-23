@@ -190,11 +190,11 @@ const setupSettingsPage = async function() {
     let sending = browser.runtime.sendMessage({"get_stats": true});
     sending.then((msg) => {
         let stats = msg.response;
-        setStaticLocaleText("num_necessary", "statsNecessary", stats[0]);
-        setStaticLocaleText("num_functional", "statsFunctional", stats[1]);
-        setStaticLocaleText("num_analytics", "statsAnalytics", stats[2]);
-        setStaticLocaleText("num_advertising", "statsAdvertising", stats[3]);
-        setStaticLocaleText("num_uncat", "statsWhitelist", stats[4]);
+        setStaticLocaleText("num_necessary", "statsNecessary", [stats[0]]);
+        setStaticLocaleText("num_functional", "statsFunctional", [stats[1]]);
+        setStaticLocaleText("num_analytics", "statsAnalytics", [stats[2]]);
+        setStaticLocaleText("num_advertising", "statsAdvertising", [stats[3]]);
+        setStaticLocaleText("num_uncat", "statsWhitelist", [stats[4]]);
     });
 
 
@@ -263,11 +263,11 @@ const logStorageChange = function(changes, area) {
 
         } else if (changedItems.includes("cblk_counter")) {
             stats = changes["cblk_counter"].newValue;
-            setStaticLocaleText("num_necessary", "statsNecessary", stats[0]);
-            setStaticLocaleText("num_functional", "statsFunctional", stats[1]);
-            setStaticLocaleText("num_analytics", "statsAnalytics", stats[2]);
-            setStaticLocaleText("num_advertising", "statsAdvertising", stats[3]);
-            setStaticLocaleText("num_uncat", "statsWhitelist", stats[4]);
+            setStaticLocaleText("num_necessary", "statsNecessary", [stats[0]]);
+            setStaticLocaleText("num_functional", "statsFunctional", [stats[1]]);
+            setStaticLocaleText("num_analytics", "statsAnalytics", [stats[2]]);
+            setStaticLocaleText("num_advertising", "statsAdvertising", [stats[3]]);
+            setStaticLocaleText("num_uncat", "statsWhitelist", [stats[4]]);
         }
     }
 }

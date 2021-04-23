@@ -4,7 +4,7 @@
   "name": "__MSG_extensionName__",
   "author": "Dino Bollinger",
   "homepage_url": "https://github.com/dibollinger/CookieBlock",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "incognito": "spanning",
   "default_locale": "en",
 
@@ -21,7 +21,7 @@
 
   "permissions": [
       "<all_urls>",         // host permission, required to access and delete cookies for each website
-      "cookies",            // obviously required for cookie access
+      "cookies",            // required for cookie access
       "storage",            // required to store settings
       "unlimitedStorage",   // required to keep track of cookie updates
       "tabs"                // required to access current tab to add site exceptions
