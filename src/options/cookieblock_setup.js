@@ -76,9 +76,9 @@ const updateAndClassify = async function() {
     await sending;
 
     // close once done
-    //browser.tabs.getCurrent(function(tab) {
-    //    browser.tabs.remove(tab.id, () => {});
-    //})
+    browser.tabs.getCurrent(function(tab) {
+        browser.tabs.remove(tab.id, () => {});
+    })
 }
 
 /**

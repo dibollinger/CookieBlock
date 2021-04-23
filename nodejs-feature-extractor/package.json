@@ -1,6 +1,6 @@
 {
   "name": "cookieblock-nodejs-feature-extractor",
-  "version": "0.3.1",
+  "version": "0.3.3",
   "description": "Command line feature extractor that uses the same functions as the CookieBlock browser extension. Includes predictor for validation purposes.",
   "main": "cli.js",
   "scripts": {
