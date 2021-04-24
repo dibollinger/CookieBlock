@@ -1,12 +1,15 @@
 // Author: Dino Bollinger
 // License: MIT
 
+const regexKey = "~regex;";
+
 var httpRemovalCounter = 0;
 var httpsRemovalCounter = 0;
 
 var localCookieStorage = undefined;
 var localStatsCounter = undefined;
 
+var known_cookies = {};
 
 /**
  * Set cookie storage to the specified object value.
@@ -240,35 +243,71 @@ const makePolicyDecision = async function(cookieDat, label) {
 };
 
 /**
- * Enforce the user policy by classifying the cookie and deleting it if it belongs to a rejected category.
- * @param {String} ckey String that identifies the cookie uniquely.
- * @param {Object} cookieDat Object that contains the data for the current cookie update.
+ * Given a cookie, checks the local known_cookies listing (exact domain match and regex).
+ * @param {Object} cookieDat Contains the current cookie's data.
  */
-const enforcePolicy = async function (ckey, cookieDat){
-    // Update the current cookie storage
-    let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, localCookieStorage);
-    localCookieStorage[ckey] = serializedCookie;
+const cookieLookup = function(cookieDat) {
+    let nameLookup = (cName, namesObj) => {
+        if (cName in namesObj) return namesObj[cName];
+        else return -1;
+    };
 
+    let cleanDomain = sanitizeDomain(cookieDat.domain);
+    if (cleanDomain in known_cookies["exact_match"]) {
+        return nameLookup(cookieDat.name, known_cookies["exact_match"][cleanDomain]);
+    } else {
+        for (let obj of Object.values(known_cookies["regex_match"])) {
+            if (obj[regexKey].test(cleanDomain)){
+                return nameLookup(cookieDat.name, obj);
+            }
+        }
+        return -1;
+    }
+}
+
+
+/**
+ * Async helper to reduce code duplication
+ */
+const classifyWithExceptions = async function (globalExcepts, ckey, cookieDat, serializedCookie) {
     let ckDomain = sanitizeDomain(serializedCookie.domain);
-    let globalExcepts = await getExceptionsList("cblk_exglobal");
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
         localStatsCounter[4] += 1;
         await setStatsCounter(localStatsCounter);
     } else {
         // classify the cookie
-        let label = await classifyCookie(serializedCookie);
+        let label = cookieLookup(cookieDat);
+        if (label === -1) {
+            label = await classifyCookie(serializedCookie);
+        }
+
         localStatsCounter[label] += 1;
         await setStatsCounter(localStatsCounter);
 
         // make a decision
         let dstate = await getDebugState();
         if (dstate) {
-            console.debug(`Debug Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${label}`);
+            let cName = classIndexToString(label);
+            console.debug(`Debug Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${cName}`);
         } else {
             makePolicyDecision(cookieDat, label);
         }
     }
+}
+
+/**
+ * Enforce the user policy by classifying the cookie and deleting it if it belongs to a rejected category.
+ * @param {String} ckey String that identifies the cookie uniquely.
+ * @param {Object} cookieDat Object that contains the data for the current cookie update.
+ */
+const enforcePolicyWithUpdates = async function (ckey, cookieDat){
+    // Update the current cookie storage
+    let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, localCookieStorage);
+    localCookieStorage[ckey] = serializedCookie;
+
+    let globalExcepts = await getExceptionsList("cblk_exglobal");
+    classifyWithExceptions(globalExcepts, ckey, cookieDat, serializedCookie);
 }
 
 
@@ -286,7 +325,7 @@ const cookieChangeListener = function(changeInfo) {
     // construct the key for keeping track of cookie updates
     let cookieDat = changeInfo.cookie;
     let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-    enforcePolicy(ckey, cookieDat);
+    enforcePolicyWithUpdates(ckey, cookieDat);
 };
 
 
@@ -296,7 +335,7 @@ const cookieChangeListener = function(changeInfo) {
  * @param {String} ckey String that identifies the cookie uniquely.
  * @param {Object} cookieDat Object that contains the data for the current cookie.
  */
- const enforcePolicyWithoutUpdates = function (ckey, cookieDat){
+const enforcePolicyWithoutUpdates = function (ckey, cookieDat){
 
     let serializedCookie;
     if (ckey in localCookieStorage) {
@@ -306,27 +345,8 @@ const cookieChangeListener = function(changeInfo) {
         localCookieStorage[ckey] = serializedCookie;
     }
 
-    getExceptionsList("cblk_exglobal").then(async (globalExcepts) => {
-        let ckDomain = sanitizeDomain(serializedCookie.domain);
-        if (globalExcepts.includes(ckDomain)) {
-            console.debug(`Cookie found in domain whitelist: (${ckey})`);
-            localStatsCounter[4] += 1;
-            await setStatsCounter(localStatsCounter);
-        } else {
-            // classify the cookie
-            let label = await classifyCookie(serializedCookie);
-            localStatsCounter[label] += 1;
-            await setStatsCounter(localStatsCounter);
-
-            // make a decision
-            let dstate = await getDebugState();
-            if (dstate) {
-                let cName = classIndexToString(label);
-                console.debug(`Debug Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${cName}`);
-            } else {
-                makePolicyDecision(cookieDat, label);
-            }
-        }
+    getExceptionsList("cblk_exglobal").then((ge) => {
+        classifyWithExceptions(ge, ckey, cookieDat, serializedCookie);
     });
 }
 
@@ -375,6 +395,12 @@ setInterval( async () => {
 
 // set up defaults and listeners
 getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", setupDefaults);
+getLocalData(browser.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
+    for (let k of Object.keys(result["regex_match"])) {
+        result["regex_match"][k][regexKey] = new RegExp(k);
+    }
+    known_cookies = result;
+});
 browser.cookies.onChanged.addListener(cookieChangeListener);
 browser.runtime.onInstalled.addListener(firstTimeSetup);
 browser.runtime.onMessage.addListener(handleInternalMessage);
