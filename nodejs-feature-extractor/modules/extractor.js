@@ -31,6 +31,9 @@ const uuidRegex = new RegExp("[0-9a-f]{8}-[0-9a-f]{4}-([0-9a-f])[0-9a-f]{3}-[0-9
 const httpRegex = new RegExp("http(s)?://.*\.");
 const wwwRegex  = new RegExp("www(2-9)?\..*\.");
 
+// csv separators
+const separators = ",|#:;&._-";
+
 // Recognize Unix timestamps around range of collection
 let _tsd = parseInt(`${Date.now()}`.slice(0,2));
 const unixTimestampRegex = new RegExp(`\\b(${_tsd-1}|${_tsd}|${_tsd+1})[0-9]{8}([0-9]{3})?\\b`);
@@ -52,10 +55,11 @@ const patternFullMonthsEng = new RegExp("(January|February|March|April|May|June|
  */
 const urlToUniformDomain = function(url) {
     let new_url = url.trim();
+    new_url = new_url.replace(/^\./, ""); // cookie domains can start like .www.example.com
     new_url = new_url.replace(/^http(s)?:\/\//, "");
     new_url = new_url.replace(/^www([0-9])?/, "");
     new_url = new_url.replace(/^\./, "");
-    new_url = new_url.replace(/\/$/, "");
+    new_url = new_url.replace(/\/.*$/, "");
     return new_url;
 }
 
@@ -130,20 +134,22 @@ const computeEntropy = function(cookieValue) {
  */
 const chooseBestSeparator = function(cookieContent, validSeparators, minSep) {
     let maxoccs = minSep;
-    let chosenSeparator = undefined;
-    for (let d of validSeparators) {
-        let r = d;
+    let bestIndex = -1;
+    let chosenSeparator = null;
+    for (let i = 0; i < validSeparators.length; i++) {
+        let r = validSeparators[i];
         // need to escape the following
         if (r === "." || r === "|"){
             r = "\\" + r;
         }
-        let numoccs = (cookieContent.match(RegExp(r, 'g'))||[]).length;
+        let numoccs = (cookieContent.match(RegExp(r, 'g')) || []).length;
         if (numoccs > maxoccs){
-            chosenSeparator = d;
+            chosenSeparator = validSeparators[i];
+            bestIndex = i;
             maxoccs = numoccs;
         }
     }
-    return {"sep": chosenSeparator, "count": maxoccs};
+    return {"sep": chosenSeparator, "count": maxoccs, "index": bestIndex};
 }
 
 /**
@@ -564,22 +570,18 @@ const perUpdateFeatures = {
         sparse[curr_idx] = (cookie_content !== decoded_content) ? 1.0 : -1.0;
     },
     "feature_delimiter_separated": (sparse, curr_idx, var_data, args) => {
-        let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
-        let result = chooseBestSeparator(cookieContent, ",|#:;&", args["min_seps"]);
+        let vector_length = separators.length;
 
-        sparse[curr_idx] = (result["sep"] === undefined) ? -1 : result["count"] + 1;
-    },
-    "feature_period_separated": (sparse, curr_idx, var_data, args) => {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
-        let result = chooseBestSeparator(cookieContent, ".", args["min_seps"]);
+        let result = chooseBestSeparator(cookieContent, separators, args["min_seps"]);
 
-        sparse[curr_idx] = (result["sep"] === undefined) ? -1 : result["count"] + 1;
-    },
-    "feature_dash_separated": (sparse, curr_idx, var_data, args) => {
-        let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
-        let result = chooseBestSeparator(cookieContent, "-", args["min_seps"]);
+        for (let i = 0; i < vector_length; i++) {
+            sparse[curr_idx + i] = -1;
+        }
 
-        sparse[curr_idx] = (result["sep"] === undefined) ? -1 : result["count"] + 1;
+        if (result["sep"] !== null) {
+            sparse[curr_idx + result["index"]] = result["count"] + 1;
+        }
     },
     "feature_base64_encoded": (sparse, curr_idx, var_data, args) => {
         let decoded = undefined;
@@ -615,7 +617,7 @@ const perUpdateFeatures = {
     },
     "feature_csv_content": (sparse, curr_idx, var_data, args) => {
         let cookieContent = maybeRemoveURLEncoding(var_data["value"]);
-        let result = chooseBestSeparator(cookieContent, ",|#:;&", args["min_seps"]);
+        let result = chooseBestSeparator(cookieContent, separators, args["min_seps"]);
 
         let containsBool = false;
         let containsNum = false;

@@ -158,13 +158,13 @@ const escapeString = function(str) {
  */
 const urlToUniformDomain = function(url) {
     let new_url = url.trim();
+    new_url = new_url.replace(/^\./, ""); // cookies can start like .www.example.com
     new_url = new_url.replace(/^http(s)?:\/\//, "");
     new_url = new_url.replace(/^www([0-9])?/, "");
     new_url = new_url.replace(/^\./, "");
-    new_url = new_url.replace(/\/$/, "");
+    new_url = new_url.replace(/\/.*$/, "");
     return new_url;
 }
-
 /**
  * Transforms the given domain or URL into a uniform representation.
  * @param {String} domainOrURL    Domain or URL to transform into uniform format
