@@ -165,8 +165,9 @@ const retrieveUpdatedCookie = async function(ckey, cookieDat, cookieStore) {
  * @return {Promise<Number>}        Cookie category label as an integer, ranging from [0,3].
  */
 const classifyCookie = async function(feature_input) {
+    let nfactor = 5;
     let features = extractFeatures(feature_input);
-    let label = await predictClass(features);
+    let label = await predictClass(features, nfactor);
     console.assert(label >= 0 && label < 4, "Predicted label exceeded valid range: %d", label);
     return label;
 };
@@ -202,9 +203,9 @@ const makePolicyDecision = async function(cookieDat, label) {
         console.assert(consentArray !== undefined, "User policy was somehow undefined!")
         if (consentArray[label]) {
             // spare the cookie
-            //console.debug("Affirmative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+            console.debug("Affirmative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
         } else {
-            //console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+            console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
 
             // First try to remove the cookie, using https as the protocol
             let remResult = await browser.cookies.remove({
@@ -227,11 +228,11 @@ const makePolicyDecision = async function(cookieDat, label) {
                     // If failed again, report error.
                     console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                 } else {
-                    //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                    console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                     httpRemovalCounter += 1;
                 }
             } else {
-                //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                 httpsRemovalCounter += 1;
             }
         }

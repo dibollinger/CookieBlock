@@ -152,7 +152,7 @@ if (args[0] === "extract"){
 
             ctr++;
             if (ctr % 1000 == 0){
-                console.log(`Completed: ${ctr}`)
+                console.info(`Completed: ${ctr}`)
             }
 
         }
@@ -166,8 +166,8 @@ if (args[0] === "extract"){
     let trueLabels = [];
 
     // Check if at least second argument present
-    if (args.length < 2) {
-        console.error("Not enough arguments passed. Requires path to the validation LIBSVM file.");
+    if (args.length < 3) {
+        console.error("Not enough arguments passed. Requires path to the validation LIBSVM file and permissiveness factor (default 1).");
         process.exit(1);
     }
 
@@ -176,97 +176,102 @@ if (args[0] === "extract"){
 
     // Sequential callback
     console.info("Loading validation LibSVM");
-    utils.getLocalData(args[1], "text", (r) => { validationLibSVM = r; });
+    utils.getLocalData(args[1], "text", (r) => {
+        validationLibSVM = r;
+        let lines = validationLibSVM.split("\n");
 
-    let lines = validationLibSVM.split("\n");
-    for (let l of lines){
-        if (!l) continue;
-        validEntry = {};
-        let tokens = l.split(" ");
-        trueLabels.push(tokens[0]);
-        for (let i = 1; i < tokens.length; i++){
-            let kv = tokens[i].split(":");
-            validEntry[kv[0]] = Number.parseFloat(kv[1]);
-        }
-        validationTransformed.push(validEntry);
-    }
-    console.info("Validation data loaded.");
-
-    let runPredictions = async () => {
-        console.info("Computing predictions...");
-        let predictedLabels = [];
-        for (let j = 0; j < validationTransformed.length; j++) {
-            let label = await predictor.predictClass(validationTransformed[j]);
-            predictedLabels.push(label);
-            if (j % 1000 == 0){
-                console.info("Progress: " + j + "/" + validationTransformed.length);
+        for (let l of lines){
+            if (!l) continue;
+            validEntry = {};
+            let tokens = l.split(" ");
+            trueLabels.push(tokens[0]);
+            for (let i = 1; i < tokens.length; i++){
+                let kv = tokens[i].split(":");
+                validEntry[kv[0]] = Number.parseFloat(kv[1]);
             }
+            validationTransformed.push(validEntry);
         }
-        console.info("Predictions complete.");
+        console.info("Validation data loaded.");
 
-        console.assert((trueLabels.length == predictedLabels.length),
-                        "Number of true labels %d did not match number of predicted labels %d!",
-                        trueLabels.length, predictedLabels.length);
+        let runPredictions = async () => {
 
+            console.info("Computing predictions...");
 
-        let rightCount = 0;
-        let wrongCount = 0;
-        let confusionMatrix = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
-        for (let j = 0; j < predictedLabels.length; j++){
-            let tl = Number.parseInt(trueLabels[j]);
-            let pl = Number.parseInt(predictedLabels[j]);
-            confusionMatrix[tl][pl] += 1;
-            if (tl === pl){
-                rightCount += 1;
-            } else {
-                wrongCount += 1;
+            let predictedLabels = [];
+            for (let j = 0; j < validationTransformed.length; j++) {
+                let label = await predictor.predictClass(validationTransformed[j], args[2]);
+                predictedLabels.push(label);
+                if (j % 5000 == 0) {
+                    console.info("Progress: " + j + "/" + validationTransformed.length);
+                }
             }
-        }
+            console.info("Predictions complete.");
 
-        let precisionVector = [0,0,0,0];
-        for (let i = 0; i < precisionVector.length; i++) {
-            let colsum = 0;
-            for (let j = 0; j < precisionVector.length; j++) {
-                colsum += confusionMatrix[j][i];
+            console.assert((trueLabels.length == predictedLabels.length),
+                            "Number of true labels %d did not match number of predicted labels %d!",
+                            trueLabels.length, predictedLabels.length);
+
+
+            let rightCount = 0;
+            let wrongCount = 0;
+            let confusionMatrix = [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]];
+            for (let j = 0; j < predictedLabels.length; j++){
+                let tl = Number.parseInt(trueLabels[j]);
+                let pl = Number.parseInt(predictedLabels[j]);
+                confusionMatrix[tl][pl] += 1;
+                if (tl === pl){
+                    rightCount += 1;
+                } else {
+                    wrongCount += 1;
+                }
             }
-            precisionVector[i] = confusionMatrix[i][i] / colsum;
+
+            let precisionVector = [0,0,0,0];
+            for (let i = 0; i < precisionVector.length; i++) {
+                let colsum = 0;
+                for (let j = 0; j < precisionVector.length; j++) {
+                    colsum += confusionMatrix[j][i];
+                }
+                precisionVector[i] = confusionMatrix[i][i] / colsum;
+            }
+
+            let recallVector = [0,0,0,0];
+            for (let i = 0; i < recallVector.length; i++) {
+                recallVector[i] = confusionMatrix[i][i] / confusionMatrix[i].reduce((p,c) => p + c);
+            }
+
+            let f1ScoreVector = [0,0,0,0];
+            for (let i = 0; i < precisionVector.length; i++) {
+                f1ScoreVector[i] = 2 * ((precisionVector[i] * recallVector[i]) / (precisionVector[i] + recallVector[i]));
+            }
+
+            console.info("Confusion Matrix:")
+            console.info(confusionMatrix)
+
+            console.info("Accuracy: " + (100 * (rightCount / (rightCount + wrongCount))) + "%")
+
+            console.info("Precision:")
+            console.info(precisionVector)
+            console.info("Recall:")
+            console.info(recallVector)
+            console.info("F1 Score:")
+            console.info(f1ScoreVector)
+            fs.appendFileSync(predictionLogPath, "Confusion Matrix:\n");
+            fs.appendFileSync(predictionLogPath, confusionMatrix[0] + "\n");
+            fs.appendFileSync(predictionLogPath, confusionMatrix[1] + "\n");
+            fs.appendFileSync(predictionLogPath, confusionMatrix[2] + "\n");
+            fs.appendFileSync(predictionLogPath, confusionMatrix[3] + "\n");
+            fs.appendFileSync(predictionLogPath, "Accuracy: " + (100 * (rightCount / (rightCount + wrongCount))) + "%\n");
+            fs.appendFileSync(predictionLogPath, "Precision: \n");
+            fs.appendFileSync(predictionLogPath, precisionVector + "\n");
+            fs.appendFileSync(predictionLogPath, "Recall: \n");
+            fs.appendFileSync(predictionLogPath, recallVector + "\n");
+            fs.appendFileSync(predictionLogPath, "F1 Score: \n");
+            fs.appendFileSync(predictionLogPath, f1ScoreVector + "\n");
         }
+        runPredictions();
+    });
 
-        let recallVector = [0,0,0,0];
-        for (let i = 0; i < precisionVector.length; i++) {
-            recallVector[i] = confusionMatrix[i][i] / confusionMatrix[i].reduce((p,c) => p + c);
-        }
-
-        let f1ScoreVector = [0,0,0,0];
-        for (let i = 0; i < precisionVector.length; i++) {
-            f1ScoreVector[i] = 2 * ((precisionVector[i] * recallVector[i]) / (precisionVector[i] + recallVector[i]));
-        }
-
-        console.info("Confusion Matrix:")
-        console.info(confusionMatrix)
-
-        console.info("Accuracy: " + (100 * (rightCount / (rightCount + wrongCount))) + "%")
-
-        console.info("Precision:")
-        console.info(precisionVector)
-        console.info("Recall:")
-        console.info(recallVector)
-        console.info("F1 Score:")
-        console.info(f1ScoreVector)
-        fs.appendFileSync(predictionLogPath, "Confusion Matrix:\n");
-        fs.appendFileSync(predictionLogPath, confusionMatrix[0] + "\n");
-        fs.appendFileSync(predictionLogPath, confusionMatrix[1] + "\n");
-        fs.appendFileSync(predictionLogPath, confusionMatrix[2] + "\n");
-        fs.appendFileSync(predictionLogPath, confusionMatrix[3] + "\n");
-        fs.appendFileSync(predictionLogPath, "Accuracy: " + (100 * (rightCount / (rightCount + wrongCount))) + "%\n");
-        fs.appendFileSync(predictionLogPath, "Precision: \n");
-        fs.appendFileSync(predictionLogPath, precisionVector + "\n");
-        fs.appendFileSync(predictionLogPath, "Recall: \n");
-        fs.appendFileSync(predictionLogPath, recallVector + "\n");
-        fs.appendFileSync(predictionLogPath, "F1 Score: \n");
-        fs.appendFileSync(predictionLogPath, f1ScoreVector + "\n");
-    }
-    runPredictions();
 } else {
     console.info("Usage: cli.js (extract <json>... | predict <validation_file>)")
 }
