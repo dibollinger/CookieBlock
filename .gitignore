@@ -2,7 +2,6 @@
 .vscode/
 web-ext-artifacts
 nodejs-feature-extractor/training_data/*.json
-nodejs-feature-extractor/validation_data/*.libsvm
 nodejs-feature-extractor/node_modules/*
 nodejs-feature-extractor/outputs/class_weights.txt
 nodejs-feature-extractor/outputs/prediction_stats.log
