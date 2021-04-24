@@ -10,7 +10,7 @@
       "setup": "setup_top_names",
       "source": "ext_data/resources/top_names.csv",
       "enabled": true,
-      "vector_size": 100,
+      "vector_size": 500,
       "args": {}
     },
     {
@@ -20,7 +20,7 @@
       "setup" : "setup_top_domains",
       "source": "ext_data/resources/top_domains.csv",
       "enabled": true,
-      "vector_size": 100,
+      "vector_size": 500,
       "args": {}
     },
     {
@@ -40,7 +40,7 @@
       "setup": "setup_name_features",
       "source": "ext_data/resources/name_features_filtered.csv",
       "enabled": true,
-      "vector_size": 100,
+      "vector_size": 500,
       "args": {}
     },
     {
@@ -55,9 +55,17 @@
     },
     {
       "name": "domain_period",
-      "desc": "Deprecated. Redundant. Indicates that a cookie is valid for all subdomains. Identical to the host-only flag being 0.",
+      "desc": "Indicates that a cookie is valid for all subdomains.",
       "function": "feature_domain_period",
-      "enabled": false,
+      "enabled": true,
+      "vector_size": 1,
+      "args": {}
+    },
+    {
+      "name": "host_only",
+      "desc": "Binary indicator feature. Set to 1 if the cookie has the host-only flag set. This flag cannot changed with updates.",
+      "function": "feature_host_only_first_update",
+      "enabled": true,
       "vector_size": 1,
       "args": {}
     },
@@ -94,14 +102,6 @@
       "args": {}
     },
     {
-      "name": "host_only_changed",
-      "desc": "Deprecated. Reason: Host-only flag cannot change in any update. Originally intended to indicate whether the host-only flag changed between any 2 updates.",
-      "function": "feature_host_only_changed",
-      "enabled": false,
-      "vector_size": 1,
-      "args": {}
-    },
-    {
       "name": "secure_changed",
       "desc": "Binary feature. Set to 1 if the 'secure' flag changed between any two updates for this cookie.",
       "function": "feature_secure_changed",
@@ -121,6 +121,21 @@
       "name": "session_changed",
       "desc": "Binary feature. Set to 1 if the 'session' flag changed between any two updates for this cookie. (extremely unlikely)",
       "function": "feature_is_session_changed",
+      "enabled": true,
+      "vector_size": 1,
+      "args": {}
+    },
+    {
+      "name": "content_changed",
+      "desc": "Binary feature. Set to 1 if the content of the cookie changed between any two updates.",
+      "function": "feature_content_changed",
+      "enabled": true,
+      "vector_size": 1,
+      "args": {}
+    },    {
+      "name": "expiry_changed",
+      "desc": "Binary indicator. Set to 1 if the expiration date changed significantly (> 24 hours) between any two consecutive updates.",
+      "function": "feature_expiry_changed",
       "enabled": true,
       "vector_size": 1,
       "args": {}
@@ -164,70 +179,6 @@
       "enabled": true,
       "vector_size": 2,
       "args": {}
-    },
-    {
-      "name": "expiry_changed",
-      "desc": "Binary indicator. Set to 1 if the expiration date changed significantly (> 24 hours) between any two consecutive updates.",
-      "function": "feature_expiry_changed",
-      "enabled": true,
-      "vector_size": 1,
-      "args": {}
-    },
-    {
-      "name": "http_only_1st",
-      "desc": "Binary feature. Set to 1 if the http_only flag is set for the first cookie update. Serves as a replacement for the per-update equivalent feature.",
-      "function": "feature_http_only_first_update",
-      "enabled": false,
-      "vector_size": 1,
-      "args": {}
-    },
-    {
-      "name": "host_only",
-      "desc": "Binary indicator feature. Set to 1 if the cookie has the host-only flag set. This flag cannot changed with updates.",
-      "function": "feature_host_only_first_update",
-      "enabled": true,
-      "vector_size": 1,
-      "args": {}
-    },
-    {
-      "name": "secure_1st",
-      "desc": "Binary indicator feature. Set to 1 if the 'secure' flag is set for the first cookie update. Serves as a replacement for the per-update equivalent feature.",
-      "function": "feature_secure_first_update",
-      "enabled": false,
-      "vector_size": 1,
-      "args": {}
-    },
-    {
-      "name": "session_1st",
-      "desc": "Binary indicator feature. Set to 1 if the 'session' flag is set for the first cookie update. Serves as a replacement for the per-update equivalent feature.",
-      "function": "feature_session_first_update",
-      "enabled": false,
-      "vector_size": 1,
-      "args": {}
-    },
-    {
-      "name": "same_site_1st",
-      "desc": "One-hot vector. same_site flag may contain the categorical values 'none', 'lax' or 'strict'. This feature is for the first cookie update only. Serves as a replacement for the equivalent per-update feature.",
-      "function": "feature_same_site_first_update",
-      "enabled": false,
-      "vector_size": 3,
-      "args": {}
-    },
-    {
-      "name": "expiry_1st",
-      "desc": "Ordinal feature. Expiration time of the first cookie update in seconds. Serves as a replacement for the equivalent per-update feature.",
-      "function": "feature_expiry_first_update",
-      "enabled": false,
-      "vector_size": 1,
-      "args": {}
-    },
-    {
-      "name": "content_changed",
-      "desc": "Binary feature. Set to 1 if the content of the cookie changed between any two updates.",
-      "function": "feature_content_changed",
-      "enabled": true,
-      "vector_size": 1,
-      "args": {}
     }
   ],
   "per_update_features":
@@ -237,14 +188,6 @@
       "desc": "Binary Feature. Set to 1 if the http_only flag is set for the update.",
       "function": "feature_http_only",
       "enabled": true,
-      "vector_size": 1,
-      "args": {}
-    },
-    {
-      "name": "host_only",
-      "desc": "Deprecated. Host-only flag can never change, hence it is redundant to have it per-update.",
-      "function": "feature_host_only",
-      "enabled": false,
       "vector_size": 1,
       "args": {}
     },
@@ -325,29 +268,9 @@
       "desc": "Ordinal Feature. Number of CSV separated columns. Uses a predefined set of delimiters. A minimum number of separations is needed for this feature to be extracted. Finally, once a delimiter is chosen, counts the number of columns.",
       "function": "feature_delimiter_separated",
       "enabled": true,
-      "vector_size": 1,
+      "vector_size": 9,
       "args": {
-        "min_seps": 2
-      }
-    },
-    {
-      "name": "period_sep",
-      "desc": "Ordinal Feature. Whether the cookie content is separated by the '.' character. Extracts the number of separations as a feature, -1 if no separation.",
-      "function": "feature_period_separated",
-      "enabled": true,
-      "vector_size": 1,
-      "args": {
-        "min_seps": 2
-      }
-    },
-    {
-      "name": "dash_sep",
-      "desc": "Ordinal Feature. Whether the cookie content is separated by the '-' character. Extracts the number of separations as a feature, -1 if no separation.",
-      "function": "feature_dash_separated",
-      "enabled": true,
-      "vector_size": 1,
-      "args": {
-        "min_seps": 2
+        "min_seps": 1
       }
     },
     {
@@ -373,7 +296,7 @@
       "setup": "setup_content_terms",
       "source": "ext_data/resources/content_terms_filtered.csv",
       "enabled": true,
-      "vector_size": 50,
+      "vector_size": 500,
       "args": {}
     },
     {
