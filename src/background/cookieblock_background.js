@@ -17,7 +17,7 @@ var localStatsCounter = undefined;
 
 /**
  * Asynchronous callback function to set up config and storage defaults.
- * This initializes all browser local and sync storage objects if undefined.
+ * This initializes all chrome local and sync storage objects if undefined.
  * @param {Object} resp  Default configuration
  */
  const initDefaults = async function(dfConfig) {
@@ -177,7 +177,7 @@ const makePolicyDecision = async function(cookieDat, label) {
             console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
 
             // First try to remove the cookie, using https as the protocol
-            let remResult = await browser.cookies.remove({
+            let remResult = await chrome.cookies.remove({
                 "name": cookieDat.name,
                 "url": "https://" + cookieDat.domain + cookieDat.path,
                 "firstPartyDomain": cookieDat.firstPartyDomain,
@@ -186,7 +186,7 @@ const makePolicyDecision = async function(cookieDat, label) {
 
             // check if removal was successful -- if not, retry with http protocol
             if (remResult === null){
-                remResult = await browser.cookies.remove({
+                remResult = await chrome.cookies.remove({
                     "name": cookieDat.name,
                     "url": "http://" + cookieDat.domain + cookieDat.path,
                     "firstPartyDomain": cookieDat.firstPartyDomain,
@@ -322,7 +322,7 @@ const enforcePolicyWithoutUpdates = async function (ckey, cookieDat){
  */
 const firstTimeSetup = function(details) {
   if (details.reason === "install") {
-    browser.tabs.create({"active": true, "url": "/options/cookieblock_setup.html"});
+    chrome.tabs.create({"active": true, "url": "/options/cookieblock_setup.html"});
   }
 }
 
@@ -336,7 +336,7 @@ const firstTimeSetup = function(details) {
 const handleInternalMessage = function(request, sender, sendResponse) {
     console.debug("Background script received a message.")
     if (request.classify_all) {
-        browser.cookies.getAll({}).then( async (allCookies) => {
+        chrome.cookies.getAll({}, (allCookies) => {
             for (let cookieDat of allCookies) {
                 let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
                 enforcePolicyWithoutUpdates(ckey, cookieDat);

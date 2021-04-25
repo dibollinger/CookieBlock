@@ -147,25 +147,25 @@ const setupLocalization = function () {
     // Website exception text
     setStaticLocaleText("wheader_title", "globalExceptionsHeader");
     setStaticLocaleText("wheader_desc", "globalExceptionsDescription");
-    document.getElementById("website_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
+    document.getElementById("website_excepts_input").placeholder = chrome.i18n.getMessage("exceptionPlaceholderText");
     setStaticLocaleText("website_excepts_submit", "addButton");
 
     // Functionality exceptions
     setStaticLocaleText("fheader_title", "functionalExceptionsHeader");
     setStaticLocaleText("fheader_desc", "functionalExceptionsDescription");
-    document.getElementById("func_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
+    document.getElementById("func_excepts_input").placeholder = chrome.i18n.getMessage("exceptionPlaceholderText");
     setStaticLocaleText("func_excepts_submit", "addButton");
 
     // Analytics exceptions
     setStaticLocaleText("anheader_title", "analyticsExceptionsHeader");
     setStaticLocaleText("anheader_desc", "analyticsExceptionsDescription");
-    document.getElementById("analytics_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
+    document.getElementById("analytics_excepts_input").placeholder = chrome.i18n.getMessage("exceptionPlaceholderText");
     setStaticLocaleText("analytics_excepts_submit", "addButton");
 
     // Advertising exceptions
     setStaticLocaleText("adheader_title", "advertExceptionsHeader");
     setStaticLocaleText("adheader_desc", "advertExceptionsDescription");
-    document.getElementById("advert_excepts_input").placeholder = browser.i18n.getMessage("exceptionPlaceholderText");
+    document.getElementById("advert_excepts_input").placeholder = chrome.i18n.getMessage("exceptionPlaceholderText");
     setStaticLocaleText("advert_excepts_submit", "addButton");
 
     // Statistics Stuff
@@ -209,8 +209,7 @@ const setupSettingsPage = async function() {
     sliderValDisplay.innerHTML = permScale;
 
     // Statistics
-    let sending = browser.runtime.sendMessage({"get_stats": true});
-    sending.then((msg) => {
+    chrome.runtime.sendMessage({"get_stats": true}, (msg) => {
         let stats = msg.response;
         setStaticLocaleText("num_necessary", "statsNecessary", [stats[0]]);
         setStaticLocaleText("num_functional", "statsFunctional", [stats[1]]);
@@ -280,7 +279,7 @@ const logStorageChange = function(changes, area) {
         }
     }
 }
-browser.storage.onChanged.addListener(logStorageChange);
+chrome.storage.onChanged.addListener(logStorageChange);
 
 // Listeners
 document.addEventListener("DOMContentLoaded", setupSettingsPage);

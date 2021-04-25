@@ -1,8 +1,8 @@
 // Author: Dino Bollinger
 // License: MIT
 
-const addText = browser.i18n.getMessage("popupButtonAdd");
-const removeText = browser.i18n.getMessage("popupButtonRemove");
+const addText = chrome.i18n.getMessage("popupButtonAdd");
+const removeText = chrome.i18n.getMessage("popupButtonRemove");
 
 const ignoredPages = /^(view-source:|moz-extension:|about:|chrome-extension:|chrome:)/;
 
@@ -45,7 +45,7 @@ const popupSetup = async function() {
 
     let exceptionButton = document.getElementById("add-exception");
 
-    browser.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
         let currentURL = tabs[0].url;
         exceptionButton.textContent = addText;
         if (currentURL.match(ignoredPages)){
@@ -69,7 +69,7 @@ const popupSetup = async function() {
  */
 const addGlobalException = async function() {
     hideErrorBox();
-    browser.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
         let currentURL = tabs[0].url
 
         // ignore the following types of pages
@@ -78,12 +78,12 @@ const addGlobalException = async function() {
             return;
         }
 
-        let potentialErrMsg = browser.i18n.getMessage("popupErrorTextGeneric");
+        let potentialErrMsg = chrome.i18n.getMessage("popupErrorTextGeneric");
         let sanitizedDomain = urlToUniformDomain(new URL(currentURL).hostname);
         try {
             let domainList = await getStorageValue(browser.storage.sync, "cblk_exglobal");
             if (domainList.includes(sanitizedDomain)){
-                potentialErrMsg = browser.i18n.getMessage("popupErrorTextRemove");
+                potentialErrMsg = chrome.i18n.getMessage("popupErrorTextRemove");
                 let index = domainList.indexOf(sanitizedDomain);
                 if (index > -1) {
                     domainList.splice(index, 1);
@@ -92,7 +92,7 @@ const addGlobalException = async function() {
                 }
                 document.getElementById("add-exception").textContent = addText;
             } else {
-                potentialErrMsg = browser.i18n.getMessage("popupErrorTextAdd");
+                potentialErrMsg = chrome.i18n.getMessage("popupErrorTextAdd");
                 domainList.push(sanitizedDomain);
                 document.getElementById("add-exception").textContent = removeText;
             }
@@ -114,7 +114,7 @@ document.querySelector("#add-exception").addEventListener("click", addGlobalExce
 
 // Open extension options page
 document.querySelector("#options").addEventListener("click", () => {
-    browser.runtime.openOptionsPage();
+    chrome.runtime.openOptionsPage();
     window.close();
 });
 

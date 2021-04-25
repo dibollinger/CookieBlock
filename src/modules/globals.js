@@ -1,6 +1,23 @@
 // Author: Dino Bollinger
 // License: MIT
 
+/**
+ * Helper used to transform the local.storage.get callback into an async function.
+ * @param {String} key Key of the storage to retrieve.
+ * @returns {Promise} A promise which will eventually contain the retrieved value.
+ */
+ function chromeWorkaround(stType, key) {
+    return new Promise((resolve, reject) => {
+        stType.get([key], function(result) {
+            if (chrome.runtime.lastError){
+                reject(chrome.runtime.lastError)
+            } else {
+                resolve(result[key]);
+            }
+        });
+    });
+}
+
 const enableExtraOptions = false;
 
 /**
@@ -16,7 +33,7 @@ const setStorageValue = async function(newValue, stType, key, override = true) {
         obj = {}; obj[key] = newValue;
         stType.set(obj)
     } else {
-        let cValue = (await stType.get(key))[key];
+        let cValue = await chromeWorkaround(stType, key);
         if (cValue === undefined) {
             obj = {}; obj[key] = newValue;
             stType.set(obj)
@@ -32,7 +49,7 @@ const setStorageValue = async function(newValue, stType, key, override = true) {
  * @returns
  */
  const getStorageValue = async function(stType, key) {
-    let value = (await stType.get(key))[key];
+    let value = await chromeWorkaround(stType, key);
     if (value === undefined) {
         console.warn(`Warning: Value '${key}' not found in storage!`);
         console.trace();
@@ -162,7 +179,7 @@ const classIndexToString = (idx) => {
  */
 const setStaticLocaleText = (elemID, locID, args=[]) => {
     try{
-        document.getElementById(elemID).textContent = browser.i18n.getMessage(locID, args);
+        document.getElementById(elemID).textContent = chrome.i18n.getMessage(locID, args);
     } catch (err) {
         console.error(`Failed to apply localization for id '${elemID}' with text '${locID}'.`)
         console.error("Original Error Message: " + err.message)

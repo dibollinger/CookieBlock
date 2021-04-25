@@ -64,13 +64,11 @@ const setupInitPage = async function() {
  * Button to update the settings.
  */
 const updateAndClassify = async function() {
-
     document.getElementById("apply_text").hidden = false;
     setStaticLocaleText("apply_text", "currentCookieProgressMsg");
-    let sending = browser.runtime.sendMessage({"classify_all": true});
-    sending.then((msg) => {
-        console.log(`Process completed with message: ${msg}.`);
+    let sending = chrome.runtime.sendMessage({"classify_all": true}, (msg) => {
         setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
+        console.log(`Process completed with message: ${msg}.`);
     });
 
     await sending;
@@ -100,7 +98,7 @@ const updateAndClassify = async function() {
         }
     }
 }
-browser.storage.onChanged.addListener(updateSelectionOnChange);
+chrome.storage.onChanged.addListener(updateSelectionOnChange);
 
 /**
  * Helper for adding click listeners.
