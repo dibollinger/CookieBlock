@@ -36,7 +36,11 @@ const setStorageValue = async function(newValue, stType, key, override = true) {
     if (value === undefined) {
         console.warn(`Warning: Value '${key}' not found in storage!`);
         console.trace();
-        await setStorageValue(defaultConfig[key], stType, key, override=false);
+        if (Array.isArray(defaultConfig[key])){
+            await setStorageValue([...defaultConfig[key]], stType, key, override=false);
+        } else {
+            await setStorageValue(defaultConfig[key], stType, key, override=false);
+        }
     }
     return value;
  }
@@ -169,15 +173,15 @@ const setStaticLocaleText = (elemID, locID, args=[]) => {
  * Reset the default values no matter what is currently stored.
  * @param {Object} resp  Default configuration
  */
- const overrideDefaults = function() {
-    setStorageValue(defaultConfig["cblk_userpolicy"], browser.storage.sync, "cblk_userpolicy");
-    setStorageValue(defaultConfig["cblk_pscale"], browser.storage.sync, "cblk_pscale");
-    setStorageValue(defaultConfig["cblk_pause"], browser.storage.local, "cblk_pause");
-    setStorageValue(defaultConfig["cblk_ulimit"], browser.storage.local, "cblk_ulimit");
-    setStorageValue(defaultConfig["cblk_exglobal"], browser.storage.sync, "cblk_exglobal");
-    setStorageValue(defaultConfig["cblk_exfunc"], browser.storage.sync, "cblk_exfunc");
-    setStorageValue(defaultConfig["cblk_exanal"], browser.storage.sync, "cblk_exanal");
-    setStorageValue(defaultConfig["cblk_exadvert"], browser.storage.sync, "cblk_exadvert");
+ const overrideDefaults = function(dfConfig) {
+    setStorageValue([...dfConfig["cblk_userpolicy"]], browser.storage.sync, "cblk_userpolicy");
+    setStorageValue(dfConfig["cblk_pscale"], browser.storage.sync, "cblk_pscale");
+    setStorageValue(dfConfig["cblk_pause"], browser.storage.local, "cblk_pause");
+    setStorageValue(dfConfig["cblk_ulimit"], browser.storage.local, "cblk_ulimit");
+    setStorageValue([...dfConfig["cblk_exglobal"]], browser.storage.sync, "cblk_exglobal");
+    setStorageValue([...dfConfig["cblk_exfunc"]], browser.storage.sync, "cblk_exfunc");
+    setStorageValue([...dfConfig["cblk_exanal"]], browser.storage.sync, "cblk_exanal");
+    setStorageValue([...dfConfig["cblk_exadvert"]], browser.storage.sync, "cblk_exadvert");
   }
 
 

@@ -21,16 +21,16 @@ var localStatsCounter = undefined;
  * @param {Object} resp  Default configuration
  */
  const initDefaults = async function(dfConfig) {
-    setStorageValue(dfConfig["cblk_userpolicy"], browser.storage.sync, "cblk_userpolicy", false);
+    setStorageValue([...dfConfig["cblk_userpolicy"]], browser.storage.sync, "cblk_userpolicy", false);
     setStorageValue(dfConfig["cblk_pscale"], browser.storage.sync, "cblk_pscale", false);
     setStorageValue(dfConfig["cblk_pause"], browser.storage.local, "cblk_pause", false);
     setStorageValue(dfConfig["cblk_ulimit"], browser.storage.local, "cblk_ulimit", false);
-    setStorageValue(dfConfig["cblk_exglobal"], browser.storage.sync, "cblk_exglobal", false);
-    setStorageValue(dfConfig["cblk_exfunc"], browser.storage.sync, "cblk_exfunc", false);
-    setStorageValue(dfConfig["cblk_exanal"], browser.storage.sync, "cblk_exanal", false);
-    setStorageValue(dfConfig["cblk_exadvert"], browser.storage.sync, "cblk_exadvert", false);
-    await setStorageValue(dfConfig["cblk_storage"], browser.storage.local, "cblk_storage", false);
-    await setStorageValue(dfConfig["cblk_counter"], browser.storage.local, "cblk_counter", false);
+    setStorageValue([...dfConfig["cblk_exglobal"]], browser.storage.sync, "cblk_exglobal", false);
+    setStorageValue([...dfConfig["cblk_exfunc"]], browser.storage.sync, "cblk_exfunc", false);
+    setStorageValue([...dfConfig["cblk_exanal"]], browser.storage.sync, "cblk_exanal", false);
+    setStorageValue([...dfConfig["cblk_exadvert"]], browser.storage.sync, "cblk_exadvert", false);
+    await setStorageValue({}, browser.storage.local, "cblk_storage", false);
+    await setStorageValue([0,0,0,0,0], browser.storage.local, "cblk_counter", false);
     localCookieStorage = await getStorageValue(browser.storage.local, "cblk_storage");
     localStatsCounter = await getStorageValue(browser.storage.local, "cblk_counter");
   }
@@ -40,10 +40,10 @@ var localStatsCounter = undefined;
 * Clear the local storage.
 */
 const clearLocalStorage = function() {
-    localCookieStorage = defaultConfig["cblk_storage"];
-    localStatsCounter = defaultConfig["cblk_counter"];
-    setStorageValue(defaultConfig["cblk_storage"], browser.storage.local, "cblk_storage");
-    setStorageValue(defaultConfig["cblk_counter"], browser.storage.local, "cblk_counter");
+    localCookieStorage = {};
+    localStatsCounter = [0,0,0,0,0];
+    setStorageValue({}, browser.storage.local, "cblk_storage");
+    setStorageValue([0,0,0,0,0], browser.storage.local, "cblk_counter");
 }
 
 
