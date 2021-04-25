@@ -155,7 +155,7 @@
   },
 
   "currentCookieEnforceDescription" : {
-    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all cookies that the automatic classifier assigns to cookies you did not consent towards.",
+    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all cookies that the automatic classifier assigns to categories you did not consent to.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
