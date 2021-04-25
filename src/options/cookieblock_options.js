@@ -1,6 +1,9 @@
 // Author: Dino Bollinger
 // License: MIT
 
+/** Permissiveness Slider Stuff */
+const nfslider = document.getElementById("nfslider");
+const sliderValDisplay = document.getElementById("slider_value");
 
 /**
  * Remove an item from a dynamically generated exception list.
@@ -84,8 +87,7 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
  * Helper to enable the necessary checkbox
  * @param {Boolean} pauseState
  */
- const enableNecessaryCheckbox = async function(pauseState) {
-    document.getElementById("pause_checkbox").checked = pauseState;
+ const enableNecessaryCheckboxIfPaused = async function(pauseState) {
     let nCB = document.getElementById("nec_checkbox");
     nCB.disabled = !pauseState;
     nCB.style.opacity = pauseState ? "1.0" : "0.5";
@@ -197,7 +199,12 @@ const setupSettingsPage = async function() {
 
     let pauseState = await getPauseState();
     document.getElementById("pause_checkbox").checked = pauseState;
-    enableNecessaryCheckbox(pauseState);
+
+    enableNecessaryCheckboxIfPaused(pauseState);
+
+    let permScale = await getPermScale();
+    nfslider.value = permScale;
+    sliderValDisplay.innerHTML = permScale;
 
     // Statistics
     let sending = browser.runtime.sendMessage({"get_stats": true});
@@ -210,34 +217,9 @@ const setupSettingsPage = async function() {
         setStaticLocaleText("num_uncat", "statsWhitelist", [stats[4]]);
     });
 
-
-
+    document.getElementById("extra_settings").hidden = !enableExtraOptions;
 }
 
-
-/**
- * Event for clicking the pause checkbox
- */
-const togglePause = async function() {
-    let pauseStatus = document.getElementById("pause_checkbox").checked;
-    await setPauseState(pauseStatus);
-}
-
-/**
- * Runs the classification on all current browser cookies
- */
-const classifyAllCurrentCookies = async function() {
-    setStaticLocaleText("classify_applytext", "currentCookieProgressMsg");
-    document.getElementById("classify_applytext").hidden = false;
-    let sending = browser.runtime.sendMessage({"classify_all": true});
-    sending.then((msg) => {
-        console.debug(msg.response);
-        setStaticLocaleText("classify_applytext", "currentCookieEnforceMsg");
-    }).except((err) => {
-        console.error(err);
-        setStaticLocaleText("classify_applytext", "applyErrorText");
-    });
-}
 
 /**
  * Log the storage area that changed, then for each item changed,
@@ -269,15 +251,24 @@ const logStorageChange = function(changes, area) {
             document.getElementById("func_checkbox").checked = newPolicy[1];
             document.getElementById("anal_checkbox").checked = newPolicy[2];
             document.getElementById("advert_checkbox").checked = newPolicy[3];
-        } else if (changedItems.includes("cblk_exglobal")) {
+        }
+
+        if (changedItems.includes("cblk_exglobal")) {
             emptyAndRestoreList(changes["cblk_exglobal"].newValue, "cblk_exglobal", "website_exceptions");
+        }
+
+        if (changedItems.includes("cblk_pscale")) {
+            nfslider.value = changes["cblk_pscale"].newValue;
+            sliderValDisplay.innerHTML = changes["cblk_pscale"].newValue;
         }
     } else if (area === "local") {
         if (changedItems.includes("cblk_pause")){
             let pauseState = changes["cblk_pause"].newValue;
-            enableNecessaryCheckbox(pauseState);
+            document.getElementById("pause_checkbox").checked = pauseState;
+            enableNecessaryCheckboxIfPaused(pauseState);
+        }
 
-        } else if (changedItems.includes("cblk_counter")) {
+        if (changedItems.includes("cblk_counter")) {
             stats = changes["cblk_counter"].newValue;
             setStaticLocaleText("num_necessary", "statsNecessary", [stats[0]]);
             setStaticLocaleText("num_functional", "statsFunctional", [stats[1]]);
@@ -310,10 +301,45 @@ addPrefClickListener("anal_checkbox", 2);
 addPrefClickListener("advert_checkbox", 3);
 
 // debug checkbox
-document.getElementById("pause_checkbox").addEventListener("click", togglePause);
+document.getElementById("pause_checkbox").addEventListener("click", async () => {
+    let pauseStatus = document.getElementById("pause_checkbox").checked;
+    await setPauseState(pauseStatus);
+});
 
 // classify all cookies button
-document.getElementById("classify_button").addEventListener("click", classifyAllCurrentCookies);
+document.getElementById("classify_button").addEventListener("click", async () => {
+    setStaticLocaleText("classify_applytext", "currentCookieProgressMsg");
+    document.getElementById("classify_applytext").hidden = false;
+    let sending = browser.runtime.sendMessage({"classify_all": true});
+    sending.then((msg) => {
+        console.debug(msg.response);
+        setStaticLocaleText("classify_applytext", "currentCookieEnforceMsg");
+    }).catch((err) => {
+        console.error(err);
+        setStaticLocaleText("classify_applytext", "applyErrorText");
+    });
+});
+
+// reset defaults button
+document.getElementById("default_button").addEventListener("click", () => {
+    getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", (defaultConfig) => {
+        overrideDefaults(defaultConfig);
+        document.getElementById("default_applytext").hidden = false;
+    });
+});
+
+// reset storage button
+document.getElementById("clear_button").addEventListener("click", () => {
+    let sending = browser.runtime.sendMessage({"reset_storage": true});
+    sending.then((msg) => {
+        console.debug(msg.response);
+        setStaticLocaleText("clear_applytext", "clearDataText");
+    }).catch((err) => {
+        console.error(err);
+        setStaticLocaleText("clear_applytext", "applyErrorText");
+    });
+    document.getElementById("clear_applytext").hidden = false;
+});
 
 
 /**
@@ -355,13 +381,10 @@ addEnterListener("analytics_excepts_input", "analytics_excepts_submit");
 addEnterListener("advert_excepts_input", "advert_excepts_submit");
 
 
-const nfslider = document.getElementById("nfslider");
-const sliderVal = document.getElementById("slider_value");
-sliderVal.innerHTML = nfslider.value;
 nfslider.oninput = function() {;
-    sliderVal.innerHTML = this.value;
+    sliderValDisplay.innerHTML = this.value;
 }
 
 nfslider.addEventListener("mouseup", function(event) {
-
+    setPermScale(this.value);
 });

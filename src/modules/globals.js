@@ -1,7 +1,32 @@
 // Author: Dino Bollinger
 // License: MIT
 
-const isReleaseVersion = true;
+const enableExtraOptions = false;
+
+/**
+ * Set the permissiveness scale for necessary cookies
+ * @param {Number} newScale New scale for the permissiveness.
+ */
+ const setPermScale = async function(newScale) {
+    await browser.storage.sync.set({"cblk_pscale": newScale });
+}
+
+
+/**
+ * Set the permissiveness scale for necessary cookies
+ * @param {Number} newScale New scale for the permissiveness.
+ */
+ const getPermScale = async function() {
+    let permScale = (await browser.storage.sync.get("cblk_pscale"))["cblk_pscale"];
+    if (permScale === undefined) {
+        console.warn(`Warning: permissiveness scale not found in sync storage. Using '5' as default.`);
+        console.trace();
+        permScale = 5;
+        await setPermScale(permScale);
+    }
+    console.assert(typeof permScale === "number", `Error: Stored pause mode value wasn't a boolean: ${typeof permScale}`);
+    return permScale;
+}
 
 
 /**
@@ -230,3 +255,19 @@ const setStaticLocaleText = (elemID, locID, args=[]) => {
         console.error("Original Error Message: " + err.message)
     }
 };
+
+/**
+ * Reset the default values no matter what is currently stored.
+ * @param {Object} resp  Default configuration
+ */
+ const overrideDefaults = function(defaultConfig) {
+    setUserPolicy(defaultConfig["default_policy"]);
+    setUpdateLimit(defaultConfig["update_limit"]);
+    setPauseState(defaultConfig["pause_state"]);
+    setPermScale(defaultConfig["perm_scale"]);
+
+    setExceptionsListStore("cblk_exglobal", defaultConfig["website_exceptions"]);
+    setExceptionsListStore("cblk_exfunc", defaultConfig["functionality_exceptions"]);
+    setExceptionsListStore("cblk_exanal", defaultConfig["analytics_exceptions"]);
+    setExceptionsListStore("cblk_exadvert", defaultConfig["advertising_exceptions"]);
+  }

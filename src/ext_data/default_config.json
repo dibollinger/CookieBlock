@@ -1,9 +1,10 @@
 {
+    "default_policy": [true, true, false, false],
     "update_limit": 10,
-    "default_policy": {
-        "acc_nec": true,
-        "acc_func": false,
-        "acc_anal": false,
-        "acc_ads": false
-    }
+    "pause_state": false,
+    "website_exceptions": [],
+    "functionality_exceptions": [],
+    "analytics_exceptions": [],
+    "advertising_exceptions": [],
+    "perm_scale": 5
 }

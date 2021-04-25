@@ -57,7 +57,7 @@ const setupInitPage = async function() {
     document.getElementById("pause_checkbox").checked = false;
 
     // pause stuff
-    document.getElementById("pause-div").hidden = isReleaseVersion;
+    document.getElementById("pause-div").hidden = !enableExtraOptions;
 }
 
 /**

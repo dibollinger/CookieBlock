@@ -11,11 +11,13 @@ var localStatsCounter = undefined;
 
 var known_cookies = {};
 
+
 /**
  * Set cookie storage to the specified object value.
  * @param {Object} newStorage
  */
  const setCookieStorage = async function(newStorage) {
+    localCookieStorage = newStorage;
     await browser.storage.local.set({ "cblk_storage": newStorage });
 }
 
@@ -24,6 +26,7 @@ var known_cookies = {};
  * @param {Array} newStats New stats array
  */
  const setStatsCounter = async function(newStats) {
+    localStatsCounter = newStats;
     await browser.storage.local.set({"cblk_counter": newStats });
 }
 
@@ -33,53 +36,56 @@ var known_cookies = {};
  * This initializes all browser local and sync storage objects if undefined.
  * @param {Object} resp  Default configuration
  */
-const setupDefaults = async function(defaultConfig) {
+ const initDefaults = async function(defaultConfig) {
 
-  let dp = defaultConfig["default_policy"];
+    let defaultCheckIfSet = async function(syncOrLocal, key, setValFunc) {
+        let value = (await syncOrLocal.get(key))[key];
+        if (value === undefined) {
+          setValFunc(defaultConfig[key]);
+        }
+    };
 
-  let policy = (await browser.storage.sync.get("cblk_userpolicy"))["cblk_userpolicy"];
-  if (policy === undefined) {
-    policy = [dp["acc_nec"], dp["acc_func"], dp["acc_anal"], dp["acc_ads"]];
-    setUserPolicy(policy);
-  }
+    let excDefFunc = async function (sKey, confKey) {
+        let exceptionsList = (await browser.storage.sync.get(sKey))[sKey];
+        if (exceptionsList === undefined) {
+            await setExceptionsListStore(sKey, defaultConfig[confKey]);
+        }
+    };
 
-  let ulimit = (await browser.storage.sync.get("cblk_ulimit"))["cblk_ulimit"];
-  if (ulimit === undefined) {
-    ulimit = defaultConfig["update_limit"];
-    setUpdateLimit(ulimit);
-  }
+    defaultCheckIfSet(browser.storage.sync, "default_policy", setUserPolicy);
+    defaultCheckIfSet(browser.storage.sync, "update_limit", setUpdateLimit);
+    defaultCheckIfSet(browser.storage.sync, "perm_scale", setPermScale);
+    defaultCheckIfSet(browser.storage.local, "pause_state", setPauseState);
+    excDefFunc("cblk_exglobal", "website_exceptions");
+    excDefFunc("cblk_exfunc", "functionality_exceptions");
+    excDefFunc("cblk_exanal", "analytics_exceptions");
+    excDefFunc("cblk_exadvert", "advertising_exceptions");
 
-  let pauseState = (await browser.storage.local.get("cblk_pause"))["cblk_pause"];
-  if (pauseState === undefined) {
-    setPauseState(false);
-  }
-
-  let excdefFunc = async (sKey) => {
-    let exceptionsList = (await browser.storage.sync.get(sKey))[sKey];
-    if (exceptionsList === undefined) {
-        await setExceptionsListStore(sKey, []);
+    // Need to be separate
+    localCookieStorage = (await browser.storage.local.get("cblk_storage"))["cblk_storage"];
+    if (localCookieStorage === undefined) {
+        localCookieStorage = {};
+        setCookieStorage(localCookieStorage);
     }
-  };
 
-  excdefFunc("cblk_exglobal");
-  excdefFunc("cblk_exfunc");
-  excdefFunc("cblk_exanal");
-  excdefFunc("cblk_exadvert");
+    // Need to be separate
+    localStatsCounter = (await browser.storage.local.get("cblk_counter"))["cblk_counter"];
+    if (localStatsCounter === undefined) {
+        localStatsCounter = [0,0,0,0,0];
+        setStatsCounter(localStatsCounter);
+    }
 
-  // Cookie store is local as an object, initialized at launch and periodically saved to extension storage.
-  localCookieStorage = (await browser.storage.local.get("cblk_storage"))["cblk_storage"];
-  if (localCookieStorage === undefined) {
-    localCookieStorage = {};
-    setCookieStorage(localCookieStorage);
   }
 
-  localStatsCounter = (await browser.storage.local.get("cblk_counter"))["cblk_counter"];
-  if (localStatsCounter === undefined) {
-      localStatsCounter = [0,0,0,0,0];
-      setStatsCounter(localStatsCounter);
+
+/**
+ * Clear the local storage.
+ */
+  const clearLocalStorage = function() {
+    setCookieStorage({});
+    setStatsCounter([0, 0, 0, 0, 0]);
   }
 
-}
 
 /**
 * Creates a new feature extraction input object from the raw cookie data.
@@ -168,9 +174,8 @@ const retrieveUpdatedCookie = async function(ckey, cookieDat, cookieStore) {
  * @return {Promise<Number>}        Cookie category label as an integer, ranging from [0,3].
  */
 const classifyCookie = async function(feature_input) {
-    let nfactor = 5;
     let features = extractFeatures(feature_input);
-    let label = await predictClass(features, nfactor);
+    let label = await predictClass(features, await getPermScale());
     console.assert(label >= 0 && label < 4, "Predicted label exceeded valid range: %d", label);
     return label;
 };
@@ -274,7 +279,7 @@ const classifyWithExceptions = async function (globalExcepts, ckey, cookieDat, s
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
         localStatsCounter[4] += 1;
-        await setStatsCounter(localStatsCounter);
+
     } else {
         // classify the cookie
         let label = cookieLookup(cookieDat);
@@ -283,7 +288,6 @@ const classifyWithExceptions = async function (globalExcepts, ckey, cookieDat, s
         }
 
         localStatsCounter[label] += 1;
-        await setStatsCounter(localStatsCounter);
 
         // make a decision
         let dstate = await getPauseState();
@@ -376,15 +380,21 @@ const handleInternalMessage = function(request, sender, sendResponse) {
                 let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
                 enforcePolicyWithoutUpdates(ckey, cookieDat);
             }
+            setCookieStorage(localCookieStorage);
+            setStatsCounter(localStatsCounter);
             sendResponse({response: "All cookies classified and policy enforced."});
         });
         return true;
     } else if (request.get_stats) {
-        sendResponse({response: localStatsCounter})
+        sendResponse({response: localStatsCounter});
+    } else if (request.reset_storage) {
+        clearLocalStorage();
+        sendResponse({response: "Local cookie and stats storage cleared."});
     } else {
         sendResponse({response: undefined});
     }
 }
+
 
 // Periodically save the current cookie store (every minute)
 setInterval( async () => {
@@ -394,7 +404,7 @@ setInterval( async () => {
 }, 60_000);
 
 // set up defaults and listeners
-getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", setupDefaults);
+getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", initDefaults);
 getLocalData(browser.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
     for (let k of Object.keys(result["regex_match"])) {
         result["regex_match"][k][regexKey] = new RegExp(k);

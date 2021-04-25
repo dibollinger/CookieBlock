@@ -347,7 +347,7 @@
   },
 
   "sliderDescription": {
-    "message": "This slider adjusts the number of cookies assigned to the 'Strictly Necessary' class. Higher values can reduce website breakage at the cost of precision.",
+    "message": "This slider adjusts how commonly CookieBlock will assign cookies to the 'Strictly Necessary' class. Higher values can reduce website breakage at the cost of precision.",
     "description": "Explanation of the slider"
   },
 

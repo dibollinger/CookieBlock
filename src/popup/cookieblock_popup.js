@@ -40,6 +40,9 @@ const popupSetup = async function() {
     setStaticLocaleText("desc-box", "popupText");
     setStaticLocaleText("options", "popupButtonOptions");
 
+    let pauseState = await getPauseState();
+    document.getElementById("pause-check").checked = pauseState;
+
     let exceptionButton = document.getElementById("add-exception");
 
     browser.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
@@ -100,6 +103,12 @@ const addGlobalException = async function() {
         }
     });
 }
+
+// pause checkbox
+document.getElementById("pause-check").addEventListener("click", async () => {
+    let pauseStatus = document.getElementById("pause-check").checked;
+    await setPauseState(pauseStatus);
+});
 
 // On click, get the current tab URL and add it to the global exceptions
 document.querySelector("#add-exception").addEventListener("click", addGlobalException);
