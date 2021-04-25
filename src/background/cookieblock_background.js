@@ -1,90 +1,50 @@
 // Author: Dino Bollinger
 // License: MIT
 
-const regexKey = "~regex;";
-
+// for debugging
 var httpRemovalCounter = 0;
 var httpsRemovalCounter = 0;
 
-var localCookieStorage = undefined;
-var localStatsCounter = undefined;
-
+// Lookup for known cookies, to prevent some critical login issues.
 var known_cookies = {};
 
+// key used with the known_cookies object
+const regexKey = "~regex;";
 
-/**
- * Set cookie storage to the specified object value.
- * @param {Object} newStorage
- */
- const setCookieStorage = async function(newStorage) {
-    localCookieStorage = newStorage;
-    await browser.storage.local.set({ "cblk_storage": newStorage });
-}
-
-/**
- * Set the statistics array.
- * @param {Array} newStats New stats array
- */
- const setStatsCounter = async function(newStats) {
-    localStatsCounter = newStats;
-    await browser.storage.local.set({"cblk_counter": newStats });
-}
-
+// Local cookie and stats storage, required so as to not constantly have to hammer the storage.local object.
+var localCookieStorage = undefined;
+var localStatsCounter = undefined;
 
 /**
  * Asynchronous callback function to set up config and storage defaults.
  * This initializes all browser local and sync storage objects if undefined.
  * @param {Object} resp  Default configuration
  */
- const initDefaults = async function(defaultConfig) {
-
-    let defaultCheckIfSet = async function(syncOrLocal, key, setValFunc) {
-        let value = (await syncOrLocal.get(key))[key];
-        if (value === undefined) {
-          setValFunc(defaultConfig[key]);
-        }
-    };
-
-    let excDefFunc = async function (sKey, confKey) {
-        let exceptionsList = (await browser.storage.sync.get(sKey))[sKey];
-        if (exceptionsList === undefined) {
-            await setExceptionsListStore(sKey, defaultConfig[confKey]);
-        }
-    };
-
-    defaultCheckIfSet(browser.storage.sync, "default_policy", setUserPolicy);
-    defaultCheckIfSet(browser.storage.sync, "update_limit", setUpdateLimit);
-    defaultCheckIfSet(browser.storage.sync, "perm_scale", setPermScale);
-    defaultCheckIfSet(browser.storage.local, "pause_state", setPauseState);
-    excDefFunc("cblk_exglobal", "website_exceptions");
-    excDefFunc("cblk_exfunc", "functionality_exceptions");
-    excDefFunc("cblk_exanal", "analytics_exceptions");
-    excDefFunc("cblk_exadvert", "advertising_exceptions");
-
-    // Need to be separate
-    localCookieStorage = (await browser.storage.local.get("cblk_storage"))["cblk_storage"];
-    if (localCookieStorage === undefined) {
-        localCookieStorage = {};
-        setCookieStorage(localCookieStorage);
-    }
-
-    // Need to be separate
-    localStatsCounter = (await browser.storage.local.get("cblk_counter"))["cblk_counter"];
-    if (localStatsCounter === undefined) {
-        localStatsCounter = [0,0,0,0,0];
-        setStatsCounter(localStatsCounter);
-    }
-
+ const initDefaults = async function(dfConfig) {
+    setStorageValue(dfConfig["cblk_userpolicy"], browser.storage.sync, "cblk_userpolicy", false);
+    setStorageValue(dfConfig["cblk_pscale"], browser.storage.sync, "cblk_pscale", false);
+    setStorageValue(dfConfig["cblk_pause"], browser.storage.local, "cblk_pause", false);
+    setStorageValue(dfConfig["cblk_ulimit"], browser.storage.local, "cblk_ulimit", false);
+    setStorageValue(dfConfig["cblk_exglobal"], browser.storage.sync, "cblk_exglobal", false);
+    setStorageValue(dfConfig["cblk_exfunc"], browser.storage.sync, "cblk_exfunc", false);
+    setStorageValue(dfConfig["cblk_exanal"], browser.storage.sync, "cblk_exanal", false);
+    setStorageValue(dfConfig["cblk_exadvert"], browser.storage.sync, "cblk_exadvert", false);
+    await setStorageValue(dfConfig["cblk_storage"], browser.storage.local, "cblk_storage", false);
+    await setStorageValue(dfConfig["cblk_counter"], browser.storage.local, "cblk_counter", false);
+    localCookieStorage = await getStorageValue(browser.storage.local, "cblk_storage");
+    localStatsCounter = await getStorageValue(browser.storage.local, "cblk_counter");
   }
 
 
 /**
- * Clear the local storage.
- */
-  const clearLocalStorage = function() {
-    setCookieStorage({});
-    setStatsCounter([0, 0, 0, 0, 0]);
-  }
+* Clear the local storage.
+*/
+const clearLocalStorage = function() {
+    localCookieStorage = defaultConfig["cblk_storage"];
+    localStatsCounter = defaultConfig["cblk_counter"];
+    setStorageValue(defaultConfig["cblk_storage"], browser.storage.local, "cblk_storage");
+    setStorageValue(defaultConfig["cblk_counter"], browser.storage.local, "cblk_counter");
+}
 
 
 /**
@@ -126,7 +86,7 @@ const createFEInput = function(cookie) {
 const updateFEInput = async function(prevCookie, newCookie) {
 
     let updateArray = prevCookie["variable_data"];
-    let updateLimit = await getUpdateLimit();
+    let updateLimit = await getStorageValue(browser.storage.local, "cblk_ulimit");
 
     let updateStruct = {
         "host_only": newCookie.hostOnly,
@@ -175,7 +135,8 @@ const retrieveUpdatedCookie = async function(ckey, cookieDat, cookieStore) {
  */
 const classifyCookie = async function(feature_input) {
     let features = extractFeatures(feature_input);
-    let label = await predictClass(features, await getPermScale());
+    let pscale = await getStorageValue(browser.storage.sync, "cblk_pscale");
+    let label = await predictClass(features, pscale);
     console.assert(label >= 0 && label < 4, "Predicted label exceeded valid range: %d", label);
     return label;
 };
@@ -194,20 +155,20 @@ const makePolicyDecision = async function(cookieDat, label) {
     let skipRejection = false;
     switch(label) {
         case 1: // functionality
-            skipRejection = (await getExceptionsList("cblk_exfunc")).includes(ckDomain);
+            skipRejection = (await getStorageValue(browser.storage.sync, "cblk_exfunc")).includes(ckDomain);
             break;
         case 2: // analytics
-            skipRejection = (await getExceptionsList("cblk_exanal")).includes(ckDomain);
+            skipRejection = (await getStorageValue(browser.storage.sync, "cblk_exanal")).includes(ckDomain);
             break;
         case 3: // advertising
-            skipRejection = (await getExceptionsList("cblk_exadvert")).includes(ckDomain);
+            skipRejection = (await getStorageValue(browser.storage.sync, "cblk_exadvert")).includes(ckDomain);
             break;
     }
 
     if (skipRejection) {
         //console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
     } else {
-        let consentArray = await getUserPolicy();
+        let consentArray = await getStorageValue(browser.storage.sync, "cblk_userpolicy");
         console.assert(consentArray !== undefined, "User policy was somehow undefined!")
         if (consentArray[label]) {
             // spare the cookie
@@ -290,7 +251,7 @@ const classifyWithExceptions = async function (globalExcepts, ckey, cookieDat, s
         localStatsCounter[label] += 1;
 
         // make a decision
-        let dstate = await getPauseState();
+        let dstate = await getStorageValue(browser.storage.local, "cblk_pause")
         if (dstate) {
             let cName = classIndexToString(label);
             console.debug(`Pause Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${cName}`);
@@ -310,7 +271,7 @@ const enforcePolicyWithUpdates = async function (ckey, cookieDat){
     let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, localCookieStorage);
     localCookieStorage[ckey] = serializedCookie;
 
-    let globalExcepts = await getExceptionsList("cblk_exglobal");
+    let globalExcepts = await getStorageValue(browser.storage.sync, "cblk_exglobal");
     classifyWithExceptions(globalExcepts, ckey, cookieDat, serializedCookie);
 }
 
@@ -339,7 +300,7 @@ const cookieChangeListener = function(changeInfo) {
  * @param {String} ckey String that identifies the cookie uniquely.
  * @param {Object} cookieDat Object that contains the data for the current cookie.
  */
-const enforcePolicyWithoutUpdates = function (ckey, cookieDat){
+const enforcePolicyWithoutUpdates = async function (ckey, cookieDat){
 
     let serializedCookie;
     if (ckey in localCookieStorage) {
@@ -349,7 +310,7 @@ const enforcePolicyWithoutUpdates = function (ckey, cookieDat){
         localCookieStorage[ckey] = serializedCookie;
     }
 
-    getExceptionsList("cblk_exglobal").then((ge) => {
+    getStorageValue(browser.storage.sync, "cblk_exglobal").then((ge) => {
         classifyWithExceptions(ge, ckey, cookieDat, serializedCookie);
     });
 }
@@ -375,13 +336,13 @@ const firstTimeSetup = function(details) {
 const handleInternalMessage = function(request, sender, sendResponse) {
     console.debug("Background script received a message.")
     if (request.classify_all) {
-        browser.cookies.getAll({}).then( (allCookies) => {
+        browser.cookies.getAll({}).then( async (allCookies) => {
             for (let cookieDat of allCookies) {
                 let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
                 enforcePolicyWithoutUpdates(ckey, cookieDat);
             }
-            setCookieStorage(localCookieStorage);
-            setStatsCounter(localStatsCounter);
+            setStorageValue(localCookieStorage, browser.storage.local, "cblk_storage");
+            setStorageValue(localStatsCounter, browser.storage.local, "cblk_counter");
             sendResponse({response: "All cookies classified and policy enforced."});
         });
         return true;
@@ -398,14 +359,14 @@ const handleInternalMessage = function(request, sender, sendResponse) {
 
 // Periodically save the current cookie store (every minute)
 setInterval( async () => {
-  await setCookieStorage(localCookieStorage);
-  await setStatsCounter(localStatsCounter);
-  console.debug("Saved current cookie store and stats counter.");
+    setStorageValue(localCookieStorage, browser.storage.local, "cblk_storage");
+    setStorageValue(localStatsCounter, browser.storage.local, "cblk_counter");
+    console.debug("Saved current cookie store and stats counter.");
 }, 60_000);
 
 // set up defaults and listeners
-getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", initDefaults);
-getLocalData(browser.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
+getExtensionFile(browser.extension.getURL("ext_data/default_config.json"), "json", initDefaults);
+getExtensionFile(browser.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
     for (let k of Object.keys(result["regex_match"])) {
         result["regex_match"][k][regexKey] = new RegExp(k);
     }

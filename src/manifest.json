@@ -4,7 +4,7 @@
   "name": "__MSG_extensionName__",
   "author": "Dino Bollinger",
   "homepage_url": "https://github.com/dibollinger/CookieBlock",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "incognito": "spanning",
   "default_locale": "en",
 

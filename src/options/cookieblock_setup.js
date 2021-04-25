@@ -8,7 +8,7 @@
  */
 const togglePause = async function() {
     let pauseStatus = document.getElementById("pause_checkbox").checked;
-    await setPauseState(pauseStatus);
+    setStorageValue(pauseStatus, browser.storage.local, "cblk_pause");
 }
 
 /**
@@ -108,9 +108,9 @@ browser.storage.onChanged.addListener(updateSelectionOnChange);
  const addPrefClickListener = function (checkboxID, idx) {
     let cb = document.getElementById(checkboxID);
     cb.addEventListener("click", async (event) => {
-        policy = await getUserPolicy();
+        policy = await getStorageValue(browser.storage.sync, "cblk_userpolicy");
         policy[idx] = cb.checked;
-        setUserPolicy(policy);
+        setStorageValue(policy, browser.storage.sync, "cblk_userpolicy");
     });
 }
 

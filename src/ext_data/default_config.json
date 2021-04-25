@@ -1,10 +1,12 @@
 {
-    "default_policy": [true, true, false, false],
-    "update_limit": 10,
-    "pause_state": false,
-    "website_exceptions": [],
-    "functionality_exceptions": [],
-    "analytics_exceptions": [],
-    "advertising_exceptions": [],
-    "perm_scale": 5
+    "cblk_userpolicy": [true, true, false, false],
+    "cblk_ulimit": 10,
+    "cblk_pause": false,
+    "cblk_exglobal": [],
+    "cblk_exfunc": [],
+    "cblk_exanal": [],
+    "cblk_exadvert": [],
+    "cblk_pscale": 5,
+    "cblk_storage": {},
+    "cblk_counter": [0,0,0,0,0]
 }

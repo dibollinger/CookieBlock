@@ -4,133 +4,42 @@
 const enableExtraOptions = false;
 
 /**
- * Set the permissiveness scale for necessary cookies
- * @param {Number} newScale New scale for the permissiveness.
+ * Helper function for storing content in sync or local storage.
+ * @param {*} newValue New value to store.
+ * @param {Object} stType  Sync or Local Storage Object
+ * @param {String} key Unique storage key identifier
+ * @param {Boolean} override If true, will override the existing value.
  */
- const setPermScale = async function(newScale) {
-    await browser.storage.sync.set({"cblk_pscale": newScale });
-}
-
-
-/**
- * Set the permissiveness scale for necessary cookies
- * @param {Number} newScale New scale for the permissiveness.
- */
- const getPermScale = async function() {
-    let permScale = (await browser.storage.sync.get("cblk_pscale"))["cblk_pscale"];
-    if (permScale === undefined) {
-        console.warn(`Warning: permissiveness scale not found in sync storage. Using '5' as default.`);
-        console.trace();
-        permScale = 5;
-        await setPermScale(permScale);
+const setStorageValue = async function(newValue, stType, key, override = true) {
+    let obj;
+    if (override) {
+        obj = {}; obj[key] = newValue;
+        stType.set(obj)
+    } else {
+        let cValue = (await stType.get(key))[key];
+        if (cValue === undefined) {
+            obj = {}; obj[key] = newValue;
+            stType.set(obj)
+        }
     }
-    console.assert(typeof permScale === "number", `Error: Stored pause mode value wasn't a boolean: ${typeof permScale}`);
-    return permScale;
 }
 
 
 /**
- * Set the pause status toggle.
- * @param {Boolean} dstate current state
+ * Helper function for retrieving content in sync or local storage.
+ * @param {*} stType Storage type
+ * @param {*} key
+ * @returns
  */
-const setPauseState = async function(dstate) {
-    await browser.storage.local.set({"cblk_pause": dstate });
-}
-
-/**
- * Retrieve the extension pause setting from extension local storage, or default if not present.
- * @returns {Promise<boolean>}  Pause toggle setting state.
- */
-const getPauseState = async function() {
-    let pauseState = (await browser.storage.local.get("cblk_pause"))["cblk_pause"];
-    if (pauseState === undefined) {
-        console.warn(`Warning: pause toggle not found in local storage. Using 'false' as default.`);
+ const getStorageValue = async function(stType, key) {
+    let value = (await stType.get(key))[key];
+    if (value === undefined) {
+        console.warn(`Warning: Value '${key}' not found in storage!`);
         console.trace();
-        pauseState = false;
-        await setPauseState(pauseState);
+        await setStorageValue(defaultConfig[key], stType, key, override=false);
     }
-    console.assert(typeof pauseState === "boolean", `Error: Stored pause mode value wasn't a boolean: ${typeof pauseState}`);
-    return pauseState;
-}
-
-/**
- * Update the exceptions list store.
- * @param {String} sKey
- * @param {Array} newExcs
- */
-const setExceptionsListStore = async function(sKey, newExcs) {
-    let sobj = {}; sobj[sKey] = newExcs;
-    await browser.storage.sync.set(sobj);
-}
-
-/**
- * Retrieve a list of website exceptions from extension sync storage, for which cookies are not removed.
- * Empty list is retrieved if not present.
- * @param {String} sKey Type of list. One of: {"cblk_exglobal", "cblk_exfunc", "cblk_exanal", "cblk_exadvert"}.
- * @returns {Promise<object>} Array of exceptions.
- */
-const getExceptionsList = async function(sKey) {
-    let exceptionsList = (await browser.storage.sync.get(sKey))[sKey];
-    if (exceptionsList === undefined) {
-        console.warn(`Warning: Exceptions list for key ${sKey} not in sync storage. Using empty array default.`);
-        console.trace();
-        exceptionsList = [];
-        await setExceptionsListStore(sKey, exceptionsList);
-    }
-    console.assert(Array.isArray(exceptionsList), `Error: Stored exception list was not an array: ${typeof exceptionsList}`);
-    return exceptionsList;
-}
-
-/**
- * Set the user policy.
- * @param {Array} newPolicy New policy array.
- */
-const setUserPolicy = async function(newPolicy) {
-    await browser.storage.sync.set({"cblk_userpolicy": newPolicy });
-}
-
-/**
- * Retrieve the current user policy from sync storage.
- * @returns {Promise<object>} Array of user policy, containing a boolean for each category.
- */
-const getUserPolicy = async function() {
-    let policy = (await browser.storage.sync.get("cblk_userpolicy"))["cblk_userpolicy"];
-    if (policy === undefined) {
-        console.warn("Warning: User policy not found in sync storage. Using strict config as default.");
-        console.trace();
-        policy = [true, false, false, false];
-        setUserPolicy(policy);
-    }
-    console.assert(Array.isArray(policy), `Error: Stored user policy was not an array: ${typeof policy}`);
-    return policy;
-}
-
-
-/**
- * Set the update limit to the specified value.
- * @param {Number} newLimit New update limit.
- */
- const setUpdateLimit = async function(newLimit) {
-    await browser.storage.sync.set({"cblk_ulimit": newLimit });
-}
-
-
-/**
- * Retrieve the update limit from sync storage.
- * @returns {Promise<number>} Maximum number of updates to store for each cookie.
- */
-const getUpdateLimit = async function() {
-
-    let ulimit = (await browser.storage.sync.get("cblk_ulimit"))["cblk_ulimit"];
-    if (ulimit === undefined) {
-        console.warn("Warning: CookieBlock update limit was undefined. Initializing limit of 10 updates.");
-        console.trace();
-        ulimit = 10;
-        setUpdateLimit(ulimit);
-    }
-    console.assert(typeof ulimit === "number", `Stored update limit was not a number: ${typeof ulimit}`);
-    return ulimit;
-}
+    return value;
+ }
 
 
 /**
@@ -140,7 +49,7 @@ const getUpdateLimit = async function() {
 * @param {String} dtype        Type of the data. Examples: "json", "text", "binary"
 * @param {Function} callback   Callback function that will be executed as soon as the data is available, receives data as first argument.
 */
-const getLocalData = function(url, dtype, callback) {
+const getExtensionFile = function(url, dtype, callback) {
     const req = new XMLHttpRequest();
 
     req.responseType = dtype;
@@ -260,14 +169,18 @@ const setStaticLocaleText = (elemID, locID, args=[]) => {
  * Reset the default values no matter what is currently stored.
  * @param {Object} resp  Default configuration
  */
- const overrideDefaults = function(defaultConfig) {
-    setUserPolicy(defaultConfig["default_policy"]);
-    setUpdateLimit(defaultConfig["update_limit"]);
-    setPauseState(defaultConfig["pause_state"]);
-    setPermScale(defaultConfig["perm_scale"]);
-
-    setExceptionsListStore("cblk_exglobal", defaultConfig["website_exceptions"]);
-    setExceptionsListStore("cblk_exfunc", defaultConfig["functionality_exceptions"]);
-    setExceptionsListStore("cblk_exanal", defaultConfig["analytics_exceptions"]);
-    setExceptionsListStore("cblk_exadvert", defaultConfig["advertising_exceptions"]);
+ const overrideDefaults = function() {
+    setStorageValue(defaultConfig["cblk_userpolicy"], browser.storage.sync, "cblk_userpolicy");
+    setStorageValue(defaultConfig["cblk_pscale"], browser.storage.sync, "cblk_pscale");
+    setStorageValue(defaultConfig["cblk_pause"], browser.storage.local, "cblk_pause");
+    setStorageValue(defaultConfig["cblk_ulimit"], browser.storage.local, "cblk_ulimit");
+    setStorageValue(defaultConfig["cblk_exglobal"], browser.storage.sync, "cblk_exglobal");
+    setStorageValue(defaultConfig["cblk_exfunc"], browser.storage.sync, "cblk_exfunc");
+    setStorageValue(defaultConfig["cblk_exanal"], browser.storage.sync, "cblk_exanal");
+    setStorageValue(defaultConfig["cblk_exadvert"], browser.storage.sync, "cblk_exadvert");
   }
+
+
+// default configuration
+var defaultConfig = undefined;
+getExtensionFile(browser.extension.getURL("ext_data/default_config.json"), "json", (df)=> {defaultConfig = df});

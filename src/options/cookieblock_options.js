@@ -15,12 +15,12 @@ const sliderValDisplay = document.getElementById("slider_value");
     let exlist = listItem.parentElement;
 
     // remove the internal stored string (async with promise)
-    domainList = await getExceptionsList(storageID);
+    domainList = await getStorageValue(browser.storage.sync, storageID);
     let index = domainList.indexOf(removedDomain);
     domainList.splice(index, 1)
 
     // update storage
-    setExceptionsListStore(storageID, domainList);
+    setStorageValue(domainList, browser.storage.sync, storageID);
 
     // finally, remove the element from the visible list
     exlist.removeChild(listItem);
@@ -72,9 +72,9 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
             sanitizedDomain = urlToUniformDomain(domainOrURL);
         }
 
-        let domainList = await getExceptionsList(storageID);
+        let domainList = await getStorageValue(browser.storage.sync, storageID);
         domainList.push(domainOrURL);
-        setExceptionsListStore(storageID, domainList);
+        setStorageValue(domainList, browser.storage.sync, storageID);
 
         appendExceptionToList(sanitizedDomain, listID, storageID);
 
@@ -93,9 +93,11 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
     nCB.style.opacity = pauseState ? "1.0" : "0.5";
     nCB.style.filter = pauseState ? "grayscale(0%)" : "grayscale(100%)";
     if (!pauseState) {
-        let policy = await getUserPolicy();
-        policy[0] = true;
-        setUserPolicy(policy);
+        let policy = await getStorageValue(browser.storage.sync, "cblk_userpolicy")
+        if (policy[0] !== true){
+            policy[0] = true;
+            setStorageValue(policy, browser.storage.sync, "cblk_userpolicy");
+        }
     }
 }
 
@@ -180,7 +182,7 @@ const setupSettingsPage = async function() {
     setupLocalization();
 
     let restoreExceptionList = async function (storageID, listID) {
-        let storedExc = await getExceptionsList(storageID);
+        let storedExc = await getStorageValue(browser.storage.sync, storageID);
         let numEntries = storedExc.length;
         for (let i = 0; i < numEntries; i++) {
             appendExceptionToList(storedExc[i], listID, storageID);
@@ -191,18 +193,18 @@ const setupSettingsPage = async function() {
     restoreExceptionList("cblk_exanal", "analytics_exceptions");
     restoreExceptionList("cblk_exadvert", "advertising_exceptions");
 
-    let policy = await getUserPolicy();
+    let policy = await getStorageValue(browser.storage.sync, "cblk_userpolicy");
     document.getElementById("nec_checkbox").checked = policy[0];
     document.getElementById("func_checkbox").checked = policy[1];
     document.getElementById("anal_checkbox").checked = policy[2];
     document.getElementById("advert_checkbox").checked = policy[3];
 
-    let pauseState = await getPauseState();
+    let pauseState = await getStorageValue(browser.storage.local, "cblk_pause");
     document.getElementById("pause_checkbox").checked = pauseState;
 
     enableNecessaryCheckboxIfPaused(pauseState);
 
-    let permScale = await getPermScale();
+    let permScale = await getStorageValue(browser.storage.sync, "cblk_pscale");
     nfslider.value = permScale;
     sliderValDisplay.innerHTML = permScale;
 
@@ -289,9 +291,9 @@ document.addEventListener("DOMContentLoaded", setupSettingsPage);
  const addPrefClickListener = function (checkboxID, idx) {
     let cb = document.getElementById(checkboxID);
     cb.addEventListener("click", async (event) => {
-        policy = await getUserPolicy();
+        policy = await getStorageValue(browser.storage.sync, "cblk_userpolicy");
         policy[idx] = cb.checked;
-        setUserPolicy(policy);
+        setStorageValue(policy, browser.storage.sync, "cblk_userpolicy");
     });
 }
 
@@ -303,7 +305,7 @@ addPrefClickListener("advert_checkbox", 3);
 // debug checkbox
 document.getElementById("pause_checkbox").addEventListener("click", async () => {
     let pauseStatus = document.getElementById("pause_checkbox").checked;
-    await setPauseState(pauseStatus);
+    setStorageValue(pauseStatus, browser.storage.local, "cblk_pause");
 });
 
 // classify all cookies button
@@ -322,7 +324,7 @@ document.getElementById("classify_button").addEventListener("click", async () =>
 
 // reset defaults button
 document.getElementById("default_button").addEventListener("click", () => {
-    getLocalData(browser.extension.getURL("ext_data/default_config.json"), "json", (defaultConfig) => {
+    getExtensionFile(browser.extension.getURL("ext_data/default_config.json"), "json", (defaultConfig) => {
         overrideDefaults(defaultConfig);
         document.getElementById("default_applytext").hidden = false;
     });
@@ -386,5 +388,5 @@ nfslider.oninput = function() {;
 }
 
 nfslider.addEventListener("mouseup", function(event) {
-    setPermScale(this.value);
+    setStorageValue(this.value, browser.storage.sync, "cblk_pscale");
 });
