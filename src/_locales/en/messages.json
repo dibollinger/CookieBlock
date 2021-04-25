@@ -105,18 +105,18 @@
   },
 
   "additionalOptionsDesc" : {
-    "message": "General extension settings:",
+    "message": "Settings that adjust the extension behavior or trigger additional functions:",
     "description": "Additional options description."
   },
 
-  "enableDebugMode" : {
-    "message": "Enable Debug Mode",
-    "description": "Debug Mode Toggle."
+  "pauseCookieRemoval" : {
+    "message": "Pause Cookie Removal",
+    "description": "Text for the cookie removal pause button."
   },
 
-  "debugDescription" : {
-    "message": "ONLY USE THIS FOR TESTING! Debug mode will skip the removal of cookies, and output debug information to the log, such that the assigned category can be verified manually.",
-    "description": "Debug Description."
+  "pauseDescription" : {
+    "message": "When enabled, stops the removal of cookies entirely, but still outputs the classification into the browser console. Useful for debugging or temporarily stopping cookie removal in case a website breaks.",
+    "description": "Description for the 'pause removal' button."
   },
 
   "buttonExitSetup" : {
@@ -299,6 +299,61 @@
   "popupErrorTextAdd": {
     "message": "Adding exception failed!",
     "description": "Error message when trying to add exception."
+  },
+
+  "defaultTitle": {
+    "message": "Restore Defaults",
+    "description": "Restore defaults title"
+  },
+
+  "defaultDescription": {
+    "message": "This button restores the default settings of the extension.",
+    "description": "Description for the restore defaults button."
+  },
+
+  "defaultButton": {
+    "message": "Reset Defaults",
+    "description": "Button text for resetting."
+  },
+
+  "defaultApplyText": {
+    "message": "Defaults restored!",
+    "description": "Defaults restored message that appears after clicking the button."
+  },
+
+  "clearDataTitle": {
+    "message": "Clear Stored Cookie Data",
+    "description": "Title for the 'clear cookie data' button."
+  },
+
+  "clearDataDescription": {
+    "message": "This button clears the cookie data stored inside the extension and the stats counters. It does not remove cookies from the browser itself!",
+    "description": "Description for the 'clear cookie data' button."
+  },
+
+  "clearDataButton": {
+    "message": "Clear Data",
+    "description": "Clear data button label."
+  },
+
+  "clearDataText": {
+    "message": "Cookie data wiped!",
+    "description": "Message that appears after hitting the clear data button."
+  },
+
+  "sliderTitle": {
+    "message": "Permissiveness Scale",
+    "description": "Title for the slider."
+  },
+
+  "sliderDescription": {
+    "message": "This slider adjusts the number of cookies assigned to the 'Strictly Necessary' class. Higher values can reduce website breakage at the cost of precision.",
+    "description": "Explanation of the slider"
+  },
+
+  "applyErrorText" : {
+    "message": "Process failed!",
+    "description": "Error message if something goes wrong with the buttons."
   }
 
 }

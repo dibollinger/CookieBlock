@@ -114,15 +114,41 @@ fieldset {
     font-size: large;
 }
 
+.slider_container {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    width: 100%;
+}
+
+.slider {
+    margin-left: 3em;
+    width: 70%;
+    height: 2em;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+
+}
+
+#nfslider {
+    float: left;
+}
+
+#slider_value {
+    font-weight: 500;
+}
+
 .catname{
     font-size: larger;
     font-weight: bold;
 }
 
+.cleardiv{
+    display: inline-block;
+}
+
 .missing_checkbox {
-    margin-top:.75em;
+    margin-top: 1em;
     margin-left: 1.25em;
-    margin-top: 1.75em;
 }
 
 .class_desc {
@@ -147,7 +173,7 @@ fieldset {
 }
 
 .submit_field {
-    margin-top: 2em;
+    margin-top: 1em;
     margin-left: 3em;
 }
 
@@ -185,6 +211,7 @@ hr.thin {
     margin-top: 1em;
     margin-bottom: 1em;
     border-top: 1px solid black;
+    width: 100%;
 }
 
 hr.thick {

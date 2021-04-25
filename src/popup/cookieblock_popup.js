@@ -36,6 +36,7 @@ const showErrorBox = function(error, msg) {
 const popupSetup = async function() {
 
     setStaticLocaleText("popup-title", "extensionName");
+    setStaticLocaleText("pause-desc", "pauseCookieRemoval");
     setStaticLocaleText("desc-box", "popupText");
     setStaticLocaleText("options", "popupButtonOptions");
 

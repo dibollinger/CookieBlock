@@ -4,11 +4,11 @@
 // Script that controls the first-time setup of the extension
 
 /**
- * Toggle the debug state
+ * Toggle the pause state
  */
-const toggleDebug = async function() {
-    let debugStatus = document.getElementById("debug_checkbox").checked;
-    await setDebugState(debugStatus);
+const togglePause = async function() {
+    let pauseStatus = document.getElementById("pause_checkbox").checked;
+    await setPauseState(pauseStatus);
 }
 
 /**
@@ -34,8 +34,8 @@ const toggleDebug = async function() {
     setStaticLocaleText("advert_title","catAdvertisingTitle");
     setStaticLocaleText("advert_desc","catAdvertisingDesc");
 
-    setStaticLocaleText("debug_title", "enableDebugMode");
-    setStaticLocaleText("debug_desc", "debugDescription");
+    setStaticLocaleText("pause_title", "pauseCookieRemoval");
+    setStaticLocaleText("pause_desc", "pauseDescription");
 
     setStaticLocaleText("classify_title", "currentCookieEnforceTitle");
     setStaticLocaleText("classify_desc", "currentCookieEnforceDescriptionSetup");
@@ -54,10 +54,10 @@ const setupInitPage = async function() {
     document.getElementById("func_checkbox").checked = false;
     document.getElementById("anal_checkbox").checked = false;
     document.getElementById("advert_checkbox").checked = false;
-    document.getElementById("debug_checkbox").checked = false;
+    document.getElementById("pause_checkbox").checked = false;
 
-    // Debug stuff
-    document.getElementById("debug-div").hidden = isReleaseVersion;
+    // pause stuff
+    document.getElementById("pause-div").hidden = isReleaseVersion;
 }
 
 /**
@@ -122,5 +122,5 @@ addPrefClickListener("advert_checkbox", 3);
 
 // Listeners
 document.addEventListener("DOMContentLoaded", setupInitPage);
-document.querySelector("#debug_checkbox").addEventListener("click", toggleDebug);
+document.querySelector("#pause_checkbox").addEventListener("click", togglePause);
 document.querySelector("#set_policy").addEventListener("click", updateAndClassify);

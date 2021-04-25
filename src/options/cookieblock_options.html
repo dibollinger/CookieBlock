@@ -43,17 +43,60 @@
         <fieldset>
         <legend id="extra_opts_legend"></legend>
         <div id="extra_opts_desc" class="overview_description"></div>
+
         <hr class="thin">
-        <input id="debug_checkbox" type="checkbox" class="checkbox">
-        <label id="debug_title" for="debug_checkbox" class="catname"></label>
-        <div id="debug_desc" class="class_desc"></div>
-        <hr class="thin">
-        <div id="classify_title" class="catname missing_checkbox"></div>
-        <div id="classify_desc" class="class_desc"></div>
-        <div class=submit_field>
-            <button id="classify_button" type="submit" style="float:left;"></button>
-            <div id="apply_text" class="button_clicktext" hidden></div>
+
+        <div class="cleardiv">
+            <div id="slider_title" class="catname missing_checkbox"></div>
+            <div id="slider_desc" class="class_desc"></div>
+            <div class="slider_container">
+                <input id="nfslider" class="slider" type="range" min="1" max="20" value="10">
+                <div id="slider_value" class="button_clicktext"></div>
+            </div>
         </div>
+
+
+        <hr class="thin">
+
+        <div class="cleardiv">
+            <input id="pause_checkbox" type="checkbox" class="checkbox">
+            <label id="pause_title" for="pause_checkbox" class="catname"></label>
+            <div id="pause_desc" class="class_desc"></div>
+        </div>
+
+        <hr class="thin">
+
+        <div class="cleardiv">
+            <div id="classify_title" class="catname missing_checkbox"></div>
+            <div id="classify_desc" class="class_desc"></div>
+            <div class=submit_field>
+                <button id="classify_button" type="submit" style="float:left;"></button>
+                <div id="classify_applytext" class="button_clicktext" hidden></div>
+            </div>
+        </div>
+
+        <hr class="thin">
+
+        <div class="cleardiv">
+            <div id="clear_title" class="catname missing_checkbox"></div>
+            <div id="clear_desc" class="class_desc"></div>
+            <div class=submit_field>
+                <button id="clear_button" type="submit" style="float:left;"></button>
+                <div id="clear_applytext" class="button_clicktext" hidden></div>
+            </div>
+        </div>
+
+        <hr class="thin">
+
+        <div class="cleardiv">
+            <div id="default_title" class="catname missing_checkbox"></div>
+            <div id="default_desc" class="class_desc"></div>
+            <div class=submit_field>
+                <button id="default_button" type="submit" style="float:left;"></button>
+                <div id="default_applytext" class="button_clicktext" hidden></div>
+            </div>
+        </div>
+
     </fieldset>
     </div>
     <hr class="thick">

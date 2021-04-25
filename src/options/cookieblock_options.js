@@ -82,15 +82,15 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
 
 /**
  * Helper to enable the necessary checkbox
- * @param {Boolean} debugState
+ * @param {Boolean} pauseState
  */
- const enableNecessaryCheckbox = async function(debugState) {
-    document.getElementById("debug_checkbox").checked = debugState;
+ const enableNecessaryCheckbox = async function(pauseState) {
+    document.getElementById("pause_checkbox").checked = pauseState;
     let nCB = document.getElementById("nec_checkbox");
-    nCB.disabled = !debugState;
-    nCB.style.opacity = debugState ? "1.0" : "0.5";
-    nCB.style.filter = debugState ? "grayscale(0%)" : "grayscale(100%)";
-    if (!debugState) {
+    nCB.disabled = !pauseState;
+    nCB.style.opacity = pauseState ? "1.0" : "0.5";
+    nCB.style.filter = pauseState ? "grayscale(0%)" : "grayscale(100%)";
+    if (!pauseState) {
         let policy = await getUserPolicy();
         policy[0] = true;
         setUserPolicy(policy);
@@ -118,14 +118,27 @@ const setupLocalization = function () {
     setStaticLocaleText("advert_desc","catAdvertisingDesc");
 
     // Additional Options
+    setStaticLocaleText("slider_title", "sliderTitle");
+    setStaticLocaleText("slider_desc", "sliderDescription");
+
     setStaticLocaleText("extra_opts_legend","headerAdditionalOptions");
     setStaticLocaleText("extra_opts_desc","additionalOptionsDesc");
-    setStaticLocaleText("debug_title", "enableDebugMode");
-    setStaticLocaleText("debug_desc", "debugDescription");
+    setStaticLocaleText("pause_title", "pauseCookieRemoval");
+    setStaticLocaleText("pause_desc", "pauseDescription");
     setStaticLocaleText("classify_title", "currentCookieEnforceTitle");
     setStaticLocaleText("classify_desc", "currentCookieEnforceDescription");
     setStaticLocaleText("classify_button", "currentCookieEnforceButton");
-    setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
+    setStaticLocaleText("classify_applytext", "currentCookieEnforceMsg");
+
+    setStaticLocaleText("default_title", "defaultTitle");
+    setStaticLocaleText("default_desc", "defaultDescription");
+    setStaticLocaleText("default_button", "defaultButton");
+    setStaticLocaleText("default_applytext", "defaultApplyText");
+
+    setStaticLocaleText("clear_title", "clearDataTitle");
+    setStaticLocaleText("clear_desc", "clearDataDescription");
+    setStaticLocaleText("clear_button", "clearDataButton");
+    setStaticLocaleText("clear_applytext", "clearDataText");
 
     // Website exception text
     setStaticLocaleText("wheader_title", "globalExceptionsHeader");
@@ -182,9 +195,9 @@ const setupSettingsPage = async function() {
     document.getElementById("anal_checkbox").checked = policy[2];
     document.getElementById("advert_checkbox").checked = policy[3];
 
-    let debugState = await getDebugState();
-    document.getElementById("debug_checkbox").checked = debugState;
-    enableNecessaryCheckbox(debugState);
+    let pauseState = await getPauseState();
+    document.getElementById("pause_checkbox").checked = pauseState;
+    enableNecessaryCheckbox(pauseState);
 
     // Statistics
     let sending = browser.runtime.sendMessage({"get_stats": true});
@@ -203,23 +216,26 @@ const setupSettingsPage = async function() {
 
 
 /**
- * Event for clicking the debug checkbox
+ * Event for clicking the pause checkbox
  */
-const toggleDebugging = async function() {
-    let debugStatus = document.getElementById("debug_checkbox").checked;
-    await setDebugState(debugStatus);
+const togglePause = async function() {
+    let pauseStatus = document.getElementById("pause_checkbox").checked;
+    await setPauseState(pauseStatus);
 }
 
 /**
  * Runs the classification on all current browser cookies
  */
 const classifyAllCurrentCookies = async function() {
-    setStaticLocaleText("apply_text", "currentCookieProgressMsg");
-    document.getElementById("apply_text").hidden = false;
+    setStaticLocaleText("classify_applytext", "currentCookieProgressMsg");
+    document.getElementById("classify_applytext").hidden = false;
     let sending = browser.runtime.sendMessage({"classify_all": true});
     sending.then((msg) => {
         console.debug(msg.response);
-        setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
+        setStaticLocaleText("classify_applytext", "currentCookieEnforceMsg");
+    }).except((err) => {
+        console.error(err);
+        setStaticLocaleText("classify_applytext", "applyErrorText");
     });
 }
 
@@ -257,9 +273,9 @@ const logStorageChange = function(changes, area) {
             emptyAndRestoreList(changes["cblk_exglobal"].newValue, "cblk_exglobal", "website_exceptions");
         }
     } else if (area === "local") {
-        if (changedItems.includes("cblk_debug")){
-            let debugState = changes["cblk_debug"].newValue;
-            enableNecessaryCheckbox(debugState);
+        if (changedItems.includes("cblk_pause")){
+            let pauseState = changes["cblk_pause"].newValue;
+            enableNecessaryCheckbox(pauseState);
 
         } else if (changedItems.includes("cblk_counter")) {
             stats = changes["cblk_counter"].newValue;
@@ -294,7 +310,7 @@ addPrefClickListener("anal_checkbox", 2);
 addPrefClickListener("advert_checkbox", 3);
 
 // debug checkbox
-document.getElementById("debug_checkbox").addEventListener("click", toggleDebugging);
+document.getElementById("pause_checkbox").addEventListener("click", togglePause);
 
 // classify all cookies button
 document.getElementById("classify_button").addEventListener("click", classifyAllCurrentCookies);
@@ -337,3 +353,15 @@ addEnterListener("website_excepts_input", "website_excepts_submit");
 addEnterListener("func_excepts_input", "func_excepts_submit");
 addEnterListener("analytics_excepts_input", "analytics_excepts_submit");
 addEnterListener("advert_excepts_input", "advert_excepts_submit");
+
+
+const nfslider = document.getElementById("nfslider");
+const sliderVal = document.getElementById("slider_value");
+sliderVal.innerHTML = nfslider.value;
+nfslider.oninput = function() {;
+    sliderVal.innerHTML = this.value;
+}
+
+nfslider.addEventListener("mouseup", function(event) {
+
+});

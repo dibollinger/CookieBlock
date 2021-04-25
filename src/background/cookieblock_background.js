@@ -49,9 +49,9 @@ const setupDefaults = async function(defaultConfig) {
     setUpdateLimit(ulimit);
   }
 
-  let debugState = (await browser.storage.local.get("cblk_debug"))["cblk_debug"];
-  if (debugState === undefined) {
-    setDebugState(false);
+  let pauseState = (await browser.storage.local.get("cblk_pause"))["cblk_pause"];
+  if (pauseState === undefined) {
+    setPauseState(false);
   }
 
   let excdefFunc = async (sKey) => {
@@ -286,10 +286,10 @@ const classifyWithExceptions = async function (globalExcepts, ckey, cookieDat, s
         await setStatsCounter(localStatsCounter);
 
         // make a decision
-        let dstate = await getDebugState();
+        let dstate = await getPauseState();
         if (dstate) {
             let cName = classIndexToString(label);
-            console.debug(`Debug Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${cName}`);
+            console.debug(`Pause Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${cName}`);
         } else {
             makePolicyDecision(cookieDat, label);
         }

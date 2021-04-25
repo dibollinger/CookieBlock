@@ -61,6 +61,16 @@ button {
   text-align: center;
 }
 
+#pause-div {
+  padding-top: 0.75em;
+}
+
+#pause-desc {
+  padding-left: 0.75em;
+  font-weight: 500;
+}
+
+
 #desc-box {
   padding-top: .5em;
   padding-bottom: .5em;

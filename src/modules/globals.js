@@ -5,27 +5,27 @@ const isReleaseVersion = true;
 
 
 /**
- * Set the debug status toggle.
+ * Set the pause status toggle.
  * @param {Boolean} dstate current state
  */
-const setDebugState = async function(dstate) {
-    await browser.storage.local.set({"cblk_debug": dstate });
+const setPauseState = async function(dstate) {
+    await browser.storage.local.set({"cblk_pause": dstate });
 }
 
 /**
- * Retrieve the extension debug setting from extension local storage, or default if not present.
- * @returns {Promise<boolean>}  Debug toggle setting state.
+ * Retrieve the extension pause setting from extension local storage, or default if not present.
+ * @returns {Promise<boolean>}  Pause toggle setting state.
  */
-const getDebugState = async function() {
-    let debugState = (await browser.storage.local.get("cblk_debug"))["cblk_debug"];
-    if (debugState === undefined) {
-        console.warn(`Warning: Debug toggle not found in local storage. Using 'false' as default.`);
+const getPauseState = async function() {
+    let pauseState = (await browser.storage.local.get("cblk_pause"))["cblk_pause"];
+    if (pauseState === undefined) {
+        console.warn(`Warning: pause toggle not found in local storage. Using 'false' as default.`);
         console.trace();
-        debugState = false;
-        await setDebugState(debugState);
+        pauseState = false;
+        await setPauseState(pauseState);
     }
-    console.assert(typeof debugState === "boolean", `Error: Stored debug mode value wasn't a boolean: ${typeof debugState}`);
-    return debugState;
+    console.assert(typeof pauseState === "boolean", `Error: Stored pause mode value wasn't a boolean: ${typeof pauseState}`);
+    return pauseState;
 }
 
 /**
