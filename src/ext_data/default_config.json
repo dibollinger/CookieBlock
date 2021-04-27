@@ -7,5 +7,6 @@
     "cblk_exanal": [],
     "cblk_exadvert": [],
     "cblk_pscale": 5,
-    "cblk_hconsent": false
+    "cblk_hconsent": false,
+    "cblk_mintime": 60000
 }

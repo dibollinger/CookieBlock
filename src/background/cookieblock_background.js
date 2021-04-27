@@ -30,6 +30,7 @@ var localStatsCounter = undefined;
     setStorageValue([...dfConfig["cblk_exfunc"]], chrome.storage.sync, "cblk_exfunc", false);
     setStorageValue([...dfConfig["cblk_exanal"]], chrome.storage.sync, "cblk_exanal", false);
     setStorageValue([...dfConfig["cblk_exadvert"]], chrome.storage.sync, "cblk_exadvert", false);
+    setStorageValue(dfConfig["cblk_mintime"], chrome.storage.sync, "cblk_mintime", false);
     await setStorageValue({}, chrome.storage.local, "cblk_storage", false);
     await setStorageValue([0,0,0,0,0], chrome.storage.local, "cblk_counter", false);
     localCookieStorage = await getStorageValue(chrome.storage.local, "cblk_storage");
@@ -71,8 +72,12 @@ const createFEInput = function(cookie) {
           "expiry": datetimeToExpiry(cookie),
           "value": escapeString(cookie.value),
           "same_site": escapeString(cookie.sameSite),
+          "timestamp": Date.now()
         }
-      ]
+      ],
+      // last category label and timestamp
+      "last_label": -1,
+      "label_ts": 0
     };
 }
 
@@ -96,7 +101,8 @@ const updateFEInput = async function(prevCookie, newCookie) {
         "session": newCookie.session,
         "expiry": datetimeToExpiry(newCookie),
         "value": escapeString(newCookie.value),
-        "same_site": escapeString(newCookie.sameSite)
+        "same_site": escapeString(newCookie.sameSite),
+        "timestamp": Date.now()
     };
 
     // remove head if limit reached
@@ -173,9 +179,9 @@ const makePolicyDecision = async function(cookieDat, label) {
         console.assert(consentArray !== undefined, "User policy was somehow undefined!")
         if (consentArray[label]) {
             // spare the cookie
-            console.debug("Affirmative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+            //console.debug("Affirmative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
         } else {
-            console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+            //console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
 
             // First try to remove the cookie, using https as the protocol
             chrome.cookies.remove({
@@ -194,12 +200,12 @@ const makePolicyDecision = async function(cookieDat, label) {
                             // If failed again, report error.
                             console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                         } else {
-                            console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                            //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                             httpRemovalCounter += 1;
                         }
                     });
                 } else {
-                    console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                    //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                     httpsRemovalCounter += 1;
                 }
             });
@@ -237,21 +243,37 @@ const cookieLookup = function(cookieDat) {
  * @param {Object} cookieDat Original untransformed cookie object.
  * @param {Object} serializedCookie Transformed cookie object, with potential updates.
  */
-const enforcePolicy = async function (ckey, cookieDat, serializedCookie) {
+const enforcePolicy = async function (ckey, cookieDat, serializedCookie, storeUpdate) {
     let globalExcepts = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
     let ckDomain = sanitizeDomain(serializedCookie.domain);
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
         localStatsCounter[4] += 1;
-
     } else {
-        // classify the cookie
-        let label = cookieLookup(cookieDat);
-        if (label === -1) {
-            label = await classifyCookie(serializedCookie);
-        }
+        let minTime = await getStorageValue(chrome.storage.sync, "cblk_mintime");
+        let elapsed = Date.now() - serializedCookie["label_ts"];
 
-        localStatsCounter[label] += 1;
+        console.assert(typeof serializedCookie["last_label"] === "number", "Incorrect type stored in last label.");
+        console.assert(typeof serializedCookie["label_ts"] === "number", "Incorrect type stored in label timestamp.");
+
+        let label;
+        if (serializedCookie["last_label"] === -1 || elapsed > minTime) {
+            // classify the cookie
+            label = cookieLookup(cookieDat);
+            if (label === -1) {
+                label = await classifyCookie(serializedCookie);
+            }
+
+            localStatsCounter[label] += 1;
+            serializedCookie["last_label"] = label;
+            serializedCookie["label_ts"] = Date.now();
+            let cName = classIndexToString(label);
+            console.debug("Perform Prediction: Cookie (%s;%s;%s) receives label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName)
+        } else {
+            label = serializedCookie["last_label"];
+            let cName = classIndexToString(label);
+            console.debug("Skip Prediction: Cookie (%s;%s;%s) with label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName)
+        }
 
         // make a decision
         let dstate = await getStorageValue(chrome.storage.local, "cblk_pause")
@@ -262,6 +284,10 @@ const enforcePolicy = async function (ckey, cookieDat, serializedCookie) {
             makePolicyDecision(cookieDat, label);
         }
     }
+
+    if (storeUpdate) {
+        localCookieStorage[ckey] = serializedCookie;
+    }
 }
 
 /**
@@ -271,7 +297,7 @@ const enforcePolicy = async function (ckey, cookieDat, serializedCookie) {
  */
  const enforcePolicyWithoutHistory = function (ckey, cookieDat){
     let serializedCookie = createFEInput(cookieDat);
-    enforcePolicy(ckey, cookieDat, serializedCookie);
+    enforcePolicy(ckey, cookieDat, serializedCookie, false);
 }
 
 
@@ -283,10 +309,7 @@ const enforcePolicy = async function (ckey, cookieDat, serializedCookie) {
  */
  const enforcePolicyWithHistory = async function (ckey, cookieDat, storeUpdate){
     let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, localCookieStorage);
-    if (storeUpdate) {
-        localCookieStorage[ckey] = serializedCookie;
-    }
-    enforcePolicy(ckey, cookieDat, serializedCookie);
+    enforcePolicy(ckey, cookieDat, serializedCookie, storeUpdate);
 }
 
 
