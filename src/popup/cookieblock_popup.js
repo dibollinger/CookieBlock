@@ -40,7 +40,7 @@ const popupSetup = async function() {
     setStaticLocaleText("desc-box", "popupText");
     setStaticLocaleText("options", "popupButtonOptions");
 
-    let pauseState = await getStorageValue(browser.storage.local, "cblk_pause");
+    let pauseState = await getStorageValue(chrome.storage.local, "cblk_pause");
     document.getElementById("pause-check").checked = pauseState;
 
     let exceptionButton = document.getElementById("add-exception");
@@ -54,7 +54,7 @@ const popupSetup = async function() {
         } else {
             let sanitizedDomain = urlToUniformDomain(new URL(currentURL).hostname);
             if (sanitizedDomain) {
-                let exglobal = await getStorageValue(browser.storage.sync, "cblk_exglobal");
+                let exglobal = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
                 if (exglobal.includes(sanitizedDomain)){
                     exceptionButton.textContent = removeText;
                 }
@@ -81,7 +81,7 @@ const addGlobalException = async function() {
         let potentialErrMsg = chrome.i18n.getMessage("popupErrorTextGeneric");
         let sanitizedDomain = urlToUniformDomain(new URL(currentURL).hostname);
         try {
-            let domainList = await getStorageValue(browser.storage.sync, "cblk_exglobal");
+            let domainList = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
             if (domainList.includes(sanitizedDomain)){
                 potentialErrMsg = chrome.i18n.getMessage("popupErrorTextRemove");
                 let index = domainList.indexOf(sanitizedDomain);
@@ -96,7 +96,7 @@ const addGlobalException = async function() {
                 domainList.push(sanitizedDomain);
                 document.getElementById("add-exception").textContent = removeText;
             }
-            await setStorageValue(domainList, browser.storage.sync, "cblk_exglobal");
+            await setStorageValue(domainList, chrome.storage.sync, "cblk_exglobal");
         } catch (error) {
             showErrorBox(error, potentialErrMsg)
         }
@@ -106,7 +106,7 @@ const addGlobalException = async function() {
 // pause checkbox
 document.getElementById("pause-check").addEventListener("click", async () => {
     let pauseStatus = document.getElementById("pause-check").checked;
-    await setStorageValue(pauseStatus, browser.storage.local, "cblk_pause");
+    await setStorageValue(pauseStatus, chrome.storage.local, "cblk_pause");
 });
 
 // On click, get the current tab URL and add it to the global exceptions

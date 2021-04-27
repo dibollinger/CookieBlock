@@ -3,10 +3,10 @@
 
 // initialize the forests
 var forests = [undefined, undefined, undefined, undefined];
-getExtensionFile(browser.extension.getURL("ext_data/model/forest_class0.json"), "json", (f) => forests[0] = f);
-getExtensionFile(browser.extension.getURL("ext_data/model/forest_class1.json"), "json", (f) => forests[1] = f);
-getExtensionFile(browser.extension.getURL("ext_data/model/forest_class2.json"), "json", (f) => forests[2] = f);
-getExtensionFile(browser.extension.getURL("ext_data/model/forest_class3.json"), "json", (f) => forests[3] = f);
+getExtensionFile(chrome.extension.getURL("ext_data/model/forest_class0.json"), "json", (f) => forests[0] = f);
+getExtensionFile(chrome.extension.getURL("ext_data/model/forest_class1.json"), "json", (f) => forests[1] = f);
+getExtensionFile(chrome.extension.getURL("ext_data/model/forest_class2.json"), "json", (f) => forests[2] = f);
+getExtensionFile(chrome.extension.getURL("ext_data/model/forest_class3.json"), "json", (f) => forests[3] = f);
 
 
 /**

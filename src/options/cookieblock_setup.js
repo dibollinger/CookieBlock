@@ -8,7 +8,7 @@
  */
 const togglePause = async function() {
     let pauseStatus = document.getElementById("pause_checkbox").checked;
-    setStorageValue(pauseStatus, browser.storage.local, "cblk_pause");
+    setStorageValue(pauseStatus, chrome.storage.local, "cblk_pause");
 }
 
 /**
@@ -74,8 +74,8 @@ const updateAndClassify = async function() {
     await sending;
 
     // close once done
-    browser.tabs.getCurrent(function(tab) {
-        browser.tabs.remove(tab.id, () => {});
+    chrome.tabs.getCurrent(function(tab) {
+        chrome.tabs.remove(tab.id, () => {});
     })
 }
 
@@ -106,9 +106,9 @@ chrome.storage.onChanged.addListener(updateSelectionOnChange);
  const addPrefClickListener = function (checkboxID, idx) {
     let cb = document.getElementById(checkboxID);
     cb.addEventListener("click", async (event) => {
-        policy = await getStorageValue(browser.storage.sync, "cblk_userpolicy");
+        policy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
         policy[idx] = cb.checked;
-        setStorageValue(policy, browser.storage.sync, "cblk_userpolicy");
+        setStorageValue(policy, chrome.storage.sync, "cblk_userpolicy");
     });
 }
 

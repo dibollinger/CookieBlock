@@ -86,7 +86,7 @@ const createFEInput = function(cookie) {
 const updateFEInput = async function(prevCookie, newCookie) {
 
     let updateArray = prevCookie["variable_data"];
-    let updateLimit = await getStorageValue(browser.storage.local, "cblk_ulimit");
+    let updateLimit = await getStorageValue(chrome.storage.local, "cblk_ulimit");
 
     let updateStruct = {
         "host_only": newCookie.hostOnly,
@@ -135,7 +135,7 @@ const retrieveUpdatedCookie = async function(ckey, cookieDat, cookieStore) {
  */
 const classifyCookie = async function(feature_input) {
     let features = extractFeatures(feature_input);
-    let pscale = await getStorageValue(browser.storage.sync, "cblk_pscale");
+    let pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
     let label = await predictClass(features, pscale);
     console.assert(label >= 0 && label < 4, "Predicted label exceeded valid range: %d", label);
     return label;
@@ -155,20 +155,20 @@ const makePolicyDecision = async function(cookieDat, label) {
     let skipRejection = false;
     switch(label) {
         case 1: // functionality
-            skipRejection = (await getStorageValue(browser.storage.sync, "cblk_exfunc")).includes(ckDomain);
+            skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exfunc")).includes(ckDomain);
             break;
         case 2: // analytics
-            skipRejection = (await getStorageValue(browser.storage.sync, "cblk_exanal")).includes(ckDomain);
+            skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exanal")).includes(ckDomain);
             break;
         case 3: // advertising
-            skipRejection = (await getStorageValue(browser.storage.sync, "cblk_exadvert")).includes(ckDomain);
+            skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exadvert")).includes(ckDomain);
             break;
     }
 
     if (skipRejection) {
         console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
     } else {
-        let consentArray = await getStorageValue(browser.storage.sync, "cblk_userpolicy");
+        let consentArray = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
         console.assert(consentArray !== undefined, "User policy was somehow undefined!")
         if (consentArray[label]) {
             // spare the cookie
@@ -251,7 +251,7 @@ const classifyWithExceptions = async function (globalExcepts, ckey, cookieDat, s
         localStatsCounter[label] += 1;
 
         // make a decision
-        let dstate = await getStorageValue(browser.storage.local, "cblk_pause")
+        let dstate = await getStorageValue(chrome.storage.local, "cblk_pause")
         if (dstate) {
             let cName = classIndexToString(label);
             console.debug(`Pause Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${cName}`);
@@ -271,7 +271,7 @@ const enforcePolicyWithUpdates = async function (ckey, cookieDat){
     let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, localCookieStorage);
     localCookieStorage[ckey] = serializedCookie;
 
-    let globalExcepts = await getStorageValue(browser.storage.sync, "cblk_exglobal");
+    let globalExcepts = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
     classifyWithExceptions(globalExcepts, ckey, cookieDat, serializedCookie);
 }
 
@@ -310,7 +310,7 @@ const enforcePolicyWithoutUpdates = async function (ckey, cookieDat){
         localCookieStorage[ckey] = serializedCookie;
     }
 
-    getStorageValue(browser.storage.sync, "cblk_exglobal").then((ge) => {
+    getStorageValue(chrome.storage.sync, "cblk_exglobal").then((ge) => {
         classifyWithExceptions(ge, ckey, cookieDat, serializedCookie);
     });
 }
@@ -341,8 +341,8 @@ const handleInternalMessage = function(request, sender, sendResponse) {
                 let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
                 enforcePolicyWithoutUpdates(ckey, cookieDat);
             }
-            setStorageValue(localCookieStorage, browser.storage.local, "cblk_storage");
-            setStorageValue(localStatsCounter, browser.storage.local, "cblk_counter");
+            setStorageValue(localCookieStorage, chrome.storage.local, "cblk_storage");
+            setStorageValue(localStatsCounter, chrome.storage.local, "cblk_counter");
             sendResponse({response: "All cookies classified and policy enforced."});
         });
         return true;
@@ -359,19 +359,19 @@ const handleInternalMessage = function(request, sender, sendResponse) {
 
 // Periodically save the current cookie store (every minute)
 setInterval( async () => {
-    setStorageValue(localCookieStorage, browser.storage.local, "cblk_storage");
-    setStorageValue(localStatsCounter, browser.storage.local, "cblk_counter");
+    setStorageValue(localCookieStorage, chrome.storage.local, "cblk_storage");
+    setStorageValue(localStatsCounter, chrome.storage.local, "cblk_counter");
     console.debug("Saved current cookie store and stats counter.");
 }, 60_000);
 
 // set up defaults and listeners
-getExtensionFile(browser.extension.getURL("ext_data/default_config.json"), "json", initDefaults);
-getExtensionFile(browser.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
+getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", initDefaults);
+getExtensionFile(chrome.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
     for (let k of Object.keys(result["regex_match"])) {
         result["regex_match"][k][regexKey] = new RegExp(k);
     }
     known_cookies = result;
 });
-browser.cookies.onChanged.addListener(cookieChangeListener);
-browser.runtime.onInstalled.addListener(firstTimeSetup);
-browser.runtime.onMessage.addListener(handleInternalMessage);
+chrome.cookies.onChanged.addListener(cookieChangeListener);
+chrome.runtime.onInstalled.addListener(firstTimeSetup);
+chrome.runtime.onMessage.addListener(handleInternalMessage);
