@@ -2,9 +2,9 @@
 
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "author": "Dino Bollinger",
+  "author": "Information Security Group, ETH Zürich",
   "homepage_url": "https://github.com/dibollinger/CookieBlock",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "incognito": "spanning",
   "default_locale": "en",
 
