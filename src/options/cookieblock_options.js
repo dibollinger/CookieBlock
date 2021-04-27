@@ -117,6 +117,12 @@ const setupLocalization = function () {
     setStaticLocaleText("settings_title", "extensionName");
     setStaticLocaleText("settings_subtitle", "settingsSubtitle");
 
+    // Description
+    setStaticLocaleText("options-greet","optionsGreeting");
+    setStaticLocaleText("options-desc1","optionsDescriptionPG1");
+    setStaticLocaleText("options-desc2","optionsDescriptionPG2");
+    setStaticLocaleText("options-desc3","optionsDescriptionPG3");
+
     // Consent Preference Text
     setStaticLocaleText("cprefs_legend", "optionsHeaderConsent");
     setStaticLocaleText("cprefs_desc","consentDescription");

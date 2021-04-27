@@ -24,33 +24,43 @@
     "description": "Greeting message on the first time setup."
   },
 
+  "optionsGreeting": {
+    "message": "Welcome to CookieBlock!",
+    "description": "Greeting message on the options page."
+  },
+
   "optionsDescriptionPG1": {
-    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you do not consent towards. The categories you can choose from are listed below.",
+    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you did not consent towards. This is done independently of the website you visit. The categories you can choose from are listed below.",
     "description": "Description paragraph 1 seen on the options page."
   },
 
   "optionsDescriptionPG2": {
-    "message": "Note that CookieBlock is still in early development, and the classifier may not be completely accurate. We would appreciate any feedback on the performance of the extension.",
-    "description": "Description paragraph 1 seen on the options page."
+    "message": "Note that CookieBlock is experimental and still in development. It may be the case that essential website functionality is broken by the automatic removal of cookies. If this occurs, try to add an exception for that website, or increase the bias for necessary cookies. In the worst case, you can pause the removal of cookies temporarily.",
+    "description": "Description paragraph 2 seen on the options page."
+  },
+
+  "optionsDescriptionPG3": {
+    "message": "We would greatly appreciate feedback on all aspects of the extension.",
+    "description": "Description paragraph 3 seen on the options page."
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you do not consent towards. The categories you can choose from are listed below.",
+    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you did not consent towards. This is done independently of the website you visit. It uses an automated machine-learning classifier to assign the cookies to the categories, which has been trained in advance on a large dataset. The categories you can choose from are listed below.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 
   "firstTimeDescPG2": {
-    "message": "COOKIEBLOCK IS STILL IN EARLY DEVELOPMENT! It uses machine learning techniques to perform the classification, so the prediction may not always be accurate. If you notice that a website breaks, you can try to add an exception for that domain through the CookieBlock icon in the browser bar. This will prevent cookies originating from that website (but not third-parties) from being deleted. More fine-grained controls may be added in future versions.",
+    "message": "Note that CookieBlock is experimental and still in development. It may be the case that essential website functionality is broken by the automatic removal of cookies. If this occurs, try to add an exception for that website, or increase the bias for necessary cookies. In the worst case, you can pause the removal of cookies temporarily.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
   "firstTimeDescPG3": {
-    "message": "We would greatly appreciate feedback on the performance of the extension and whether there are any concrete cases of websites breaking.",
+    "message": "We would greatly appreciate feedback on all aspects of the extension.",
     "description": "Description paragraph 3 seen on the first time setup page."
   },
 
   "consentDescription" : {
-    "message" : "Select the types of cookies that you consent towards:",
+    "message" : "Select the categories of cookies that you consent towards:",
     "description" : "Description of the consent choices."
   },
 
@@ -75,28 +85,23 @@
   },
 
   "catNecessaryDesc": {
-    "message": "Strictly necessary cookies are required for essential services of the website to operate. Examples are cookies used for keeping track of the login state, or cookies used to keep track of shopping cart contents. Rejecting these cookies would cause websites to break, hence they are always enabled.",
+    "message": "Strictly necessary cookies are required for essential services of the website to operate. Some examples for this are login tokens which remember that a user is logged in, or cookies that keep track of the contents of a shopping cart. These cookies cannot be rejected, as doing so would cause websites to stop working correctly.",
     "description": "Description of the 'Necessary' category."
   },
 
   "catFunctionalityDesc": {
-    "message": "Functionality cookies serve to remember optional user preferences, such as language or website style. They are typically not required for essential services to work, but we recommend enabling them to improve the user experience.",
+    "message": "Functionality cookies serve to remember optional user preferences, such as the style of the website. They are typically not required for essential services to function. However, we recommend enabling them to improve the user experience.",
     "description": "Description of the 'Functionality' category."
   },
 
   "catAnalyticsDesc" : {
-    "message": "Analytics cookies are used to collect statistical information about how visitors use a website. This data is used to improve the site, and in principle does not require personal information. However, some websites may still collect sensitive data with these cookies.",
+    "message": "Analytics cookies are used to collect statistical information about how visitors use a website. These cookies serve to measure and improve the site performance. In principle, they do not require sensitive, personal information to be collected, and can rely on anonymized data.",
     "description": "Description of the 'Analytics' category."
   },
 
   "catAdvertisingDesc" : {
-    "message": "Advertising cookies track visitors across the web to display personalized advertisements. This also encompasses all cookies that are used to collect sensitive, personally identifiable information for the purpose of tracking and the sale of data. To protect the user's privacy, we recommend rejecting consent for these types of cookies.",
+    "message": "Advertising cookies collect sensitive user data and track visitor actions across the web to display personalized advertisements. The data collected in this way may also be sold off to third-parties. To protect your privacy, we recommend rejecting consent for these types of cookies.",
     "description": "Description of the 'Advertising' category."
-  },
-
-  "buttonUpdatePolicy" : {
-    "message": "Update Policy",
-    "description": "Label of the update button."
   },
 
   "headerAdditionalOptions" : {
@@ -115,7 +120,7 @@
   },
 
   "pauseDescription" : {
-    "message": "When enabled, stops the removal of cookies entirely, but still outputs the classification into the browser console. Useful for debugging or temporarily stopping cookie removal in case a website breaks.",
+    "message": "When enabled, stops the removal of cookies temporarily, but still outputs the classification into the browser console. Useful for debugging or stopping cookie removal in case a website breaks.",
     "description": "Description for the 'pause removal' button."
   },
 
@@ -125,7 +130,7 @@
   },
 
   "popupText" : {
-    "message": "Trust all cookies from this website?",
+    "message": "Trust cookies from this website?",
     "description": "Text present on the popup."
   },
 
@@ -140,7 +145,7 @@
   },
 
   "popupButtonOptions" : {
-    "message": "More Settings",
+    "message": "Open Settings",
     "description": "Button for opening the options page"
   },
 
@@ -155,12 +160,12 @@
   },
 
   "currentCookieEnforceDescription" : {
-    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all cookies that the automatic classifier assigns to categories you did not consent to.",
+    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all cookies that are assigned to categories you did not consent to.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
   "currentCookieEnforceDescriptionSetup" : {
-    "message" : "The button below will enforce the policy you selected above on all cookies currently stored in your browser. This will finalize the setup and remove any cookies that the classifier assigns to categories you did not consent towards. You can also skip this step if you want to keep your current cookies.",
+    "message" : "Clicking the button below will enforce the policy you selected above on all cookies currently stored in your browser, and close the setup window. This will remove any cookies that you did not consent towards. You can also skip this step and close the window manually if you want to keep your current cookies.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
@@ -175,17 +180,17 @@
   },
 
   "currentCookieEnforceMsg" : {
-    "message" : "Policy was enforced!",
+    "message" : "User policy was enforced!",
     "description" : "Message that appears after classifier was applied."
   },
 
   "globalExceptionsHeader" : {
-    "message" : "Website Exceptions",
+    "message" : "Domain Exceptions",
     "description" : "Header for the global extensions listing."
   },
 
   "globalExceptionsDescription" : {
-    "message" : "Cookies that originate from the domains in this list will always be permitted, regardless of the current consent policy. Use this to add exceptions to domains you trust, or if website functionality breaks.",
+    "message" : "Cookies that originate from the domains in this list will always be permitted, regardless of the current cookie consent policy. Use this to add exceptions to domains you trust, or if website functionality breaks.",
     "description" : "Decription for the global website exceptions."
   },
 
@@ -231,13 +236,8 @@
   },
 
   "categoryStatisticsDesc" : {
-    "message" : "Number of cookies that were assigned to which category:",
+    "message" : "Number of cookies that were assigned to each category:",
     "description" : "Description of the statistics."
-  },
-
-  "buttonSuccessMsg" : {
-    "message" : "Preferences updated!",
-    "description" : "Text displayed when the policy update button is clicked."
   },
 
   "addButton" : {
@@ -246,7 +246,7 @@
   },
 
   "statsNecessary": {
-    "message": "$COUNT$ Necessary",
+    "message": "$COUNT$ Necessary Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -254,7 +254,7 @@
     }
   },
   "statsFunctional": {
-    "message": "$COUNT$ Functional",
+    "message": "$COUNT$ Functionality Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -262,7 +262,7 @@
     }
   },
   "statsAnalytics": {
-    "message": "$COUNT$ Analytics",
+    "message": "$COUNT$ Analytics Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -270,7 +270,7 @@
     }
   },
   "statsAdvertising": {
-    "message": "$COUNT$ Advertising",
+    "message": "$COUNT$ Advertising Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -278,7 +278,7 @@
     }
   },
   "statsWhitelist": {
-    "message": "$COUNT$ Skipped",
+    "message": "$COUNT$ Skipped Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -287,7 +287,7 @@
   },
 
   "popupErrorTextGeneric": {
-    "message": "Something Went Wrong!",
+    "message": "An unknown error occurred!",
     "description": "Generic error message."
   },
 
@@ -312,7 +312,7 @@
   },
 
   "defaultButton": {
-    "message": "Reset Defaults",
+    "message": "Restore Defaults",
     "description": "Button text for resetting."
   },
 
@@ -322,12 +322,12 @@
   },
 
   "clearDataTitle": {
-    "message": "Clear Stored Cookie Data",
+    "message": "Clear Extension Data",
     "description": "Title for the 'clear cookie data' button."
   },
 
   "clearDataDescription": {
-    "message": "This button clears the cookie data stored inside the extension and the stats counters. It does not remove cookies from the browser itself!",
+    "message": "This button deletes the cookie data stored inside the extension, and resets the stat counters. It does not remove cookies from the browser itself!",
     "description": "Description for the 'clear cookie data' button."
   },
 
@@ -337,17 +337,17 @@
   },
 
   "clearDataText": {
-    "message": "Cookie data wiped!",
+    "message": "Extension data wiped!",
     "description": "Message that appears after hitting the clear data button."
   },
 
   "sliderTitle": {
-    "message": "Permissiveness Scale",
+    "message": "Bias for Necessary Cookies",
     "description": "Title for the slider."
   },
 
   "sliderDescription": {
-    "message": "This slider adjusts how commonly CookieBlock will assign cookies to the 'Strictly Necessary' class. Higher values can reduce website breakage at the cost of precision.",
+    "message": "This slider adjusts how commonly CookieBlock will assign cookies to the 'Strictly Necessary' class. Higher values will make CookieBlock decide on the 'Necessary' category more often. Increasing this can reduce website breakage at the cost of classification precision.",
     "description": "Explanation of the slider"
   },
 
@@ -357,17 +357,17 @@
   },
 
   "historyConsentTitle" :  {
-    "message": "Build Cookie History",
+    "message": "Keep Track of Cookie History",
     "description": "Description for the cookie history consent toggle."
   },
 
   "historyConsentDesc" :  {
-    "message": "By enabling this option, you consent to the extension collecting a separate history of cookies, including updates to said cookies. This history is kept entirely local and will never be sent outside the extension storage. Enabling this options allows the cookie classifier to make more informed decisions, and it allows the extension to recognize previously removed cookies, preventing repeat classification. If disabled, the classifier will always reclassify each cookie based on the current update.",
+    "message": "By enabling this option, you consent to collection of a separate history of cookies, including updates to said cookies. This history is entirely local and never leaves the extension storage. Enabling this option allows the cookie classifier to make more informed decisions, and it allows the extension to recognize previously removed cookies, preventing repeat classification. If disabled, the classifier will always reclassify each cookie based on the current contents.",
     "description": "Description for the cookie history consent checkbox."
   },
 
   "closeButtonText" : {
-    "message": "Close",
+    "message": "Close Tab",
     "description": "Label for the close button."
   }
 
