@@ -50,7 +50,6 @@
   },
 
   "browser_specific_settings": {
-    // Firefox
     "gecko": {
       "id": "cookieblock@example.com"
     }

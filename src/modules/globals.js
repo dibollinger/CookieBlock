@@ -194,14 +194,14 @@ const setStaticLocaleText = (elemID, locID, args=[]) => {
  * @param {Object} resp  Default configuration
  */
  const overrideDefaults = function(dfConfig) {
-    setStorageValue([...dfConfig["cblk_userpolicy"]], browser.storage.sync, "cblk_userpolicy");
-    setStorageValue(dfConfig["cblk_pscale"], browser.storage.sync, "cblk_pscale");
-    setStorageValue(dfConfig["cblk_pause"], browser.storage.local, "cblk_pause");
-    setStorageValue(dfConfig["cblk_ulimit"], browser.storage.local, "cblk_ulimit");
-    setStorageValue([...dfConfig["cblk_exglobal"]], browser.storage.sync, "cblk_exglobal");
-    setStorageValue([...dfConfig["cblk_exfunc"]], browser.storage.sync, "cblk_exfunc");
-    setStorageValue([...dfConfig["cblk_exanal"]], browser.storage.sync, "cblk_exanal");
-    setStorageValue([...dfConfig["cblk_exadvert"]], browser.storage.sync, "cblk_exadvert");
+    setStorageValue([...dfConfig["cblk_userpolicy"]], chrome.storage.sync, "cblk_userpolicy");
+    setStorageValue(dfConfig["cblk_pscale"], chrome.storage.sync, "cblk_pscale");
+    setStorageValue(dfConfig["cblk_pause"], chrome.storage.local, "cblk_pause");
+    setStorageValue(dfConfig["cblk_ulimit"], chrome.storage.local, "cblk_ulimit");
+    setStorageValue([...dfConfig["cblk_exglobal"]], chrome.storage.sync, "cblk_exglobal");
+    setStorageValue([...dfConfig["cblk_exfunc"]], chrome.storage.sync, "cblk_exfunc");
+    setStorageValue([...dfConfig["cblk_exanal"]], chrome.storage.sync, "cblk_exanal");
+    setStorageValue([...dfConfig["cblk_exadvert"]], chrome.storage.sync, "cblk_exadvert");
   }
 
 

@@ -91,7 +91,6 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
     let nCB = document.getElementById("nec_checkbox");
     nCB.disabled = !pauseState;
     nCB.style.opacity = pauseState ? "1.0" : "0.5";
-    nCB.style.filter = pauseState ? "grayscale(0%)" : "grayscale(100%)";
     if (!pauseState) {
         let policy = await getStorageValue(browser.storage.sync, "cblk_userpolicy")
         if (policy[0] !== true){
@@ -311,35 +310,37 @@ document.getElementById("pause_checkbox").addEventListener("click", async () => 
 document.getElementById("classify_button").addEventListener("click", async () => {
     setStaticLocaleText("classify_applytext", "currentCookieProgressMsg");
     document.getElementById("classify_applytext").hidden = false;
-    let sending = browser.runtime.sendMessage({"classify_all": true});
-    sending.then((msg) => {
-        console.debug(msg.response);
-        setStaticLocaleText("classify_applytext", "currentCookieEnforceMsg");
-    }).catch((err) => {
-        console.error(err);
-        setStaticLocaleText("classify_applytext", "applyErrorText");
+    chrome.runtime.sendMessage({"classify_all": true}, (msg) =>{
+        if (chrome.runtime.lastError){
+            console.error(chrome.runtime.lastError);
+            setStaticLocaleText("classify_applytext", "applyErrorText");
+        } else{
+            console.debug(msg.response);
+            setStaticLocaleText("classify_applytext", "currentCookieEnforceMsg");
+        }
     });
 });
 
 // reset defaults button
 document.getElementById("default_button").addEventListener("click", () => {
-    getExtensionFile(browser.extension.getURL("ext_data/default_config.json"), "json", (defaultConfig) => {
-        overrideDefaults(defaultConfig);
+    getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (dfConfig) => {
+        overrideDefaults(dfConfig);
         document.getElementById("default_applytext").hidden = false;
     });
 });
 
 // reset storage button
 document.getElementById("clear_button").addEventListener("click", () => {
-    let sending = browser.runtime.sendMessage({"reset_storage": true});
-    sending.then((msg) => {
-        console.debug(msg.response);
-        setStaticLocaleText("clear_applytext", "clearDataText");
-    }).catch((err) => {
-        console.error(err);
-        setStaticLocaleText("clear_applytext", "applyErrorText");
+    chrome.runtime.sendMessage({"reset_storage": true}, (msg) => {
+        if (chrome.runtime.lastError) {
+            console.error(err);
+            setStaticLocaleText("clear_applytext", "applyErrorText");
+        } else {
+            console.debug(msg.response);
+            setStaticLocaleText("clear_applytext", "clearDataText");
+        }
+        document.getElementById("clear_applytext").hidden = false;
     });
-    document.getElementById("clear_applytext").hidden = false;
 });
 
 
