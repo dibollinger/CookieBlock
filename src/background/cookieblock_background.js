@@ -166,7 +166,7 @@ const makePolicyDecision = async function(cookieDat, label) {
     }
 
     if (skipRejection) {
-        //console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
+        console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
     } else {
         let consentArray = await getStorageValue(browser.storage.sync, "cblk_userpolicy");
         console.assert(consentArray !== undefined, "User policy was somehow undefined!")
@@ -195,7 +195,7 @@ const makePolicyDecision = async function(cookieDat, label) {
                             console.warn(`Error: ${chrome.runtime.lastError}`);
                             console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                         } else {
-                            // console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                            console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                             httpRemovalCounter += 1;
                         }
                     });
