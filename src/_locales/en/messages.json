@@ -160,7 +160,7 @@
   },
 
   "currentCookieEnforceDescriptionSetup" : {
-    "message" : "The button below will enforce the policy you selected above on all cookies currently stored in your browser. This will remove any cookies that the classifier assigns to categories you did not consent towards. You can also skip this step if you want to keep the current cookies.",
+    "message" : "The button below will enforce the policy you selected above on all cookies currently stored in your browser. This will finalize the setup and remove any cookies that the classifier assigns to categories you did not consent towards. You can also skip this step if you want to keep your current cookies.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
@@ -354,6 +354,21 @@
   "applyErrorText" : {
     "message": "Process failed!",
     "description": "Error message if something goes wrong with the buttons."
+  },
+
+  "historyConsentTitle" :  {
+    "message": "Build Cookie History",
+    "description": "Description for the cookie history consent toggle."
+  },
+
+  "historyConsentDesc" :  {
+    "message": "By enabling this option, you consent to the extension collecting a separate history of cookies, including updates to said cookies. This history is kept entirely local and will never be sent outside the extension storage. Enabling this options allows the cookie classifier to make more informed decisions, and it allows the extension to recognize previously removed cookies, preventing repeat classification. If disabled, the classifier will always reclassify each cookie based on the current update.",
+    "description": "Description for the cookie history consent checkbox."
+  },
+
+  "closeButtonText" : {
+    "message": "Close",
+    "description": "Label for the close button."
   }
 
 }

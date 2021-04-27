@@ -121,6 +121,9 @@ const setupLocalization = function () {
     setStaticLocaleText("advert_desc","catAdvertisingDesc");
 
     // Additional Options
+    setStaticLocaleText("history-consent-title", "historyConsentTitle");
+    setStaticLocaleText("history-consent-desc", "historyConsentDesc");
+
     setStaticLocaleText("slider_title", "sliderTitle");
     setStaticLocaleText("slider_desc", "sliderDescription");
 
@@ -192,6 +195,9 @@ const setupSettingsPage = async function() {
     restoreExceptionList("cblk_exanal", "analytics_exceptions");
     restoreExceptionList("cblk_exadvert", "advertising_exceptions");
 
+    let hconsent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
+    document.getElementById("history-consent-checkbox").checked = hconsent;
+
     let policy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
     document.getElementById("nec_checkbox").checked = policy[0];
     document.getElementById("func_checkbox").checked = policy[1];
@@ -260,6 +266,10 @@ const logStorageChange = function(changes, area) {
         if (changedItems.includes("cblk_pscale")) {
             nfslider.value = changes["cblk_pscale"].newValue;
             sliderValDisplay.innerHTML = changes["cblk_pscale"].newValue;
+        }
+
+        if (changedItems.includes("cblk_hconsent")) {
+            document.getElementById("history-consent-checkbox").checked = changes["cblk_hconsent"].newValue;
         }
     } else if (area === "local") {
         if (changedItems.includes("cblk_pause")){
@@ -382,11 +392,17 @@ addEnterListener("func_excepts_input", "func_excepts_submit");
 addEnterListener("analytics_excepts_input", "analytics_excepts_submit");
 addEnterListener("advert_excepts_input", "advert_excepts_submit");
 
-
+// slider
 nfslider.oninput = function() {;
     sliderValDisplay.innerHTML = this.value;
 }
 
 nfslider.addEventListener("mouseup", function(event) {
     setStorageValue(this.value, chrome.storage.sync, "cblk_pscale");
+});
+
+// consent checkbox
+const histCheckbox = document.getElementById("history-consent-checkbox");
+histCheckbox.addEventListener("click", (ev) => {
+    setStorageValue(histCheckbox.checked, chrome.storage.sync, "cblk_hconsent");
 });

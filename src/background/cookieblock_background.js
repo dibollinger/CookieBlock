@@ -25,6 +25,7 @@ var localStatsCounter = undefined;
     setStorageValue(dfConfig["cblk_pscale"], chrome.storage.sync, "cblk_pscale", false);
     setStorageValue(dfConfig["cblk_pause"], chrome.storage.local, "cblk_pause", false);
     setStorageValue(dfConfig["cblk_ulimit"], chrome.storage.local, "cblk_ulimit", false);
+    setStorageValue(dfConfig["cblk_hconsent"], chrome.storage.sync, "cblk_hconsent", false);
     setStorageValue([...dfConfig["cblk_exglobal"]], chrome.storage.sync, "cblk_exglobal", false);
     setStorageValue([...dfConfig["cblk_exfunc"]], chrome.storage.sync, "cblk_exfunc", false);
     setStorageValue([...dfConfig["cblk_exanal"]], chrome.storage.sync, "cblk_exanal", false);
@@ -231,9 +232,13 @@ const cookieLookup = function(cookieDat) {
 
 
 /**
- * Async helper to reduce code duplication
+ * Enforce the consent policy.
+ * @param {String} ckey identifies the cookie
+ * @param {Object} cookieDat Original untransformed cookie object.
+ * @param {Object} serializedCookie Transformed cookie object, with potential updates.
  */
-const classifyWithExceptions = async function (globalExcepts, ckey, cookieDat, serializedCookie) {
+const enforcePolicy = async function (ckey, cookieDat, serializedCookie) {
+    let globalExcepts = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
     let ckDomain = sanitizeDomain(serializedCookie.domain);
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
@@ -260,17 +265,28 @@ const classifyWithExceptions = async function (globalExcepts, ckey, cookieDat, s
 }
 
 /**
- * Enforce the user policy by classifying the cookie and deleting it if it belongs to a rejected category.
+ * Enforces the cookie consent policy without using or updating a local cookie storage.
+ * @param {String} ckey String that identifies the cookie uniquely.
+ * @param {Object} cookieDat Object that contains the data for the current cookie.
+ */
+ const enforcePolicyWithoutHistory = function (ckey, cookieDat){
+    let serializedCookie = createFEInput(cookieDat);
+    enforcePolicy(ckey, cookieDat, serializedCookie);
+}
+
+
+/**
+ * Enforce the cookie consent policy, utilizing and updating the local cookie history.
  * @param {String} ckey String that identifies the cookie uniquely.
  * @param {Object} cookieDat Object that contains the data for the current cookie update.
+ * @param {Boolean} storeUpdate If true, will store the update to the cookie.
  */
-const enforcePolicyWithUpdates = async function (ckey, cookieDat){
-    // Update the current cookie storage
+ const enforcePolicyWithHistory = async function (ckey, cookieDat, storeUpdate){
     let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, localCookieStorage);
-    localCookieStorage[ckey] = serializedCookie;
-
-    let globalExcepts = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
-    classifyWithExceptions(globalExcepts, ckey, cookieDat, serializedCookie);
+    if (storeUpdate) {
+        localCookieStorage[ckey] = serializedCookie;
+    }
+    enforcePolicy(ckey, cookieDat, serializedCookie);
 }
 
 
@@ -279,7 +295,7 @@ const enforcePolicyWithUpdates = async function (ckey, cookieDat){
 * Classifies the cookie and rejects it based on user policy.
 * @param {Object} changeInfo  Contains the cookie itself, and cause info.
 */
-const cookieChangeListener = function(changeInfo) {
+const cookieChangeListener = async function(changeInfo) {
     // do nothing in this case
     if (changeInfo.removed) {
         return;
@@ -288,30 +304,15 @@ const cookieChangeListener = function(changeInfo) {
     // construct the key for keeping track of cookie updates
     let cookieDat = changeInfo.cookie;
     let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-    enforcePolicyWithUpdates(ckey, cookieDat);
-};
 
-
-/**
- * Synchronous variant of policy enforcement used for the "classify current cookies" button.
- * Does not append cookie updates if the cookie already is recorded.
- * @param {String} ckey String that identifies the cookie uniquely.
- * @param {Object} cookieDat Object that contains the data for the current cookie.
- */
-const enforcePolicyWithoutUpdates = async function (ckey, cookieDat){
-
-    let serializedCookie;
-    if (ckey in localCookieStorage) {
-        serializedCookie = localCookieStorage[ckey];
+    // check if consent is given for history storing
+    let history_consent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
+    if (history_consent) {
+        enforcePolicyWithHistory(ckey, cookieDat, true);
     } else {
-        serializedCookie = createFEInput(cookieDat);
-        localCookieStorage[ckey] = serializedCookie;
+        enforcePolicyWithoutHistory(ckey, cookieDat);
     }
-
-    getStorageValue(chrome.storage.sync, "cblk_exglobal").then((ge) => {
-        classifyWithExceptions(ge, ckey, cookieDat, serializedCookie);
-    });
-}
+};
 
 
 /**
@@ -334,14 +335,21 @@ const firstTimeSetup = function(details) {
 const handleInternalMessage = function(request, sender, sendResponse) {
     console.debug("Background script received a message.")
     if (request.classify_all) {
-        chrome.cookies.getAll({}, (allCookies) => {
-            for (let cookieDat of allCookies) {
-                let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-                enforcePolicyWithoutUpdates(ckey, cookieDat);
-            }
-            setStorageValue(localCookieStorage, chrome.storage.local, "cblk_storage");
-            setStorageValue(localStatsCounter, chrome.storage.local, "cblk_counter");
-            sendResponse({response: "All cookies classified and policy enforced."});
+        getStorageValue(chrome.storage.sync, "cblk_hconsent").then((history_consent) => {
+            chrome.cookies.getAll({}, (allCookies) => {
+                for (let cookieDat of allCookies) {
+                    let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
+                        // check if consent is given for history storing
+                    if (history_consent) {
+                        enforcePolicyWithHistory(ckey, cookieDat, false);
+                    } else {
+                        enforcePolicyWithoutHistory(ckey, cookieDat);
+                    }
+                }
+                setStorageValue(localCookieStorage, chrome.storage.local, "cblk_storage");
+                setStorageValue(localStatsCounter, chrome.storage.local, "cblk_counter");
+                sendResponse({response: "All cookies classified and policy enforced."});
+            });
         });
         return true;
     } else if (request.get_stats) {

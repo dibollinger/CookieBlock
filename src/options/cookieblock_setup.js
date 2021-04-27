@@ -4,19 +4,17 @@
 // Script that controls the first-time setup of the extension
 
 /**
- * Toggle the pause state
- */
-const togglePause = async function() {
-    let pauseStatus = document.getElementById("pause_checkbox").checked;
-    setStorageValue(pauseStatus, chrome.storage.local, "cblk_pause");
-}
-
-/**
  * Function that contains the localization text assignments.
  */
  const setupLocalization = function () {
     setStaticLocaleText("init_title", "extensionName");
     setStaticLocaleText("init_subtitle", "firstTimeSubtitle");
+
+    setStaticLocaleText("general-options-legend", "headerAdditionalOptions");
+    setStaticLocaleText("general-options-desc", "additionalOptionsDesc");
+
+    setStaticLocaleText("history-consent-title", "historyConsentTitle");
+    setStaticLocaleText("history-consent-desc", "historyConsentDesc");
 
     setStaticLocaleText("setup_greet", "firstTimeGreeting");
     setStaticLocaleText("setup_desc1","firstTimeDescPG1");
@@ -55,29 +53,13 @@ const setupInitPage = async function() {
     document.getElementById("anal_checkbox").checked = false;
     document.getElementById("advert_checkbox").checked = false;
     document.getElementById("pause_checkbox").checked = false;
+    document.getElementById("history-consent-checkbox").checked = false;
 
     // pause stuff
     document.getElementById("pause-div").hidden = !enableExtraOptions;
 }
 
-/**
- * Button to update the settings.
- */
-const updateAndClassify = async function() {
-    document.getElementById("apply_text").hidden = false;
-    setStaticLocaleText("apply_text", "currentCookieProgressMsg");
-    let sending = chrome.runtime.sendMessage({"classify_all": true}, (msg) => {
-        setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
-        console.log(`Process completed with message: ${msg}.`);
-    });
-
-    await sending;
-
-    // close once done
-    chrome.tabs.getCurrent(function(tab) {
-        chrome.tabs.remove(tab.id, () => {});
-    })
-}
+document.addEventListener("DOMContentLoaded", setupInitPage);
 
 /**
  * Log the storage area that changed, then for each item changed,
@@ -117,8 +99,28 @@ addPrefClickListener("func_checkbox", 1);
 addPrefClickListener("anal_checkbox", 2);
 addPrefClickListener("advert_checkbox", 3);
 
+// Set policy button
+document.getElementById("set_policy").addEventListener("click", (ev) => {
+    document.getElementById("apply_text").hidden = false;
+    chrome.runtime.sendMessage({"classify_all": true}, (msg) => {
+        setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
+        console.log(`Process completed with message: ${msg}.`);
 
-// Listeners
-document.addEventListener("DOMContentLoaded", setupInitPage);
-document.querySelector("#pause_checkbox").addEventListener("click", togglePause);
-document.querySelector("#set_policy").addEventListener("click", updateAndClassify);
+        // close once done
+        chrome.tabs.getCurrent(function(tab) {
+            chrome.tabs.remove(tab.id, () => {});
+        })
+    });
+});
+
+// pause checkbox
+const pauseCheckbox = document.getElementById("pause_checkbox");
+pauseCheckbox.addEventListener("click", (ev) => {
+    setStorageValue(pauseCheckbox.checked, chrome.storage.local, "cblk_pause");
+});
+
+// consent checkbox
+const histCheckbox = document.getElementById("history-consent-checkbox");
+histCheckbox.addEventListener("click", (ev) => {
+    setStorageValue(histCheckbox.checked, chrome.storage.sync, "cblk_hconsent");
+});

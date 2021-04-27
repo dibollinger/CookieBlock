@@ -6,5 +6,6 @@
     "cblk_exfunc": [],
     "cblk_exanal": [],
     "cblk_exadvert": [],
-    "cblk_pscale": 5
+    "cblk_pscale": 5,
+    "cblk_hconsent": false
 }

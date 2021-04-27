@@ -24,7 +24,21 @@
     </div>
     <hr class="thin">
     <div class="settings_group">
-        <fieldset class="preference_form">
+        <fieldset id="general-options" class="preference_form">
+            <legend id="general-options-legend" style="margin-top: .75em;"></legend>
+            <div id="general-options-desc" class="overview_description"></div>
+            <input id="history-consent-checkbox" type="checkbox" class="checkbox">
+            <label id="history-consent-title" for="history-consent-checkbox" class="catname"></label>
+            <div id="history-consent-desc" class=class_desc></div>
+            <div id="pause-div" hidden>
+                <hr class="thin">
+                <input id="pause_checkbox" type="checkbox" class="checkbox">
+                <label id="pause_title" for="pause_checkbox" class="catname"></label>
+            <div id="pause_desc" class="class_desc"></div>
+        </div>
+        </fieldset>
+        <hr class="thick">
+        <fieldset id="consent-preferences" class="preference_form">
             <legend id="cprefs_legend" style="margin-top: .75em;"></legend>
             <div id="cprefs_desc" class="overview_description"></div>
 
@@ -49,13 +63,6 @@
             <label id="advert_title" for="advert_checkbox" class="catname"></label>
             <div id="advert_desc" class=class_desc></div>
             <hr class="thin">
-
-            <div id="pause-div" hidden>
-                <input id="pause_checkbox" type="checkbox" class="checkbox">
-                <label id="pause_title" for="pause_checkbox" class="catname"></label>
-                <div id="pause_desc" class="class_desc"></div>
-                <hr class="thin">
-            </div>
 
             <div id="classify_title" class="catname missing_checkbox" style="margin-top: 1.25em;"></div>
             <div id="classify_desc" class="class_desc"></div>

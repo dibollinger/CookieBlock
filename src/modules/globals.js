@@ -202,6 +202,7 @@ const setStaticLocaleText = (elemID, locID, args=[]) => {
     setStorageValue([...dfConfig["cblk_exfunc"]], chrome.storage.sync, "cblk_exfunc");
     setStorageValue([...dfConfig["cblk_exanal"]], chrome.storage.sync, "cblk_exanal");
     setStorageValue([...dfConfig["cblk_exadvert"]], chrome.storage.sync, "cblk_exadvert");
+    setStorageValue(dfConfig["cblk_hconsent"], chrome.storage.sync, "cblk_hconsent");
   }
 
 
