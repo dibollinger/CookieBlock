@@ -16,6 +16,51 @@ var localCookieStorage = undefined;
 var localStatsCounter = undefined;
 
 /**
+ * Check if the cookie is contained in the storage.
+ * @param {Object} cookieDat Raw untransformed cookie data.
+ * @returns {Boolean} true if contained, false otherwise
+ */
+const checkCookieInStorage = function(cookieDat) {
+    console.assert(localCookieStorage !== undefined, "Local cookie storage was undefined!");
+    let d = urlToUniformDomain(cookieDat.domain);
+    if (d in localCookieStorage) {
+        let p = cookieDat.path;
+        if (p in localCookieStorage[d]) {
+            return cookieDat.name in localCookieStorage[d][p];
+        }
+    }
+    return false;
+}
+
+/**
+ * Insert serialized cookie into storage
+ * @param {Object} cookieDat
+ * @returns
+ */
+const insertCookieIntoStorage = function(cookieDat, serializedCookie) {
+    console.assert(localCookieStorage !== undefined, "Local cookie storage was undefined!");
+
+    let d = urlToUniformDomain(cookieDat.domain);
+    let p = cookieDat.path;
+
+    localCookieStorage[d] = localCookieStorage[d] || {};
+    localCookieStorage[d][p] = localCookieStorage[d][p] || {};
+    localCookieStorage[d][p][cookieDat.name] = serializedCookie;
+}
+
+/**
+ * Retrieve serialized cookie from storage
+ * @param {*} cookieDat
+ * @returns
+ */
+const retrieveCookieFromStorage = function(cookieDat) {
+    console.assert(localCookieStorage !== undefined, "Local cookie storage was undefined!");
+    let d = urlToUniformDomain(cookieDat.domain);
+    return localCookieStorage[d][cookieDat.path][cookieDat.name];
+}
+
+
+/**
  * Asynchronous callback function to set up config and storage defaults.
  * This initializes all chrome local and sync storage objects if undefined.
  * @param {Object} resp  Default configuration
@@ -119,19 +164,18 @@ const updateFEInput = async function(prevCookie, newCookie) {
 /**
 * Update the extension-specific cookie update storage, for feature extraction inputs.
 * Either creates a new object or updates an existing one if found.
-* @param  {String} ckey          String key that identifies the cookie.
 * @param  {Object} cookieDat     Cookie data object as received from the browser.
 * @param  {Object} cookieStore   Object in which all cookies are indexed.
 * @return {Promise<object>}      The new feature extraction input.
 */
-const retrieveUpdatedCookie = async function(ckey, cookieDat, cookieStore) {
-    let transformedCookie;
-    if (ckey in cookieStore) {
-        transformedCookie = await updateFEInput(cookieStore[ckey], cookieDat);
+const serializeOrUpdate = async function(cookieDat) {
+    let serializedCookie;
+    if (checkCookieInStorage(cookieDat)) {
+        serializedCookie = await updateFEInput(retrieveCookieFromStorage(cookieDat), cookieDat);
     } else {
-        transformedCookie = createFEInput(cookieDat);
+        serializedCookie = createFEInput(cookieDat);
     }
-    return transformedCookie;
+    return serializedCookie;
 };
 
 
@@ -239,11 +283,11 @@ const cookieLookup = function(cookieDat) {
 
 /**
  * Enforce the consent policy.
- * @param {String} ckey identifies the cookie
  * @param {Object} cookieDat Original untransformed cookie object.
  * @param {Object} serializedCookie Transformed cookie object, with potential updates.
  */
-const enforcePolicy = async function (ckey, cookieDat, serializedCookie, storeUpdate) {
+const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) {
+    let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
     let globalExcepts = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
     let ckDomain = sanitizeDomain(serializedCookie.domain);
     if (globalExcepts.includes(ckDomain)) {
@@ -286,30 +330,29 @@ const enforcePolicy = async function (ckey, cookieDat, serializedCookie, storeUp
     }
 
     if (storeUpdate) {
-        localCookieStorage[ckey] = serializedCookie;
+        // check if consent is given for history storing
+        insertCookieIntoStorage(cookieDat, serializedCookie);
     }
 }
 
 /**
  * Enforces the cookie consent policy without using or updating a local cookie storage.
- * @param {String} ckey String that identifies the cookie uniquely.
  * @param {Object} cookieDat Object that contains the data for the current cookie.
  */
- const enforcePolicyWithoutHistory = function (ckey, cookieDat){
+ const enforcePolicyWithoutHistory = function (cookieDat){
     let serializedCookie = createFEInput(cookieDat);
-    enforcePolicy(ckey, cookieDat, serializedCookie, false);
+    enforcePolicy(cookieDat, serializedCookie, false);
 }
 
 
 /**
  * Enforce the cookie consent policy, utilizing and updating the local cookie history.
- * @param {String} ckey String that identifies the cookie uniquely.
  * @param {Object} cookieDat Object that contains the data for the current cookie update.
  * @param {Boolean} storeUpdate If true, will store the update to the cookie.
  */
- const enforcePolicyWithHistory = async function (ckey, cookieDat, storeUpdate){
-    let serializedCookie = await retrieveUpdatedCookie(ckey, cookieDat, localCookieStorage);
-    enforcePolicy(ckey, cookieDat, serializedCookie, storeUpdate);
+ const enforcePolicyWithHistory = async function (cookieDat, storeUpdate){
+    let serializedCookie = await serializeOrUpdate(cookieDat);
+    enforcePolicy(cookieDat, serializedCookie, storeUpdate);
 }
 
 
@@ -324,16 +367,12 @@ const cookieChangeListener = async function(changeInfo) {
         return;
     }
 
-    // construct the key for keeping track of cookie updates
-    let cookieDat = changeInfo.cookie;
-    let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-
     // check if consent is given for history storing
     let history_consent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
     if (history_consent) {
-        enforcePolicyWithHistory(ckey, cookieDat, true);
+        enforcePolicyWithHistory(changeInfo.cookie, true);
     } else {
-        enforcePolicyWithoutHistory(ckey, cookieDat);
+        enforcePolicyWithoutHistory(changeInfo.cookie);
     }
 };
 
@@ -361,12 +400,10 @@ const handleInternalMessage = function(request, sender, sendResponse) {
         getStorageValue(chrome.storage.sync, "cblk_hconsent").then((history_consent) => {
             chrome.cookies.getAll({}, (allCookies) => {
                 for (let cookieDat of allCookies) {
-                    let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-                        // check if consent is given for history storing
                     if (history_consent) {
-                        enforcePolicyWithHistory(ckey, cookieDat, false);
+                        enforcePolicyWithHistory(cookieDat, false);
                     } else {
-                        enforcePolicyWithoutHistory(ckey, cookieDat);
+                        enforcePolicyWithoutHistory(cookieDat);
                     }
                 }
                 setStorageValue(localCookieStorage, chrome.storage.local, "cblk_storage");
