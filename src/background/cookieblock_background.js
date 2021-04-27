@@ -177,31 +177,33 @@ const makePolicyDecision = async function(cookieDat, label) {
             console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
 
             // First try to remove the cookie, using https as the protocol
-            let remResult = await chrome.cookies.remove({
+            chrome.cookies.remove({
                 "name": cookieDat.name,
                 "url": "https://" + cookieDat.domain + cookieDat.path,
                 "storeId": cookieDat.storeId
-            });
-
-            // check if removal was successful -- if not, retry with http protocol
-            if (remResult === null){
-                remResult = await chrome.cookies.remove({
-                    "name": cookieDat.name,
-                    "url": "http://" + cookieDat.domain + cookieDat.path,
-                    "storeId": cookieDat.storeId
-                });
-
-                if (remResult === null){
-                    // If failed again, report error.
-                    console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+            }, (remResultHTTPS) => {
+                // check if removal was successful -- if not, retry with http protocol
+                if (remResultHTTPS === null){
+                    console.warn(`Failed to remove cookie via HTTPS: ${chrome.runtime.lastError}`);
+                    remResultHTTPS = chrome.cookies.remove({
+                        "name": cookieDat.name,
+                        "url": "http://" + cookieDat.domain + cookieDat.path,
+                        "storeId": cookieDat.storeId
+                    }, (remResultHTTP) => {
+                        if (remResultHTTP === null){
+                            // If failed again, report error.
+                            console.warn(`Error: ${chrome.runtime.lastError}`);
+                            console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                        } else {
+                            // console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                            httpRemovalCounter += 1;
+                        }
+                    });
                 } else {
-                    console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-                    httpRemovalCounter += 1;
+                    console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                    httpsRemovalCounter += 1;
                 }
-            } else {
-                console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-                httpsRemovalCounter += 1;
-            }
+            });
         }
     }
 };
