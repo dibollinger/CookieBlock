@@ -278,7 +278,7 @@
     }
   },
   "statsWhitelist": {
-    "message": "$COUNT$ Whitelisted",
+    "message": "$COUNT$ Skipped",
     "placeholders": {
       "count" : {
         "content" : "$1"

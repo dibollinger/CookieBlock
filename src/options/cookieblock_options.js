@@ -1,9 +1,19 @@
 // Author: Dino Bollinger
 // License: MIT
 
-/** Permissiveness Slider Stuff */
+// HTML elements
+const histCheckbox = document.getElementById("history-consent-checkbox");
+const pauseCheckbox = document.getElementById("pause_checkbox");
 const nfslider = document.getElementById("nfslider");
 const sliderValDisplay = document.getElementById("slider_value");
+const clearButton = document.getElementById("clear_button");
+const defaultButton = document.getElementById("default_button");
+const classifyButton = document.getElementById("classify_button");
+const necessaryCheckbox = document.getElementById("nec_checkbox");
+const functionalityCheckbox = document.getElementById("func_checkbox");
+const analyticsCheckbox = document.getElementById("anal_checkbox");
+const advertisingCheckbox = document.getElementById("advert_checkbox");
+
 
 /**
  * Remove an item from a dynamically generated exception list.
@@ -88,9 +98,8 @@ const handleExceptionSubmit = async function(inputID, storageID, listID) {
  * @param {Boolean} pauseState
  */
  const enableNecessaryCheckboxIfPaused = async function(pauseState) {
-    let nCB = document.getElementById("nec_checkbox");
-    nCB.disabled = !pauseState;
-    nCB.style.opacity = pauseState ? "1.0" : "0.5";
+    necessaryCheckbox.disabled = !pauseState;
+    necessaryCheckbox.style.opacity = pauseState ? "1.0" : "0.5";
     if (!pauseState) {
         let policy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy")
         if (policy[0] !== true){
@@ -195,18 +204,16 @@ const setupSettingsPage = async function() {
     restoreExceptionList("cblk_exanal", "analytics_exceptions");
     restoreExceptionList("cblk_exadvert", "advertising_exceptions");
 
-    let hconsent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
-    document.getElementById("history-consent-checkbox").checked = hconsent;
+    histCheckbox.checked = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
 
     let policy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
-    document.getElementById("nec_checkbox").checked = policy[0];
-    document.getElementById("func_checkbox").checked = policy[1];
-    document.getElementById("anal_checkbox").checked = policy[2];
-    document.getElementById("advert_checkbox").checked = policy[3];
+    necessaryCheckbox.checked = policy[0];
+    functionalityCheckbox.checked = policy[1];
+    analyticsCheckbox.checked = policy[2];
+    advertisingCheckbox.checked = policy[3];
 
     let pauseState = await getStorageValue(chrome.storage.local, "cblk_pause");
-    document.getElementById("pause_checkbox").checked = pauseState;
-
+    pauseCheckbox.checked = pauseState;
     enableNecessaryCheckboxIfPaused(pauseState);
 
     let permScale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
@@ -253,10 +260,10 @@ const logStorageChange = function(changes, area) {
     if (area === "sync") {
         if (changedItems.includes("cblk_userpolicy")) {
             newPolicy = changes["cblk_userpolicy"].newValue;
-            document.getElementById("nec_checkbox").checked = newPolicy[0];
-            document.getElementById("func_checkbox").checked = newPolicy[1];
-            document.getElementById("anal_checkbox").checked = newPolicy[2];
-            document.getElementById("advert_checkbox").checked = newPolicy[3];
+            necessaryCheckbox.checked = newPolicy[0];
+            functionalityCheckbox.checked = newPolicy[1];
+            analyticsCheckbox.checked = newPolicy[2];
+            advertisingCheckbox.checked = newPolicy[3];
         }
 
         if (changedItems.includes("cblk_exglobal")) {
@@ -269,12 +276,12 @@ const logStorageChange = function(changes, area) {
         }
 
         if (changedItems.includes("cblk_hconsent")) {
-            document.getElementById("history-consent-checkbox").checked = changes["cblk_hconsent"].newValue;
+            histCheckbox.checked = changes["cblk_hconsent"].newValue;
         }
     } else if (area === "local") {
         if (changedItems.includes("cblk_pause")){
             let pauseState = changes["cblk_pause"].newValue;
-            document.getElementById("pause_checkbox").checked = pauseState;
+            pauseCheckbox.checked = pauseState;
             enableNecessaryCheckboxIfPaused(pauseState);
         }
 
@@ -296,28 +303,21 @@ document.addEventListener("DOMContentLoaded", setupSettingsPage);
 /**
  * Helper for adding consent toggle listeners
  */
- const addPrefClickListener = function (checkboxID, idx) {
-    let cb = document.getElementById(checkboxID);
-    cb.addEventListener("click", async (event) => {
+ const addPrefClickListener = function (cb, idx) {
+    cb.addEventListener("click", async (ev) => {
         policy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
         policy[idx] = cb.checked;
         setStorageValue(policy, chrome.storage.sync, "cblk_userpolicy");
     });
 }
+addPrefClickListener(necessaryCheckbox, 0);
+addPrefClickListener(functionalityCheckbox, 1);
+addPrefClickListener(analyticsCheckbox, 2);
+addPrefClickListener(advertisingCheckbox, 3);
 
-addPrefClickListener("nec_checkbox", 0);
-addPrefClickListener("func_checkbox", 1);
-addPrefClickListener("anal_checkbox", 2);
-addPrefClickListener("advert_checkbox", 3);
-
-// debug checkbox
-document.getElementById("pause_checkbox").addEventListener("click", async () => {
-    let pauseStatus = document.getElementById("pause_checkbox").checked;
-    setStorageValue(pauseStatus, chrome.storage.local, "cblk_pause");
-});
 
 // classify all cookies button
-document.getElementById("classify_button").addEventListener("click", async () => {
+classifyButton.addEventListener("click", async () => {
     setStaticLocaleText("classify_applytext", "currentCookieProgressMsg");
     document.getElementById("classify_applytext").hidden = false;
     chrome.runtime.sendMessage({"classify_all": true}, (msg) =>{
@@ -332,15 +332,16 @@ document.getElementById("classify_button").addEventListener("click", async () =>
 });
 
 // reset defaults button
-document.getElementById("default_button").addEventListener("click", () => {
+defaultButton.addEventListener("click", () => {
     getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (dfConfig) => {
         overrideDefaults(dfConfig);
         document.getElementById("default_applytext").hidden = false;
     });
 });
 
+
 // reset storage button
-document.getElementById("clear_button").addEventListener("click", () => {
+clearButton.addEventListener("click", () => {
     chrome.runtime.sendMessage({"reset_storage": true}, (msg) => {
         if (chrome.runtime.lastError) {
             console.error(err);
@@ -379,9 +380,9 @@ addExcClickListener("advert_excepts_submit", "advert_excepts_input", "cblk_exadv
  * @param {String} buttonID Identity of the button to click.
  */
 const addEnterListener = function(inputFieldID, buttonID) {
-    document.getElementById(inputFieldID).addEventListener("keydown", function(event) {
-        if (!event.repeat && event.key === "Enter") {
-            event.preventDefault();
+    document.getElementById(inputFieldID).addEventListener("keydown", (ev) => {
+        if (!ev.repeat && ev.key === "Enter") {
+            ev.preventDefault();
             document.getElementById(buttonID).click();
         }
     });
@@ -396,13 +397,16 @@ addEnterListener("advert_excepts_input", "advert_excepts_submit");
 nfslider.oninput = function() {;
     sliderValDisplay.innerHTML = this.value;
 }
-
-nfslider.addEventListener("mouseup", function(event) {
-    setStorageValue(this.value, chrome.storage.sync, "cblk_pscale");
+nfslider.addEventListener("mouseup", function(ev) {
+    setStorageValue( this.value, chrome.storage.sync, "cblk_pscale");
 });
 
-// consent checkbox
-const histCheckbox = document.getElementById("history-consent-checkbox");
-histCheckbox.addEventListener("click", (ev) => {
-    setStorageValue(histCheckbox.checked, chrome.storage.sync, "cblk_hconsent");
+// history consent checkbox
+histCheckbox.addEventListener("click", async (ev) => {
+    setStorageValue( histCheckbox.checked, chrome.storage.sync, "cblk_hconsent");
+});
+
+// pause checkbox
+pauseCheckbox.addEventListener("click", async (ev) => {
+    setStorageValue( pauseCheckbox.checked, chrome.storage.local, "cblk_pause");
 });

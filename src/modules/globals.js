@@ -1,6 +1,8 @@
 // Author: Dino Bollinger
 // License: MIT
 
+const enableExtraOptions = false;
+
 /**
  * Helper used to transform the local.storage.get callback into an async function.
  * @param {String} key Key of the storage to retrieve.
@@ -17,8 +19,6 @@
         });
     });
 }
-
-const enableExtraOptions = false;
 
 /**
  * Helper function for storing content in sync or local storage.
