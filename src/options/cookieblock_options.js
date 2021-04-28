@@ -224,7 +224,7 @@ const setupSettingsPage = async function() {
 
     let permScale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
     nfslider.value = permScale;
-    sliderValDisplay.innerHTML = permScale;
+    sliderValDisplay.textContent = permScale;
 
     // Statistics
     chrome.runtime.sendMessage({"get_stats": true}, (msg) => {
@@ -278,7 +278,7 @@ const logStorageChange = function(changes, area) {
 
         if (changedItems.includes("cblk_pscale")) {
             nfslider.value = changes["cblk_pscale"].newValue;
-            sliderValDisplay.innerHTML = changes["cblk_pscale"].newValue;
+            sliderValDisplay.textContent = changes["cblk_pscale"].newValue;
         }
 
         if (changedItems.includes("cblk_hconsent")) {
@@ -401,7 +401,7 @@ addEnterListener("advert_excepts_input", "advert_excepts_submit");
 
 // slider
 nfslider.oninput = function() {;
-    sliderValDisplay.innerHTML = this.value;
+    sliderValDisplay.textContent = this.value;
 }
 nfslider.addEventListener("mouseup", function(ev) {
     setStorageValue( this.value, chrome.storage.sync, "cblk_pscale");
