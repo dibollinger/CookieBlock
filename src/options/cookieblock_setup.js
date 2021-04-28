@@ -1,7 +1,13 @@
-// Author: Dino Bollinger
-// License: MIT
+//-------------------------------------------------------------------------------
+/*
+Copyright (C) 2021 Dino Bollinger, ETH Zürich, Information Security Group
 
-// Script that controls the first-time setup of the extension
+This file is part of CookieBlock.
+
+Released under the MIT License, see included LICENSE file.
+*/
+//-------------------------------------------------------------------------------
+
 
 /**
  * Function that contains the localization text assignments.

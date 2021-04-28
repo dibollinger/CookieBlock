@@ -1,6 +1,8 @@
 
 1. Difflib source taken from: https://github.com/qiao/difflib.js/
 
+> Link to file: https://github.com/qiao/difflib.js/blob/e11553ba3e303e2db206d04c95f8e51c5692ca28/dist/difflib-browser.js
+
 Ported by Xueqiao Xu <xueqiaoxu@gmail.com>
 
 Licensed under: PSF LICENSE FOR PYTHON 2.7.2
@@ -19,6 +21,8 @@ PSF LICENSE AGREEMENT FOR PYTHON 2.7.2
 
 2. Levenshtein script taken from: https://github.com/gf3/Levenshtein
 
+> Link to file: https://github.com/gf3/Levenshtein/blob/4884046bb7c85f868de0e1524abe4f26d2cf6e7d/lib/levenshtein.js
+
 Written by Gianni Chiappetta
 
 The Levenshtein script is unlicensed: https://unlicense.org/
@@ -26,6 +30,8 @@ The Levenshtein script is unlicensed: https://unlicense.org/
 -----------------------------------------------------------
 
 3. LZ-String, taken from: https://github.com/pieroxy/lz-string/
+
+> Link to file: https://github.com/pieroxy/lz-string/blob/b2e0b270a9f3cf330b778b777385fcba384a1a02/libs/lz-string.js
 
 MIT License
 

@@ -1,5 +1,13 @@
-// Author: Dino Bollinger
-// License: MIT
+//-------------------------------------------------------------------------------
+/*
+Copyright (C) 2021 Dino Bollinger, ETH Zürich, Information Security Group
+
+This file is part of CookieBlock.
+
+Released under the MIT License, see included LICENSE file.
+*/
+//-------------------------------------------------------------------------------
+
 
 // Loaded in from a JSON file, stores the configuration on which features to extract from a cookie
 var feature_config;

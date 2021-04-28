@@ -4,7 +4,7 @@
   "name": "__MSG_extensionName__",
   "author": "Information Security Group, ETH Zürich",
   "homepage_url": "https://github.com/dibollinger/CookieBlock",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "incognito": "spanning",
   "default_locale": "en",
 
@@ -24,7 +24,7 @@
       "cookies",            // required for cookie access
       "storage",            // required to store settings
       "unlimitedStorage",   // required to keep track of cookie updates
-      "tabs"                // required to access current tab to add site exceptions
+      "activeTab"           // required to access current tab to add site exceptions
   ],
 
   "background": {
@@ -51,7 +51,7 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "cookieblock@example.com"
+      "id": "cookie.block.extension@gmail.com"
     }
   }
 }

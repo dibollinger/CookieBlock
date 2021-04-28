@@ -2,9 +2,11 @@
 
 Repository for the CookieBlock browser extension, which automatically enforces user privacy policy on browser cookies.
 
+It is compatible with both Firefox and Chromium-based browsers.
+
 ## Description
 
-__CookieBlock__ is an extension that allows the user to apply their cookie consent preferences to any website, no matter if the website has a cookie banner. The user specifies their consent options once when the extension is first installed, and then CookieBlock will try to remove any cookies that do not align with the user's policy.
+__CookieBlock__ is an extension that allows the user to apply their cookie consent preferences to any website, no matter if the website has a cookie banner. The user specifies their consent options once when the extension is first installed, and then CookieBlock will try to remove any cookies that do not align with the user's policy as they are being created.
 
 It offers the following features:
 * Automatic classification of cookies into distinct purpose categories.
@@ -17,30 +19,35 @@ This is intended to ensure that the privacy of the user is preserved. One can re
 * Analytical/Statistics Cookies
 * Advertising/Tracking Cookies
 
-Note that CookieBlock does not handle the cookie banner itself. In order to remove these annoying banners, we recommend using the Consent-O-Matic extension, or another similar tool:
+Note that CookieBlock does not handle the cookie banner itself. In order to remove these annoying banners, we recommend using the Consent-O-Matic extension, or similar addons:
 
 * https://github.com/cavi-au/Consent-O-Matic
 
 ## Repository Contents
 
 * `nodejs-feature-extractor/`:  Contains the NodeJS feature extractor. Used to extract features with the same JavaScript code as the extension.
-    - `/data/`: Contains the feature configuration, external resources used with the feature extraction, trained models for prediction, and training and validation data folders.
-    - `/modules/`: Contains code modules used to perform the feature extraction and prediction.
+    - `/modules/`: Contains code used to perform the feature extraction and prediction.
     - `/outputs/`: Output directory for the feature extraction.
+    - `/training_data/`: Path for cookie data in json format, used for extracting features.
+    - `/validation_data/`: Path for cookie features in libsvm format, used for prediction and verifying model accuracy.
     - `/cli.js`: Command-line script used to run the feature extraction.
-* `logo/`: Contains the original CookieBlock logo image.
+* `logo/`: Contains the original CookieBlock logo files.
 * `src/`: Source code for the CookieBlock extension.
     - `/_locales/`: JSON files with locale strings, for translation.
     - `/_background/`: JavaScript code and HTML for the extension background process.
     - `/ext_data/`: All external data required to perform the feature extraction and class label prediction.
         - `/model/`: Extracted CART prediction tree forests, one for each class of cookies.
         - `/resources/`: Resources used with the feature extraction.
-        - `/config.json`: Defines default values used in the extension.
+        - `/default_config.json`: Defines default storage values used in the extension.
         - `/features.json`: Defines how the feature extraction operates, and which individual feature are enabled.
+        - `/known_cookies.json`: Defines default categorizations for some known cookies.
     - `/icons/`: Browser extension icons.
-    - `/modules/`: External code modules, some of which are third-party.
+    - `/modules/`: Contains scripts that handle certain aspects of the feature extraction and prediction.
+        - `/third_party/`: Third party code libraries.
     - `/options/`: Contains the options and first time setup page of the extension.
     - `/popup/`: Contains code for the extension popup.
+    - `credits.txt`: Links to the third-party libraries and credits to the respective authors.
+    - `LICENSE`: License of the extension.
 
 # Credits and License
 

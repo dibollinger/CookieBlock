@@ -1,14 +1,14 @@
 MIT License
 
-Copyright (c) 2021 Dino Bollinger
+Copyright (c) 2021 Dino Bollinger, Department of Computer Science at ETH Zürich, Information Security Group.
 
 With help from Karel Kubicek, Dr. Carlos Cotrini and Prof. Dr. David Basin.
 
-Extension options HTML/CSS layout based on the Consent-O-Matic extension by Janus Bager Kristensen, Rolf Bagge, CAVI.
-
 Logo design by Charmaine Coates.
 
-Developed under the Department of Computer Science at ETH Zürich, Information Security Group.
+---------------------------------------------------------------------------------
+Includes HTML/CSS layout based on the Consent-O-Matic extension.
+Copyright (c) 2019 Janus Bager Kristensen, Rolf Bagge, CAVI
 
 ---------------------------------------------------------------------------------
 
