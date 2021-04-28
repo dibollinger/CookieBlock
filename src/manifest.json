@@ -4,7 +4,7 @@
   "name": "__MSG_extensionName__",
   "author": "Information Security Group, ETH Zürich",
   "homepage_url": "https://github.com/dibollinger/CookieBlock",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "incognito": "spanning",
   "default_locale": "en",
 
