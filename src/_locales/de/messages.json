@@ -21,7 +21,7 @@
   },
 
   "firstTimeGreeting": {
-    "message": "Vielen Dank für die Installation von CookieBlock!",
+    "message": "Wilkommen zu CookieBlock!",
     "description": "Greeting message on the first time setup."
   },
 
