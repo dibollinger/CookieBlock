@@ -1,4 +1,10 @@
 {
+
+  "extensionName": {
+    "message": "CookieBlock",
+    "description": "Name of the extension."
+  },
+
   "manifestDescription": {
     "message": "Blockiert Browser-Cookies deren Nutzung der Benutzer nicht zustimmt.",
     "description": "Description of the extension."

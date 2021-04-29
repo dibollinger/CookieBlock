@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "author": "Information Security Group, ETH Zürich",
+  "author": "Information Security Group, ETH Zurich",
   "homepage_url": "https://github.com/dibollinger/CookieBlock",
   "version": "0.7.1",
   "incognito": "spanning",
@@ -20,11 +20,11 @@
   },
 
   "permissions": [
-      "<all_urls>",         // host permission, required to access and delete cookies for each website
-      "cookies",            // required for cookie access
-      "storage",            // required to store settings
-      "unlimitedStorage",   // required to keep track of cookie updates
-      "activeTab"           // required to access current tab to add site exceptions
+      "<all_urls>",
+      "cookies",
+      "storage",
+      "unlimitedStorage",
+      "activeTab"
   ],
 
   "background": {
