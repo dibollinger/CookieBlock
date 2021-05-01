@@ -164,20 +164,21 @@ Released under the MIT License, see included LICENSE file.
         <hr class="thick">
     </div>
 
-    <!-- Statistics, will be replaced by a better system later -->
-    <div>
+    <div id="stats-div">
         <div class="settings_group">
             <fieldset>
-            <legend id="stats_title">Category Statistics</legend>
-            <div id="stats_desc" class="overview_description">Number of cookies that were classified, separated by category:</div>
+            <legend id="stats_title"></legend>
+            <div id="stats_desc" class="overview_description"></div>
             <ul class="nexcepts">
-                <li> <div id="num_necessary" class="stat_text"></div> </li>
-                <li> <div id="num_functional" class="stat_text"></div> </li>
-                <li> <div id="num_analytics" class="stat_text"></div> </li>
-                <li> <div id="num_advertising" class="stat_text"></div> </li>
-                <li> <div id="num_uncat" class="stat_text"></div> </li>
+                <li id="li_n"> <div id="num_necessary" class="stat_text"></div> </li>
+                <li id="li_f"> <div id="num_functional" class="stat_text"></div> </li>
+                <li id="li_an"> <div id="num_analytics" class="stat_text"></div> </li>
+                <li id="li_ad"> <div id="num_advertising" class="stat_text"></div> </li>
             </ul>
             </fieldset>
+        </div>
+        <div class=submit_field>
+            <button id="json_button" class="json_button" type="submit">View Cookie History JSON</button>
         </div>
     </div>
 

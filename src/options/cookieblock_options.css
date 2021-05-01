@@ -225,3 +225,12 @@ hr.thick {
 .stat_text {
     font-size: larger;
 }
+
+.stat_text:hover{
+    cursor: pointer;
+}
+
+.json_button {
+    margin-top: -2em;
+    margin-bottom: 2em;
+}

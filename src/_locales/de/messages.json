@@ -237,7 +237,7 @@
   },
 
   "categoryStatisticsDesc" : {
-    "message" : "Anzahl Cookies die zu den jeweiligen Kategorien zugewiesen wurden:",
+    "message" : "Anzahl Cookies im Verlauf, nach Kategorie:",
     "description" : "Description of the statistics."
   },
 

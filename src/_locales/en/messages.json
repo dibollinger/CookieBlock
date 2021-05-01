@@ -236,7 +236,7 @@
   },
 
   "categoryStatisticsDesc" : {
-    "message" : "Number of cookies that were assigned to each category:",
+    "message" : "Number of cookies in the cookie history by category:",
     "description" : "Description of the statistics."
   },
 

@@ -21,7 +21,12 @@ const necessaryCheckbox = document.getElementById("nec_checkbox");
 const functionalityCheckbox = document.getElementById("func_checkbox");
 const analyticsCheckbox = document.getElementById("anal_checkbox");
 const advertisingCheckbox = document.getElementById("advert_checkbox");
-
+const statisticsSection = document.getElementById("stats-div");
+const jsonButton = document.getElementById("json_button");
+const necessaryStats = document.getElementById("li_n");
+const functionalStats = document.getElementById("li_f");
+const analyticsStats = document.getElementById("li_an");
+const advertisingStats = document.getElementById("li_ad");
 
 /**
  * Remove an item from a dynamically generated exception list.
@@ -199,6 +204,17 @@ const setupLocalization = function () {
 
 }
 
+
+const getLabelStatsFromBackground = function () {
+    chrome.runtime.sendMessage({"get_stats": true}, (msg) => {
+        let stats = msg.response;
+        setStaticLocaleText("num_necessary", "statsNecessary", [stats[0]]);
+        setStaticLocaleText("num_functional", "statsFunctional", [stats[1]]);
+        setStaticLocaleText("num_analytics", "statsAnalytics", [stats[2]]);
+        setStaticLocaleText("num_advertising", "statsAdvertising", [stats[3]]);
+    });
+}
+
 /**
  * This function is executed when opening the settings page.
  */
@@ -218,7 +234,9 @@ const setupSettingsPage = async function() {
     restoreExceptionList("cblk_exanal", "analytics_exceptions");
     restoreExceptionList("cblk_exadvert", "advertising_exceptions");
 
-    histCheckbox.checked = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
+    let hconsent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
+    histCheckbox.checked = hconsent;
+    statisticsSection.hidden = !hconsent;
 
     let policy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
     necessaryCheckbox.checked = policy[0];
@@ -234,15 +252,7 @@ const setupSettingsPage = async function() {
     nfslider.value = permScale;
     sliderValDisplay.textContent = permScale;
 
-    // Statistics
-    chrome.runtime.sendMessage({"get_stats": true}, (msg) => {
-        let stats = msg.response;
-        setStaticLocaleText("num_necessary", "statsNecessary", [stats[0]]);
-        setStaticLocaleText("num_functional", "statsFunctional", [stats[1]]);
-        setStaticLocaleText("num_analytics", "statsAnalytics", [stats[2]]);
-        setStaticLocaleText("num_advertising", "statsAdvertising", [stats[3]]);
-        setStaticLocaleText("num_uncat", "statsWhitelist", [stats[4]]);
-    });
+    getLabelStatsFromBackground();
 
     document.getElementById("extra_settings").hidden = !enableExtraOptions;
 }
@@ -291,21 +301,12 @@ const logStorageChange = function(changes, area) {
 
         if (changedItems.includes("cblk_hconsent")) {
             histCheckbox.checked = changes["cblk_hconsent"].newValue;
+            statisticsSection.hidden = !changes["cblk_hconsent"].newValue;
         }
     } else if (area === "local") {
         if (changedItems.includes("cblk_pause")){
-            let pauseState = changes["cblk_pause"].newValue;
-            pauseCheckbox.checked = pauseState;
-            enableNecessaryCheckboxIfPaused(pauseState);
-        }
-
-        if (changedItems.includes("cblk_counter")) {
-            stats = changes["cblk_counter"].newValue;
-            setStaticLocaleText("num_necessary", "statsNecessary", [stats[0]]);
-            setStaticLocaleText("num_functional", "statsFunctional", [stats[1]]);
-            setStaticLocaleText("num_analytics", "statsAnalytics", [stats[2]]);
-            setStaticLocaleText("num_advertising", "statsAdvertising", [stats[3]]);
-            setStaticLocaleText("num_uncat", "statsWhitelist", [stats[4]]);
+            pauseCheckbox.checked = changes["cblk_pause"].newValue;
+            enableNecessaryCheckboxIfPaused(changes["cblk_pause"].newValue);
         }
     }
 }
@@ -363,6 +364,7 @@ clearButton.addEventListener("click", () => {
         } else {
             console.debug(msg.response);
             setStaticLocaleText("clear_applytext", "clearDataText");
+            getLabelStatsFromBackground();
         }
         document.getElementById("clear_applytext").hidden = false;
     });
@@ -424,3 +426,25 @@ histCheckbox.addEventListener("click", async (ev) => {
 pauseCheckbox.addEventListener("click", async (ev) => {
     setStorageValue( pauseCheckbox.checked, chrome.storage.local, "cblk_pause");
 });
+
+const message_openJSON = (inMSG) => {
+    chrome.runtime.sendMessage({"open_json": inMSG}, (msg) => {
+        if (msg.lastError) {
+            console.error("Could not open the resulting JSON file!");
+        } else {
+            let tab = window.open(inMSG + ".json", "_blank");
+            tab.document.write("<pre>" + JSON.stringify(msg.response, null, 4) + "</pre>");
+            tab.document.close();
+        }
+    });
+}
+
+// listeners to open JSON documents in new tabs
+jsonButton.addEventListener("click", (ev) => { message_openJSON("full"); });
+necessaryStats.addEventListener("click", (ev) => { message_openJSON("necessary"); });
+functionalStats.addEventListener("click", (ev) => { message_openJSON("functional"); });
+analyticsStats.addEventListener("click", (ev) => { message_openJSON("analytics"); });
+advertisingStats.addEventListener("click", (ev) => { message_openJSON("advertising"); });
+
+// Update stats in 5 second intervals
+setInterval( async () => { getLabelStatsFromBackground(); }, 5_000);

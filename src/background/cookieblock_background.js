@@ -19,52 +19,102 @@ var known_cookies = {};
 // key used with the known_cookies object
 const regexKey = "~regex;";
 
-// Local cookie and stats storage, required so as to not constantly have to hammer the storage.local object.
-var localCookieStorage = undefined;
-var localStatsCounter = undefined;
+// Indexed DB for cookie history
+var historyDB = undefined;
+const openDBRequest = window.indexedDB.open("CookieBlockHistory", 1);
+
+openDBRequest.onerror = function(event) {
+    console.error(`Failed to open history database with error code: ${event.target.errorCode}`);
+    //TODO: Error message for options page somehow
+};
+
+openDBRequest.onsuccess = function(ev1) {
+    console.info("Successfully connected to CookieBlock history database.");
+    historyDB = ev1.target.result;
+    // errors bubble up here:
+    historyDB.onerror = function(ev2) {
+        console.error("Database error: " + ev2.target.errorCode);
+    };
+};
+
+// In case the DB is new or needs to be upgraded
+openDBRequest.onupgradeneeded = function(event) {
+    let db = event.target.result;
+    let objectStore = db.createObjectStore("cookies");
+    objectStore.createIndex("name", "name", { unique: false });
+    objectStore.createIndex("domain", "domain", { unique: false });
+    objectStore.createIndex("path", "path", { unique: false });
+    objectStore.createIndex("label", "current_label", { unique: false });
+};
 
 /**
- * Check if the cookie is contained in the storage.
- * @param {Object} cookieDat Raw untransformed cookie data.
- * @returns {Boolean} true if contained, false otherwise
+ * Construct a string key from the given cookie object.
+ * @param {Object} cookieDat Stores the raw cookie data, including name, domain and path.
+ * @returns {String} string representing the cookie's key.
  */
-const checkCookieInStorage = function(cookieDat) {
-    console.assert(localCookieStorage !== undefined, "Local cookie storage was undefined!");
-    let d = urlToUniformDomain(cookieDat.domain);
-    if (d in localCookieStorage) {
-        let p = cookieDat.path;
-        if (p in localCookieStorage[d]) {
-            return cookieDat.name in localCookieStorage[d][p];
-        }
-    }
-    return false;
+const constructKeyFromCookie = function(cookieDat) {
+    return `${cookieDat.name};${urlToUniformDomain(cookieDat.domain)};${cookieDat.path}`;
 }
 
 /**
- * Insert serialized cookie into storage
+ * Insert serialized cookie into IndexedDB storage via a transaction.
  * @param {Object} cookieDat
- * @returns
  */
 const insertCookieIntoStorage = function(cookieDat, serializedCookie) {
-    console.assert(localCookieStorage !== undefined, "Local cookie storage was undefined!");
+    console.assert(historyDB !== undefined, "Cookie database link was undefined!");
 
-    let d = urlToUniformDomain(cookieDat.domain);
-    let p = cookieDat.path;
-
-    localCookieStorage[d] = localCookieStorage[d] || {};
-    localCookieStorage[d][p] = localCookieStorage[d][p] || {};
-    localCookieStorage[d][p][cookieDat.name] = serializedCookie;
+    let ckey = constructKeyFromCookie(cookieDat);
+    let putRequest = historyDB.transaction("cookies", "readwrite").objectStore("cookies").put(serializedCookie, ckey);
+    putRequest.onerror = function(event) {
+        console.error(`Failed to insert cookie (${ckey}) into IndexedDB storage: ${event.target.errorCode}`);
+    }
 }
 
 /**
  * Retrieve serialized cookie from storage
- * @param {*} cookieDat
- * @returns
+ * @param {} cookieDat
+ * @returns {Promise<Object>} Either the cookie if found, or undefined if not.
  */
 const retrieveCookieFromStorage = function(cookieDat) {
-    console.assert(localCookieStorage !== undefined, "Local cookie storage was undefined!");
-    let d = urlToUniformDomain(cookieDat.domain);
-    return localCookieStorage[d][cookieDat.path][cookieDat.name];
+    console.assert(historyDB !== undefined, "Cookie database link was undefined!");
+    let ckey = constructKeyFromCookie(cookieDat);
+
+    let request = historyDB.transaction("cookies").objectStore("cookies").get(ckey);
+    return new Promise((resolve, reject) => {
+        request.onerror = function(event) {
+            console.error("Error on retrieving: " + ckey);
+          reject(event.target.errorCode);
+        };
+        request.onsuccess = function(event) {
+            console.log("Successfully retrieved: " + ckey);
+          resolve(event.target.result);
+        };
+    });
+}
+
+/**
+ *
+ * @returns {Promise<Object>} The array of label counts.
+ */
+const getCurrentLabelCount = function() {
+    console.assert(historyDB !== undefined, "Cookie database link was undefined!");
+
+    let objectStore = historyDB.transaction("cookies").objectStore("cookies");
+    let cursor = objectStore.index("label").openCursor();
+    return new Promise((resolve, reject) => {
+        let statsCount = [0, 0, 0, 0, 0];
+        cursor.onsuccess = function(event) {
+            var cursor = event.target.result;
+            if (cursor) {
+              statsCount[cursor.value.current_label] += 1
+              cursor.continue();
+            } else {
+                resolve(statsCount);
+            }
+        };
+        cursor.onerror = (event) => { reject(event.target.errorCode) }
+    });
+
 }
 
 
@@ -84,22 +134,7 @@ const retrieveCookieFromStorage = function(cookieDat) {
     setStorageValue([...dfConfig["cblk_exanal"]], chrome.storage.sync, "cblk_exanal", false);
     setStorageValue([...dfConfig["cblk_exadvert"]], chrome.storage.sync, "cblk_exadvert", false);
     setStorageValue(dfConfig["cblk_mintime"], chrome.storage.sync, "cblk_mintime", false);
-    await setStorageValue({}, chrome.storage.local, "cblk_storage", false);
-    await setStorageValue([0,0,0,0,0], chrome.storage.local, "cblk_counter", false);
-    localCookieStorage = await getStorageValue(chrome.storage.local, "cblk_storage");
-    localStatsCounter = await getStorageValue(chrome.storage.local, "cblk_counter");
   }
-
-
-/**
-* Clear the local storage.
-*/
-const clearLocalStorage = function() {
-    localCookieStorage = {};
-    localStatsCounter = [0,0,0,0,0];
-    setStorageValue({}, chrome.storage.local, "cblk_storage");
-    setStorageValue([0,0,0,0,0], chrome.storage.local, "cblk_counter");
-}
 
 
 /**
@@ -112,8 +147,8 @@ const createFEInput = function(cookie) {
       "name": escapeString(cookie.name),
       "domain": escapeString(cookie.domain),
       "path": escapeString(cookie.path),
-      // empty string if browser does not have first party isolation active
-      "first_party_domain": null,
+      "current_label": -1,
+      "label_ts": 0,
       "storeId": escapeString(cookie.storeId),
       "variable_data":
       [
@@ -127,10 +162,7 @@ const createFEInput = function(cookie) {
           "same_site": escapeString(cookie.sameSite),
           "timestamp": Date.now()
         }
-      ],
-      // last category label and timestamp
-      "last_label": -1,
-      "label_ts": 0
+      ]
     };
 }
 
@@ -178,8 +210,9 @@ const updateFEInput = async function(prevCookie, newCookie) {
 */
 const serializeOrUpdate = async function(cookieDat) {
     let serializedCookie;
-    if (checkCookieInStorage(cookieDat)) {
-        serializedCookie = await updateFEInput(retrieveCookieFromStorage(cookieDat), cookieDat);
+    let storedDat = await retrieveCookieFromStorage(cookieDat);
+    if (storedDat) {
+        serializedCookie = await updateFEInput(storedDat, cookieDat);
     } else {
         serializedCookie = createFEInput(cookieDat);
     }
@@ -300,29 +333,27 @@ const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) 
     let ckDomain = sanitizeDomain(serializedCookie.domain);
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
-        localStatsCounter[4] += 1;
     } else {
         let minTime = await getStorageValue(chrome.storage.sync, "cblk_mintime");
         let elapsed = Date.now() - serializedCookie["label_ts"];
 
-        console.assert(typeof serializedCookie["last_label"] === "number", "Incorrect type stored in last label.");
+        console.assert(typeof serializedCookie["current_label"] === "number", "Incorrect type stored in last label.");
         console.assert(typeof serializedCookie["label_ts"] === "number", "Incorrect type stored in label timestamp.");
 
         let label;
-        if (serializedCookie["last_label"] === -1 || elapsed > minTime) {
+        if (serializedCookie["current_label"] === -1 || elapsed > minTime) {
             // classify the cookie
             label = cookieLookup(cookieDat);
             if (label === -1) {
                 label = await classifyCookie(serializedCookie);
             }
 
-            localStatsCounter[label] += 1;
-            serializedCookie["last_label"] = label;
+            serializedCookie["current_label"] = label;
             serializedCookie["label_ts"] = Date.now();
             let cName = classIndexToString(label);
             console.debug("Perform Prediction: Cookie (%s;%s;%s) receives label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName)
         } else {
-            label = serializedCookie["last_label"];
+            label = serializedCookie["current_label"];
             let cName = classIndexToString(label);
             console.debug("Skip Prediction: Cookie (%s;%s;%s) with label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName)
         }
@@ -347,7 +378,7 @@ const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) 
  * Enforces the cookie consent policy without using or updating a local cookie storage.
  * @param {Object} cookieDat Object that contains the data for the current cookie.
  */
- const enforcePolicyWithoutHistory = function (cookieDat){
+ const enforcePolicyWithoutHistory = function (cookieDat) {
     let serializedCookie = createFEInput(cookieDat);
     enforcePolicy(cookieDat, serializedCookie, false);
 }
@@ -395,6 +426,47 @@ const firstTimeSetup = function(details) {
   }
 }
 
+/**
+ *
+ * @param {*} type
+ * @returns
+ */
+const constructHistoryJSON = function(type) {
+    console.assert(historyDB !== undefined, "Cookie database link was undefined!");
+
+    let target_label;
+    switch (type) {
+        case "full": target_label = null; break;
+        case "necessary": target_label = 0; break;
+        case "functional": target_label = 1; break;
+        case "analytics": target_label = 2; break;
+        case "advertising": target_label = 3; break;
+        default:
+            throw new Error("Incorrect label type");
+    }
+
+    let tempCookieJSON = {};
+    let objectStore = historyDB.transaction("cookies").objectStore("cookies");
+    let cursor = objectStore.index("domain").openCursor();
+    return new Promise((resolve, reject) => {
+        cursor.onsuccess = function(event) {
+            var cursor = event.target.result;
+            if (cursor) {
+                if (target_label === null || cursor.value.current_label === target_label) {
+                    let d = cursor.value.domain;
+                    let p = cursor.value.path;
+                    tempCookieJSON[d] = tempCookieJSON[d] || {};
+                    tempCookieJSON[d][p] = tempCookieJSON[d][p] || {};
+                    tempCookieJSON[d][p][cursor.value.name] = cursor.value;
+                }
+                cursor.continue();
+            } else {
+                resolve(tempCookieJSON);
+            }
+        };
+        cursor.onerror = (event) => { reject(event.target.errorCode) }
+    });
+}
 
 /**
  * Handle messages from other content scripts within the extension.
@@ -414,29 +486,33 @@ const handleInternalMessage = function(request, sender, sendResponse) {
                         enforcePolicyWithoutHistory(cookieDat);
                     }
                 }
-                setStorageValue(localCookieStorage, chrome.storage.local, "cblk_storage");
-                setStorageValue(localStatsCounter, chrome.storage.local, "cblk_counter");
                 sendResponse({response: "All cookies classified and policy enforced."});
             });
         });
         return true;
     } else if (request.get_stats) {
-        sendResponse({response: localStatsCounter});
+        let sendStatsResponse = async () => {
+            let statsCount = await getCurrentLabelCount();
+            sendResponse({response: statsCount});
+        };
+        sendStatsResponse();
+        return true;
     } else if (request.reset_storage) {
-        clearLocalStorage();
+        historyDB.transaction("cookies", "readwrite").objectStore("cookies").clear();
         sendResponse({response: "Local cookie and stats storage cleared."});
-    } else {
+    } else if (request.open_json) {
+        let sendJSONResponse = async () => {
+            let cookieJSON = await constructHistoryJSON(request.open_json);
+            sendResponse({response: cookieJSON})
+        }
+        sendJSONResponse();
+        return true;
+    }
+    else {
         sendResponse({response: undefined});
     }
 }
 
-
-// Periodically save the current cookie store (every minute)
-setInterval( async () => {
-    setStorageValue(localCookieStorage, chrome.storage.local, "cblk_storage");
-    setStorageValue(localStatsCounter, chrome.storage.local, "cblk_counter");
-    console.debug("Saved current cookie store and stats counter.");
-}, 60_000);
 
 // set up defaults and listeners
 getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", initDefaults);
