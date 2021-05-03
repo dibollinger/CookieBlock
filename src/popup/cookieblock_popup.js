@@ -8,6 +8,8 @@ Released under the MIT License, see included LICENSE file.
 */
 //-------------------------------------------------------------------------------
 
+const pauseCheckbox = document.getElementById("pause-check");
+const exceptionButton = document.getElementById("add-exception");
 
 const addText = chrome.i18n.getMessage("popupButtonAdd");
 const removeText = chrome.i18n.getMessage("popupButtonRemove");
@@ -48,10 +50,7 @@ const popupSetup = async function() {
     setStaticLocaleText("desc-box", "popupText");
     setStaticLocaleText("options", "popupButtonOptions");
 
-    let pauseState = await getStorageValue(chrome.storage.local, "cblk_pause");
-    document.getElementById("pause-check").checked = pauseState;
-
-    let exceptionButton = document.getElementById("add-exception");
+    pauseCheckbox.checked = await getStorageValue(chrome.storage.local, "cblk_pause");
 
     chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
         let currentURL = tabs[0].url;
@@ -111,10 +110,26 @@ const addGlobalException = async function() {
     });
 }
 
+/**
+ * Update the toggles relevant to the setup page, based on changes in the local and sync storage.
+ * @param {Object} changes Object containing the changes.
+ * @param {Object} area Storage area that changed
+ */
+ const updateSelectionOnChange = function(changes, area) {
+    let changedItems = Object.keys(changes);
+    if (area === "local") {
+        if (changedItems.includes("cblk_pause")){
+            pauseCheckbox.checked = changes["cblk_pause"].newValue;
+        }
+    }
+}
+chrome.storage.onChanged.addListener(updateSelectionOnChange);
+
+
 // pause checkbox
-document.getElementById("pause-check").addEventListener("click", async () => {
-    let pauseStatus = document.getElementById("pause-check").checked;
-    await setStorageValue(pauseStatus, chrome.storage.local, "cblk_pause");
+pauseCheckbox.addEventListener("click", async () => {
+    let pauseStatus = pauseCheckbox.checked;
+    setStorageValue(pauseStatus, chrome.storage.local, "cblk_pause");
 });
 
 // On click, get the current tab URL and add it to the global exceptions

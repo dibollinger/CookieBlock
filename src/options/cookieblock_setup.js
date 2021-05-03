@@ -8,6 +8,13 @@ Released under the MIT License, see included LICENSE file.
 */
 //-------------------------------------------------------------------------------
 
+const histCheckbox = document.getElementById("history-consent-checkbox");
+const pauseCheckbox = document.getElementById("pause_checkbox");
+const necessaryCheckbox = document.getElementById("nec_checkbox");
+const functionalityCheckbox = document.getElementById("func_checkbox");
+const analyticsCheckbox = document.getElementById("anal_checkbox");
+const advertisingCheckbox = document.getElementById("advert_checkbox");
+const pauseDiv = document.getElementById("pause-div");
 
 /**
  * Function that contains the localization text assignments.
@@ -51,42 +58,52 @@ Released under the MIT License, see included LICENSE file.
  * This function is executed when opening the first time setup.
  */
 const setupInitPage = async function() {
-
     setupLocalization();
 
-    document.getElementById("nec_checkbox").checked = true;
-    document.getElementById("func_checkbox").checked = false;
-    document.getElementById("anal_checkbox").checked = false;
-    document.getElementById("advert_checkbox").checked = false;
-    document.getElementById("pause_checkbox").checked = false;
-    document.getElementById("history-consent-checkbox").checked = false;
+    necessaryCheckbox.checked = true;
+    functionalityCheckbox.checked = false;
+    analyticsCheckbox.checked = false;
+    advertisingCheckbox.checked = false;
+    histCheckbox.checked = false;
 
-    // pause stuff
-    document.getElementById("pause-div").hidden = !enableExtraOptions;
+    pauseDiv.hidden = !enableExtraOptions;
+    pauseCheckbox.checked = false;
 }
 
 document.addEventListener("DOMContentLoaded", setupInitPage);
 
+
 /**
- * Log the storage area that changed, then for each item changed,
- * log its old value and its new value.
- * @param {Object} changes Object containing the storage changes.
- * @param {String} area String for the storage area.
+ * Update the toggles relevant to the setup page, based on changes in the local and sync storage.
+ * @param {Object} changes Object containing the changes.
+ * @param {Object} area Storage area that changed
  */
- const updateSelectionOnChange = function(changes, area) {
+const updateSelectionOnChange = function(changes, area) {
     let changedItems = Object.keys(changes);
+    console.debug(`Changes for area '${area}' in: ${changedItems}`);
     if (area === "sync") {
+        // update the consent checkboxes
         if (changedItems.includes("cblk_userpolicy")) {
             newPolicy = changes["cblk_userpolicy"].newValue;
-            document.getElementById("nec_checkbox").checked = newPolicy[0];
-            document.getElementById("func_checkbox").checked = newPolicy[1];
-            document.getElementById("anal_checkbox").checked = newPolicy[2];
-            document.getElementById("advert_checkbox").checked = newPolicy[3];
+            necessaryCheckbox.checked = newPolicy[0];
+            functionalityCheckbox.checked = newPolicy[1];
+            analyticsCheckbox.checked = newPolicy[2];
+            advertisingCheckbox.checked = newPolicy[3];
+        }
 
+        // update the history consent toggle
+        if (changedItems.includes("cblk_hconsent")) {
+            histCheckbox.checked = changes["cblk_hconsent"].newValue;
+        }
+    } else if (area === "local") {
+        // update the pause button
+        if (changedItems.includes("cblk_pause")){
+            pauseCheckbox.checked = changes["cblk_pause"].newValue;
         }
     }
 }
 chrome.storage.onChanged.addListener(updateSelectionOnChange);
+
 
 /**
  * Helper for adding click listeners.
@@ -120,13 +137,11 @@ document.getElementById("set_policy").addEventListener("click", (ev) => {
 });
 
 // pause checkbox
-const pauseCheckbox = document.getElementById("pause_checkbox");
 pauseCheckbox.addEventListener("click", (ev) => {
     setStorageValue(pauseCheckbox.checked, chrome.storage.local, "cblk_pause");
 });
 
 // consent checkbox
-const histCheckbox = document.getElementById("history-consent-checkbox");
 histCheckbox.addEventListener("click", (ev) => {
     setStorageValue(histCheckbox.checked, chrome.storage.sync, "cblk_hconsent");
 });

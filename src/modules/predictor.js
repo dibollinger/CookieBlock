@@ -67,31 +67,34 @@ const predictClass = async function (features, nfactor = 1){
         throw new Error("At least one internal forest model was undefined!");
     }
 
-    let forestPromises = [];
-    for (let i = 0; i < forests.length; i++) {
-        forestPromises.push(getForestScore(forests[i], features));
-    }
-    let classScores = (await Promise.all(forestPromises)).map(Math.exp);
-    let totalScore = classScores.reduce((total,num) => {return total + num}, 0);
-    let probabilities = classScores.map((x) => {return x / totalScore});
-
-    // Bayes Decision
-    let minIndex = -1;
-    let minLoss = undefined;
-    let lossWeights = [[0, 1, 1, 1], [nfactor, 0, 1, 1], [nfactor, 1, 0, 1], [nfactor, 1, 1, 0]];
-
-    let cLoss;
-    for (let j = 0; j < lossWeights.length; j++){
-        cLoss = 0;
-        for (let i = 0; i < probabilities.length; i++) {
-            cLoss += probabilities[i] * lossWeights[j][i];
+    let minIndex = -1
+    try {
+        let forestPromises = [];
+        for (let i = 0; i < forests.length; i++) {
+            forestPromises.push(getForestScore(forests[i], features));
         }
+        let classScores = (await Promise.all(forestPromises)).map(Math.exp);
+        let totalScore = classScores.reduce((total,num) => {return total + num}, 0);
+        let probabilities = classScores.map((x) => {return x / totalScore});
 
-        if (minLoss === undefined || cLoss < minLoss){
-            minIndex = j;
-            minLoss = cLoss;
+        // Bayes Decision
+        let minLoss = undefined;
+        let lossWeights = [[0, 1, 1, 1], [nfactor, 0, 1, 1], [nfactor, 1, 0, 1], [nfactor, 1, 1, 0]];
+
+        let cLoss;
+        for (let j = 0; j < lossWeights.length; j++){
+            cLoss = 0;
+            for (let i = 0; i < probabilities.length; i++) {
+                cLoss += probabilities[i] * lossWeights[j][i];
+            }
+
+            if (minLoss === undefined || cLoss < minLoss){
+                minIndex = j;
+                minLoss = cLoss;
+            }
         }
+    } catch(err) {
+        console.error("Error while performing prediction: " + err.msg)
     }
-
     return minIndex;
 }

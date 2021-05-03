@@ -8,121 +8,132 @@ Released under the MIT License, see included LICENSE file.
 */
 //-------------------------------------------------------------------------------
 
-// for debugging
+// local counters for debugging
 var httpRemovalCounter = 0;
 var httpsRemovalCounter = 0;
 
-// lookup for known cookies, to prevent some critical login issues.
+// lookup for known cookies, to prevent some critical login issues
+// will be imported form an external file and kept here
 var known_cookies = {};
 
-// key used with the known_cookies object
+// key used to access the regular expression pattern in the known_cookies object
 const regexKey = "~regex;";
 
-// Indexed DB for cookie history
+// indexed DB for cookie history
 var historyDB = undefined;
 const openDBRequest = window.indexedDB.open("CookieBlockHistory", 1);
 
-openDBRequest.onerror = function(event) {
-    console.error(`Failed to open history database with error code: ${event.target.errorCode}`);
-    //TODO: Error message for options page somehow
+// executed if the database is new or needs to be updated
+openDBRequest.onupgradeneeded = function(event) {
+    let objectStore = event.target.result.createObjectStore("cookies");
+    objectStore.createIndex("name", "name", { unique: false });
+    objectStore.createIndex("domain", "domain", { unique: false });
+    objectStore.createIndex("path", "path", { unique: false });
+    objectStore.createIndex("label", "current_label", { unique: false });
+    console.info("Upgraded the CookieBlock history database.");
 };
 
+// success will be called after upgradeneeded
 openDBRequest.onsuccess = function(ev1) {
     console.info("Successfully connected to CookieBlock history database.");
     historyDB = ev1.target.result;
-    // errors bubble up here:
     historyDB.onerror = function(ev2) {
         console.error("Database error: " + ev2.target.errorCode);
     };
 };
 
-// In case the DB is new or needs to be upgraded
-openDBRequest.onupgradeneeded = function(event) {
-    let db = event.target.result;
-    let objectStore = db.createObjectStore("cookies");
-    objectStore.createIndex("name", "name", { unique: false });
-    objectStore.createIndex("domain", "domain", { unique: false });
-    objectStore.createIndex("path", "path", { unique: false });
-    objectStore.createIndex("label", "current_label", { unique: false });
+// if the connection failed
+openDBRequest.onerror = function(event) {
+    console.error(`Failed to open history database with error code: ${event.target.errorCode}`);
 };
 
+
 /**
- * Construct a string key from the given cookie object.
- * @param {Object} cookieDat Stores the raw cookie data, including name, domain and path.
- * @returns {String} string representing the cookie's key.
+ * Construct a string formatted key that uniquely identifies the given cookie object.
+ * @param {Object} cookieDat Stores the cookie data, expects attributes name, domain and path.
+ * @returns {String} string representing the cookie's key
  */
 const constructKeyFromCookie = function(cookieDat) {
     return `${cookieDat.name};${urlToUniformDomain(cookieDat.domain)};${cookieDat.path}`;
 }
 
+
+
 /**
  * Insert serialized cookie into IndexedDB storage via a transaction.
- * @param {Object} cookieDat
+ * @param {Object} serializedCookie Cookie to insert into storage.
  */
-const insertCookieIntoStorage = function(cookieDat, serializedCookie) {
-    console.assert(historyDB !== undefined, "Cookie database link was undefined!");
-
-    let ckey = constructKeyFromCookie(cookieDat);
-    let putRequest = historyDB.transaction("cookies", "readwrite").objectStore("cookies").put(serializedCookie, ckey);
-    putRequest.onerror = function(event) {
-        console.error(`Failed to insert cookie (${ckey}) into IndexedDB storage: ${event.target.errorCode}`);
+const insertCookieIntoStorage = function(serializedCookie) {
+    if (historyDB !== undefined) {
+        let ckey = constructKeyFromCookie(serializedCookie);
+        let putRequest = historyDB.transaction("cookies", "readwrite").objectStore("cookies").put(serializedCookie, ckey);
+        putRequest.onerror = function(event) {
+            console.error(`Failed to insert cookie (${ckey}) into IndexedDB storage: ${event.target.errorCode}`);
+        }
+    } else {
+        console.error("Could not insert cookie because database connection is closed!");
     }
 }
 
 /**
- * Retrieve serialized cookie from storage
- * @param {} cookieDat
+ * Retrieve serialized cookie from IndexedDB storage via a transaction.
+ * @param {Object} cookieDat Raw cookie object that provides name, domain and path.
  * @returns {Promise<Object>} Either the cookie if found, or undefined if not.
  */
 const retrieveCookieFromStorage = function(cookieDat) {
-    console.assert(historyDB !== undefined, "Cookie database link was undefined!");
-    let ckey = constructKeyFromCookie(cookieDat);
+    if (historyDB !== undefined) {
+        let ckey = constructKeyFromCookie(cookieDat);
 
-    let request = historyDB.transaction("cookies").objectStore("cookies").get(ckey);
-    return new Promise((resolve, reject) => {
-        request.onerror = function(event) {
-            console.error("Error on retrieving: " + ckey);
-          reject(event.target.errorCode);
-        };
-        request.onsuccess = function(event) {
-            console.log("Successfully retrieved: " + ckey);
-          resolve(event.target.result);
-        };
-    });
+        let request = historyDB.transaction("cookies").objectStore("cookies").get(ckey);
+        return new Promise((resolve, reject) => {
+            request.onerror = function(event) {
+                console.error("Failed to retrieve cookie: " + ckey);
+                reject(`Error on retrieving cookie (${ckey}) -- Error code ${event.target.errorCode}`);
+            };
+            request.onsuccess = function(event) {
+                resolve(event.target.result);
+            };
+        });
+    } else {
+        console.error("Could not retrieve cookie because database connection is closed!");
+        return new Promise((resolve, reject) => { reject("Database connection closed."); });
+    }
 }
 
 /**
- *
+ * Retrieve the number of cookies in the current history, by label.
  * @returns {Promise<Object>} The array of label counts.
  */
 const getCurrentLabelCount = function() {
-    console.assert(historyDB !== undefined, "Cookie database link was undefined!");
-
-    let objectStore = historyDB.transaction("cookies").objectStore("cookies");
-    let cursor = objectStore.index("label").openCursor();
-    return new Promise((resolve, reject) => {
-        let statsCount = [0, 0, 0, 0, 0];
-        cursor.onsuccess = function(event) {
-            var cursor = event.target.result;
-            if (cursor) {
-              statsCount[cursor.value.current_label] += 1
-              cursor.continue();
-            } else {
-                resolve(statsCount);
-            }
-        };
-        cursor.onerror = (event) => { reject(event.target.errorCode) }
-    });
-
+    if (historyDB !== undefined) {
+        let objectStore = historyDB.transaction("cookies").objectStore("cookies");
+        let cursor = objectStore.index("label").openCursor();
+        return new Promise((resolve, reject) => {
+            let statsCount = [0, 0, 0, 0, 0];
+            cursor.onsuccess = function(event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                  statsCount[cursor.value.current_label] += 1
+                  cursor.continue();
+                } else {
+                    resolve(statsCount);
+                }
+            };
+            cursor.onerror = (event) => { reject(event.target.errorCode) }
+        });
+    } else {
+        console.error("Could not insert cookie because database connection is closed!");
+        return new Promise((resolve, reject) => { reject("Database connection closed."); });
+    }
 }
 
 
 /**
- * Asynchronous callback function to set up config and storage defaults.
+ * Callback function to set up config and storage defaults.
  * This initializes all chrome local and sync storage objects if undefined.
  * @param {Object} resp  Default configuration
  */
- const initDefaults = async function(dfConfig) {
+ const initDefaults = function(dfConfig) {
     setStorageValue([...dfConfig["cblk_userpolicy"]], chrome.storage.sync, "cblk_userpolicy", false);
     setStorageValue(dfConfig["cblk_pscale"], chrome.storage.sync, "cblk_pscale", false);
     setStorageValue(dfConfig["cblk_pause"], chrome.storage.local, "cblk_pause", false);
@@ -169,23 +180,28 @@ const createFEInput = function(cookie) {
  * Updates the existing feature extraction object with data from the new cookie.
  * Specifically, the variable data attribute will have the new cookie's data appended to it.
  * If the update limit is reached, the oldest update will be removed.
- * @param  {Object} prevCookie   Feature Extraction input, previously constructed.
- * @param  {Object} newCookie    New cookie data, untransformed.
- * @return {Promise<object>}     The existing cookie object, updated with new data.
+ * @param  {Object} storedFEInput   Feature Extraction input, previously constructed.
+ * @param  {Object} rawCookie       New cookie data, untransformed.
+ * @return {Promise<object>}        The existing cookie object, updated with new data.
  */
-const updateFEInput = async function(prevCookie, newCookie) {
+const updateFEInput = async function(storedFEInput, rawCookie) {
 
-    let updateArray = prevCookie["variable_data"];
-    let updateLimit = await getStorageValue(chrome.storage.local, "cblk_ulimit");
+    let updateArray = storedFEInput["variable_data"];
+    let updateLimit;
+    try {
+        updateLimit = await getStorageValue(chrome.storage.local, "cblk_ulimit");
+    } catch (err) {
+        throw new Error("Failed to retrieve the update limit from local storage. Error : " + err.msg)
+    }
 
     let updateStruct = {
-        "host_only": newCookie.hostOnly,
-        "http_only": newCookie.httpOnly,
-        "secure": newCookie.secure,
-        "session": newCookie.session,
-        "expiry": datetimeToExpiry(newCookie),
-        "value": escapeString(newCookie.value),
-        "same_site": escapeString(newCookie.sameSite),
+        "host_only": rawCookie.hostOnly,
+        "http_only": rawCookie.httpOnly,
+        "secure": rawCookie.secure,
+        "session": rawCookie.session,
+        "expiry": datetimeToExpiry(rawCookie),
+        "value": escapeString(rawCookie.value),
+        "same_site": escapeString(rawCookie.sameSite),
         "timestamp": Date.now()
     };
 
@@ -196,7 +212,7 @@ const updateFEInput = async function(prevCookie, newCookie) {
     updateArray.push(updateStruct);
     console.assert(updateArray.length <= updateLimit, "Error: cookie update limit still exceeded!");
 
-    return prevCookie;
+    return storedFEInput;
 };
 
 
@@ -209,12 +225,18 @@ const updateFEInput = async function(prevCookie, newCookie) {
 */
 const serializeOrUpdate = async function(cookieDat) {
     let serializedCookie;
-    let storedDat = await retrieveCookieFromStorage(cookieDat);
-    if (storedDat) {
-        serializedCookie = await updateFEInput(storedDat, cookieDat);
-    } else {
+    try {
+        let storedDat = await retrieveCookieFromStorage(cookieDat);
+        if (storedDat) {
+            serializedCookie = await updateFEInput(storedDat, cookieDat);
+        } else {
+            serializedCookie = createFEInput(cookieDat);
+        }
+    } catch (err) {
+        console.error("Retrieving or updating FE Input failed unexpectedly. Proceeding with raw cookie data instead. Error : " + err.msg);
         serializedCookie = createFEInput(cookieDat);
     }
+
     return serializedCookie;
 };
 
@@ -226,9 +248,18 @@ const serializeOrUpdate = async function(cookieDat) {
  */
 const classifyCookie = async function(feature_input) {
     let features = extractFeatures(feature_input);
-    let pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
-    let label = await predictClass(features, pscale);
-    console.assert(label >= 0 && label < 4, "Predicted label exceeded valid range: %d", label);
+    let label;
+    try {
+        let pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
+        label = await predictClass(features, pscale);
+        if (label < 0 && label > 3) {
+            throw new Error(`Predicted label exceeded valid range: ${label}`);
+        }
+    } catch (err) {
+        console.error("Label prediction failed: " + err.msg);
+        throw err;
+    }
+
     return label;
 };
 
@@ -244,29 +275,34 @@ const makePolicyDecision = async function(cookieDat, label) {
 
     let ckDomain = sanitizeDomain(escapeString(cookieDat.domain));
     let skipRejection = false;
-    switch(label) {
-        case 1: // functionality
-            skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exfunc")).includes(ckDomain);
-            break;
-        case 2: // analytics
-            skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exanal")).includes(ckDomain);
-            break;
-        case 3: // advertising
-            skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exadvert")).includes(ckDomain);
-            break;
+    try {
+        switch(label) {
+            case 1: // functionality
+                skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exfunc")).includes(ckDomain);
+                break;
+            case 2: // analytics
+                skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exanal")).includes(ckDomain);
+                break;
+            case 3: // advertising
+                skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exadvert")).includes(ckDomain);
+                break;
+        }
+    } catch (err){
+        console.error(`Failed to retrieve exception storage value. Error: ${err.msg}`);
+        console.error("Continuing without exceptions.")
     }
 
     if (skipRejection) {
         console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
     } else {
-        let consentArray = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
-        console.assert(consentArray !== undefined, "User policy was somehow undefined!")
-        if (consentArray[label]) {
-            // spare the cookie
-            //console.debug("Affirmative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-        } else {
-            //console.debug("Negative consent for cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+        let consentArray = undefined;
+        try {
+            consentArray = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
+        } catch(err) {
+            console.error("Failed to retrieve user policy! Error: " + err.msg);
+        }
 
+        if (consentArray !== undefined && !consentArray[label]) {
             // First try to remove the cookie, using https as the protocol
             chrome.cookies.remove({
                 "name": cookieDat.name,
@@ -296,6 +332,7 @@ const makePolicyDecision = async function(cookieDat, label) {
         }
     }
 };
+
 
 /**
  * Given a cookie, checks the local known_cookies listing (exact domain match and regex).
@@ -328,37 +365,56 @@ const cookieLookup = function(cookieDat) {
  */
 const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) {
     let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-    let globalExcepts = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
+    let globalExcepts = {};
+    try {
+        globalExcepts = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
+    } catch (err) {
+        console.error("Could not retrieve the domain exceptions: " + err.msg);
+    }
+
     let ckDomain = sanitizeDomain(serializedCookie.domain);
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
     } else {
-        let minTime = await getStorageValue(chrome.storage.sync, "cblk_mintime");
+        let minTime = 60000;
+        try {
+            minTime = await getStorageValue(chrome.storage.sync, "cblk_mintime");
+        } catch (err) {
+            console.error("Could not retrieve the minimum label retention time. Error: " + err.msg)
+        }
         let elapsed = Date.now() - serializedCookie["label_ts"];
 
-        console.assert(typeof serializedCookie["current_label"] === "number", "Incorrect type stored in last label.");
-        console.assert(typeof serializedCookie["label_ts"] === "number", "Incorrect type stored in label timestamp.");
-
-        let label;
+        let label = -1;
         if (serializedCookie["current_label"] === -1 || elapsed > minTime) {
             // classify the cookie
-            label = cookieLookup(cookieDat);
-            if (label === -1) {
-                label = await classifyCookie(serializedCookie);
-            }
+            try {
+                label = cookieLookup(cookieDat);
+                if (label === -1) {
+                    label = await classifyCookie(serializedCookie);
+                }
 
-            serializedCookie["current_label"] = label;
-            serializedCookie["label_ts"] = Date.now();
-            let cName = classIndexToString(label);
-            console.debug("Perform Prediction: Cookie (%s;%s;%s) receives label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName)
+                serializedCookie["current_label"] = label;
+                serializedCookie["label_ts"] = Date.now();
+                let cName = classIndexToString(label);
+                console.debug("Perform Prediction: Cookie (%s;%s;%s) receives label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName)
+            } catch (err) {
+                throw new Error("Could not predict the label. Error: " + err.msg)
+            }
         } else {
             label = serializedCookie["current_label"];
             let cName = classIndexToString(label);
             console.debug("Skip Prediction: Cookie (%s;%s;%s) with label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName)
         }
 
-        // make a decision
-        let dstate = await getStorageValue(chrome.storage.local, "cblk_pause")
+        // retrieve pause state
+        let dstate = false;
+        try {
+            dstate = await getStorageValue(chrome.storage.local, "cblk_pause")
+        } catch (err) {
+            console.error("Could not retrieve pause state. Continuing with policy enforcement without pause. Error: " + err.msg)
+        }
+
+        // make the decision
         if (dstate) {
             let cName = classIndexToString(label);
             console.debug(`Pause Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${cName}`);
@@ -369,7 +425,7 @@ const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) 
 
     if (storeUpdate) {
         // check if consent is given for history storing
-        insertCookieIntoStorage(cookieDat, serializedCookie);
+        insertCookieIntoStorage(serializedCookie);
     }
 }
 
@@ -389,8 +445,12 @@ const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) 
  * @param {Boolean} storeUpdate If true, will store the update to the cookie.
  */
  const enforcePolicyWithHistory = async function (cookieDat, storeUpdate){
-    let serializedCookie = await serializeOrUpdate(cookieDat);
-    enforcePolicy(cookieDat, serializedCookie, storeUpdate);
+    try {
+        let serializedCookie = await serializeOrUpdate(cookieDat);
+         enforcePolicy(cookieDat, serializedCookie, storeUpdate);
+    } catch (err) {
+        console.error("Policy enforcement with history failed. Skipping enforcement. Error: " + err.msg);
+    }
 }
 
 
@@ -406,11 +466,15 @@ const cookieChangeListener = async function(changeInfo) {
     }
 
     // check if consent is given for history storing
-    let history_consent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
-    if (history_consent) {
-        enforcePolicyWithHistory(changeInfo.cookie, true);
-    } else {
-        enforcePolicyWithoutHistory(changeInfo.cookie);
+    try {
+        let history_consent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
+        if (history_consent) {
+            enforcePolicyWithHistory(changeInfo.cookie, true);
+        } else {
+            enforcePolicyWithoutHistory(changeInfo.cookie);
+        }
+    } catch (err) {
+        console.error("Failed to run classification due to an unexpected error: " + err.msg)
     }
 };
 
@@ -426,9 +490,10 @@ const firstTimeSetup = function(details) {
 }
 
 /**
- *
- * @param {*} type
- * @returns
+ * Construct a JSON document out of the contents of IndexedDB.
+ * Can be complete history, or restricted to a single label.
+ * @param {String} type One of (full|necessary|functional|analytics|advertising). Restricts the output to the given label.
+ * @returns {Promise<object>} Promise that will yield an object representing the cookie structure.
  */
 const constructHistoryJSON = function(type) {
     console.assert(historyDB !== undefined, "Cookie database link was undefined!");
@@ -463,7 +528,7 @@ const constructHistoryJSON = function(type) {
                 resolve(tempCookieJSON);
             }
         };
-        cursor.onerror = (event) => { reject(event.target.errorCode) }
+        cursor.onerror = (event) => { reject(`Error Code: ${event.target.errorCode}`); }
     });
 }
 
@@ -491,8 +556,13 @@ const handleInternalMessage = function(request, sender, sendResponse) {
         return true;
     } else if (request.get_stats) {
         let sendStatsResponse = async () => {
-            let statsCount = await getCurrentLabelCount();
-            sendResponse({response: statsCount});
+            try {
+                let statsCount = await getCurrentLabelCount();
+                sendResponse({response: statsCount});
+            } catch (err) {
+                console.error("Failed to retrieve label count. Error : " + err.msg)
+                sendResponse({response: null});
+            }
         };
         sendStatsResponse();
         return true;
@@ -501,8 +571,13 @@ const handleInternalMessage = function(request, sender, sendResponse) {
         sendResponse({response: "Local cookie and stats storage cleared."});
     } else if (request.open_json) {
         let sendJSONResponse = async () => {
-            let cookieJSON = await constructHistoryJSON(request.open_json);
-            sendResponse({response: cookieJSON})
+            try {
+                let cookieJSON = await constructHistoryJSON(request.open_json);
+                sendResponse({response: cookieJSON});
+            } catch (err) {
+                console.error("Failed to retrieve JSON. Error : " + err.msg)
+                sendResponse({response: null});
+            }
         }
         sendJSONResponse();
         return true;

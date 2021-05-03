@@ -20,7 +20,7 @@ const enableExtraOptions = false;
     return new Promise((resolve, reject) => {
         stType.get([key], function(result) {
             if (chrome.runtime.lastError){
-                reject(chrome.runtime.lastError)
+                reject("Failed to retrieve data from storage: " + chrome.runtime.lastError);
             } else {
                 resolve(result[key]);
             }
@@ -41,10 +41,14 @@ const setStorageValue = async function(newValue, stType, key, override = true) {
         obj = {}; obj[key] = newValue;
         stType.set(obj)
     } else {
-        let cValue = await chromeWorkaround(stType, key);
-        if (cValue === undefined) {
-            obj = {}; obj[key] = newValue;
-            stType.set(obj)
+        try {
+            let cValue = await chromeWorkaround(stType, key);
+            if (cValue === undefined) {
+                obj = {}; obj[key] = newValue;
+                stType.set(obj)
+            }
+        } catch(err) {
+            throw err;
         }
     }
 }
@@ -57,15 +61,23 @@ const setStorageValue = async function(newValue, stType, key, override = true) {
  * @returns
  */
  const getStorageValue = async function(stType, key) {
-    let value = await chromeWorkaround(stType, key);
+    // try to retrieve the value
+    let value = undefined;
+    try {
+        value = await chromeWorkaround(stType, key);
+    } catch(err) {
+        console.error("Failed to access storage! Error: " + err.msg)
+    }
+
+    // error handling
     if (value === undefined) {
         console.warn(`Warning: Value '${key}' not found in storage!`);
-        console.trace();
-        if (Array.isArray(defaultConfig[key])){
-            await setStorageValue([...defaultConfig[key]], stType, key, override=false);
+        if (Array.isArray(defaultConfig[key])) {
+            value = [...defaultConfig[key]];
         } else {
-            await setStorageValue(defaultConfig[key], stType, key, override=false);
+            value = defaultConfig[key];
         }
+        setStorageValue(value, stType, key, override=false);
     }
     return value;
  }
@@ -90,7 +102,7 @@ const getExtensionFile = function(url, dtype, callback) {
                 callback(this.response);
             }
             else {
-                console.log("Error -- could not retrieve data at (%s): %d (%s)", url, this.status, this.statusText);
+                console.error("Error -- could not retrieve data at (%s): %d (%s)", url, this.status, this.statusText);
             }
         }
     };
@@ -155,14 +167,6 @@ const datetimeToExpiry = function(cookie) {
     return cookie.session ? 0 : cookie.expirationDate - curTS;
 };
 
-
-/**
- * Generic error handler function.
- * @param {String} error
- */
- const onError = (error) => {
-    console.error(`An error occurred: ${error}`);
-}
 
 /**
  * Transform class index to human-readable meaning.

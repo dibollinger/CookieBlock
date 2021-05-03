@@ -28,11 +28,12 @@ const functionalStats = document.getElementById("li_f");
 const analyticsStats = document.getElementById("li_an");
 const advertisingStats = document.getElementById("li_ad");
 
+
 /**
  * Remove an item from a dynamically generated exception list.
+ * @param {String} removedDomain Domain that needs to be removed.
  * @param {String} listItem List item to be removed.
  * @param {String} storageID Extension storage id for exception list.
- * @param {String} removedDomain
  */
  const removeExceptionFromList = async function(removedDomain, listItem, storageID) {
     let exlist = listItem.parentElement;
@@ -208,7 +209,9 @@ const setupLocalization = function () {
     setStaticLocaleText("json_button", "cookieHistoryButtonLabel");
 }
 
-
+/**
+ * Send a message to background script to retrieve the label stats.
+ */
 const getLabelStatsFromBackground = function () {
     chrome.runtime.sendMessage({"get_stats": true}, (msg) => {
         let stats = msg.response;
@@ -261,14 +264,15 @@ const setupSettingsPage = async function() {
     document.getElementById("extra_settings").hidden = !enableExtraOptions;
 }
 
-
 /**
- * Log the storage area that changed, then for each item changed,
- * log its old value and its new value.
- * @param {Object} changes Object containing the storage changes.
- * @param {String} area String for the storage area.
+ * Whenever storage.local or storage.sync updates, reflect this in the selection
+ * inside the options menu.
+ * @param {Object} changes Stores the objects that were altered.
+ * @param {Object} area Storage area that was changed
  */
-const logStorageChange = function(changes, area) {
+const updateSelectionsOnStorageChanged = function(changes, area) {
+
+    // Empty the exception list and restore it to the new state.
     let emptyAndRestoreList = async function (storedExc, storageID, listID) {
         let e = document.getElementById(listID);
         let child = e.lastElementChild;
@@ -286,6 +290,7 @@ const logStorageChange = function(changes, area) {
     let changedItems = Object.keys(changes);
     console.debug(`Changes for area '${area}' in: ${changedItems}`);
     if (area === "sync") {
+        // update the consent checkboxes
         if (changedItems.includes("cblk_userpolicy")) {
             newPolicy = changes["cblk_userpolicy"].newValue;
             necessaryCheckbox.checked = newPolicy[0];
@@ -294,27 +299,32 @@ const logStorageChange = function(changes, area) {
             advertisingCheckbox.checked = newPolicy[3];
         }
 
+        // update the exception list
         if (changedItems.includes("cblk_exglobal")) {
             emptyAndRestoreList(changes["cblk_exglobal"].newValue, "cblk_exglobal", "website_exceptions");
         }
 
+        // update the necessary bias scale
         if (changedItems.includes("cblk_pscale")) {
             nfslider.value = changes["cblk_pscale"].newValue;
             sliderValDisplay.textContent = changes["cblk_pscale"].newValue;
         }
 
+        // update the history consent toggle
         if (changedItems.includes("cblk_hconsent")) {
             histCheckbox.checked = changes["cblk_hconsent"].newValue;
             statisticsSection.hidden = !changes["cblk_hconsent"].newValue;
         }
     } else if (area === "local") {
+        // update the pause button
         if (changedItems.includes("cblk_pause")){
             pauseCheckbox.checked = changes["cblk_pause"].newValue;
             enableNecessaryCheckboxIfPaused(changes["cblk_pause"].newValue);
         }
     }
 }
-chrome.storage.onChanged.addListener(logStorageChange);
+
+chrome.storage.onChanged.addListener(updateSelectionsOnStorageChanged);
 
 // Listeners
 document.addEventListener("DOMContentLoaded", setupSettingsPage);
