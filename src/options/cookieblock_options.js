@@ -28,7 +28,6 @@ const functionalStats = document.getElementById("li_f");
 const analyticsStats = document.getElementById("li_an");
 const advertisingStats = document.getElementById("li_ad");
 
-
 /**
  * Remove an item from a dynamically generated exception list.
  * @param {String} removedDomain Domain that needs to be removed.
@@ -325,6 +324,7 @@ const updateSelectionsOnStorageChanged = function(changes, area) {
 }
 
 chrome.storage.onChanged.addListener(updateSelectionsOnStorageChanged);
+
 
 // Listeners
 document.addEventListener("DOMContentLoaded", setupSettingsPage);
