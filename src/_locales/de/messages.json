@@ -7,11 +7,11 @@
 
   "manifestDescription": {
     "message": "Blockiert Browser-Cookies deren Nutzung der Benutzer nicht zustimmt.",
-    "description": "Description of the extension."
+    "description": "Description of the extension in the manifest."
   },
 
   "firstTimeSubtitle": {
-    "message": "Erstmaliges Setup",
+    "message": "Erstkonfiguration",
     "description": "Subtitle of the first time setup page."
   },
 
@@ -21,7 +21,7 @@
   },
 
   "firstTimeGreeting": {
-    "message": "Wilkommen zu CookieBlock!",
+    "message": "Vielen Dank fürs Installieren!",
     "description": "Greeting message on the first time setup."
   },
 
@@ -31,7 +31,7 @@
   },
 
   "optionsDescriptionPG1": {
-    "message": "CookieBlock ermöglicht es Ihnen, Cookies, die für Zwecke verwendet werden denen Sie nicht zustimmen, automatisch aus dem Browser zu entfernen. Die einzelnen Verwendungszwecke werden unten aufgelistet.",
+    "message": "CookieBlock ermöglicht es Ihnen, Cookies, welche für Zwecke verwendet werden denen Sie nicht zustimmen, automatisch aus Ihrem Browser zu entfernen. Die Kategorien werden unten aufgelistet.",
     "description": "Description paragraph 1 seen on the options page."
   },
 
@@ -40,9 +40,29 @@
     "description": "Description paragraph 2 seen on the options page."
   },
 
-  "optionsDescriptionPG3": {
-    "message": "Wir wären dankbar wenn Sie uns Feedback zu der Extension geben könnten.",
+  "feedbackTitle": {
+    "message": "Feedback",
+    "description": "Title for Feedback submission section."
+  },
+
+  "feedbackPG1": {
+    "message": "Feedback kann über die folgende Google Forms Umfrage abgegeben werden:",
+    "description": "Feedback text pointing towards the Google Forms survey."
+  },
+
+  "feedbackPG2": {
+    "message": "Oder alternativ, indem Sie eine Mail an die folgende Adresse senden:",
+    "description": "Feedback text pointing towards the email."
+  },
+
+  "feedbackPG3": {
+    "message": "Wir wären dankbar wenn Sie uns Feedback zu der Extension geben könnten!",
     "description": "Description paragraph 3 seen on the options page."
+  },
+
+  "feedbackFormURL" : {
+    "message": "",
+    "description": "Localized Forms Link"
   },
 
   "firstTimeDescPG1": {
@@ -51,7 +71,7 @@
   },
 
   "firstTimeDescPG2": {
-    "message": "Diese Extension befindet sich noch in der Entwicklungsphase! Sie verwendet künstliche Intelligenz, um die Kategorisierung der Cookies durchzuführen. Dabei kann es vorkommen, dass die Vorhersage nicht korrekt ist, und dadurch eine Webseite nicht mehr korrekt funktioniert. Sollte dies auftreten, können Sie versuchen, über das CookieBlock-Symbol in der Browserleiste eine Ausnahme für diese Domain hinzuzufügen. Dadurch wird verhindert, dass Cookies, die von dieser Website stammen, gelöscht werden.",
+    "message": "Dieses Addon befindet sich noch in der Entwicklungsphase! Es kann also vorkommen, dass Cookies entfernt werden, welche von der Webseite benötigt werden. Sollte dies geschehen, können Sie versuchen, über das CookieBlock-Symbol in der Browserleiste eine Ausnahme für diese Domain hinzuzufügen. Dadurch wird verhindert, dass Cookies, die von dieser Website stammen, gelöscht werden. Alternativ können Sie auch die Entfernung pausieren.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
@@ -81,27 +101,27 @@
   },
 
   "catAdvertisingTitle": {
-    "message": "Werbungs- oder Tracking-Cookies",
+    "message": "Werbungs- und Tracking-Cookies",
     "description": "Text next to the 'Advertising' checkbox."
   },
 
   "catNecessaryDesc": {
-    "message": "Streng notwendige Cookies werden gebraucht um essenzielle Dienste der Website zu ermöglichen. Beispiele dafür sind Cookies, die den Login-Status aufrecht erhalten, oder jene, die sich den Inhalt eines Warenkorbs merken. Die Ablehnung dieser Cookies würde dazu führen, dass Webseiten nicht mehr korrekt funktionieren. Daher sind sie immer aktiviert.",
+    "message": "Streng notwendige Cookies werden benötigt um essenzielle Dienste der Website zu ermöglichen. Beispiele dafür sind Cookies, die den Login-Status aufrecht erhalten, oder sich den Inhalt eines Warenkorbs merken. Die Ablehnung dieser Cookies würde dazu führen, dass Webseiten nicht mehr korrekt funktionieren, daher sind sie immer aktiviert.",
     "description": "Description of the 'Necessary' category."
   },
 
   "catFunctionalityDesc": {
-    "message": "Funktionalitäts-Cookies dienen dazu, optionale Benutzereinstellungen zu speichern, wie z.B. die Sprache oder den Stil der Website. Diese sind in der Regel optional, und werden nicht für essenzielle Funktionen verwendet. Da die Kategorisierung jedoch nicht perfekt ist, empfehlen wir dennoch, diese anzunehmen, um die Benutzerfreundlichkeit zu verbessern.",
+    "message": "Funktionalitäts-Cookies dienen dazu, optionale Benutzereinstellungen zu speichern, wie z.B. die Sprache oder den Stil der Website. Diese sind in der Regel optional, und werden nicht für essenzielle Funktionen verwendet. Da die Kategorisierung jedoch nicht perfekt ist, empfehlen wir dennoch, diese anzunehmen.",
     "description": "Description of the 'Functionality' category."
   },
 
   "catAnalyticsDesc" : {
-    "message": "Analytische Cookies werden dafür verwendet, statistische Informationen über die Verwendung der Webseite durch Besucher zu sammeln. Die gesammelten Daten können hierbei prinzipiell anonymisiert werden. Analytische Cookies stehen meist im Interesse des Host, und werden dazu verwendet, die Webseite zu verbessern, und sie als Werbeplatform attraktiver darzustellen.",
+    "message": "Analytische Cookies werden dafür verwendet, statistische Informationen über die Verwendung der Webseite durch Besucher zu sammeln. Die gesammelten Daten können hierbei prinzipiell anonymisiert werden. Analytische Cookies werden dazu verwendet, die Webseite zu verbessern, und diese als Werbeplatform attraktiver darzustellen.",
     "description": "Description of the 'Analytics' category."
   },
 
   "catAdvertisingDesc" : {
-    "message": "Werbe-Cookies werden verwendet, um persönliche Daten des Besuchers zu sammeln, und ein Profil zu diesem zu erstellen. Dieses Profil wird dazu verwendet, um die angezeigte Werbung auf den Besucher abzustimmen. Die gesammelten Daten können auch an Dritte weiterverkauft werden. Weiterhin dienen diese Cookies auch zu Aktivitätenverfolgung. Zum Schutz der Privatsphäre empfehlen wir, die Zustimmung für diese Arten von Cookies abzulehnen.",
+    "message": "Werbe-Cookies werden verwendet, um persönliche Daten des Besuchers zu sammeln, und ein Profil zu diesem zu erstellen. Dieses Profil wird dazu verwendet, um die angezeigte Werbung auf den Besucher abzustimmen, und die gesammelten Daten können auch an Dritte weiterverkauft werden. Weiterhin dienen diese Cookies auch zu Aktivitätenverfolgung. Zum Schutz der Privatsphäre empfehlen wir, die Zustimmung für diese Arten von Cookies abzulehnen.",
     "description": "Description of the 'Advertising' category."
   },
 
@@ -121,17 +141,17 @@
   },
 
   "pauseDescription" : {
-    "message": "Wenn diese Option aktiviert ist, wird das Entfernen von Cookies vollständig gestoppt. Die Kategorisierung wird jedoch weiterhin in der Browserkonsole angezeigt. Dies kann nützlich sein, falls eine Webseite nicht mehr funktionieren sollte.",
+    "message": "Wenn diese Option aktiviert ist, wird das Entfernen von Cookies pausiert. Die Kategorisierung wird jedoch weiterhin in der Browserkonsole angezeigt. Dies kann nützlich sein, falls eine Webseite nicht mehr funktionieren sollte.",
     "description": "Description for the 'pause removal' button."
   },
 
   "buttonExitSetup" : {
-    "message": "Präferenzen anwenden und Fenster schliessen",
+    "message": "Bestehende Cookies klassifizieren und schliessen",
     "description": "Label for the close button on the first time setup"
   },
 
   "popupText" : {
-    "message": "Cookies von dieser Webseite vertrauen?",
+    "message": "Cookies dieser Webseite vertrauen?",
     "description": "Text present on the popup."
   },
 
@@ -156,17 +176,17 @@
   },
 
   "currentCookieEnforceTitle" : {
-    "message": "Präferenzen auf derzeitig gespeicherten Cookies anwenden",
+    "message": "Bestehende Cookies klassifizieren & entfernen",
     "description": "Header for the policy enforcement button."
   },
 
   "currentCookieEnforceDescription" : {
-    "message" : "Diese Option löscht alle im Browser derzeit gespeicherten Cookies, denen Sie nicht zustimmen.",
+    "message" : "Diese Option löscht alle im Browser derzeit gespeicherten Cookies, die für Zwecke verwendet werden, denen Sie nicht zustimmen.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
   "currentCookieEnforceDescriptionSetup" : {
-    "message" : "Diese Option löscht alle im Browser derzeit gespeicherten Cookies, denen Sie nicht zustimmen, und schliesst danach das Fenster.",
+    "message" : "Diese Option löscht alle im Browser derzeit gespeicherten Cookies, denen Sie nicht zustimmen, und schliesst danach dieses Browser Fenster.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
@@ -186,7 +206,7 @@
   },
 
   "globalExceptionsHeader" : {
-    "message" : "Globale Ausnahmen",
+    "message" : "Domain Ausnahmen",
     "description" : "Header for the global extensions listing."
   },
 
@@ -231,6 +251,11 @@
     "description" : "exception description"
   },
 
+  "addButton" : {
+    "message" : "Hinzufügen",
+    "description" : "Text on button for adding exceptions"
+  },
+
   "categoryStatisticsHeader" : {
     "message" : "Statistiken per Kategorie",
     "description": "Header for the category statistics"
@@ -239,11 +264,6 @@
   "categoryStatisticsDesc" : {
     "message" : "Anzahl Cookies im Verlauf, nach Kategorie:",
     "description" : "Description of the statistics."
-  },
-
-  "addButton" : {
-    "message" : "Hinzufügen",
-    "description" : "Text on button for adding exceptions"
   },
 
   "statsNecessary": {
@@ -278,14 +298,6 @@
       }
     }
   },
-  "statsWhitelist": {
-    "message": "$COUNT$ übersprungen",
-    "placeholders": {
-      "count" : {
-        "content" : "$1"
-      }
-    }
-  },
 
   "popupErrorTextGeneric": {
     "message": "Ein Fehler ist aufgetreten!",
@@ -313,32 +325,32 @@
   },
 
   "defaultButton": {
-    "message": "Reset Defaults",
+    "message": "Standardeinstellungen wiederherstellen",
     "description": "Button text for resetting."
   },
 
   "defaultApplyText": {
-    "message": "Standardeinstellungen wiederhergestellt!",
+    "message": "Wiederhergestellt!",
     "description": "Defaults restored message that appears after clicking the button."
   },
 
   "clearDataTitle": {
-    "message": "Gesammelte Daten Löschen",
+    "message": "Cookieverlauf Löschen",
     "description": "Title for the 'clear cookie data' button."
   },
 
   "clearDataDescription": {
-    "message": "Diese Schaltfläche löscht die in der Erweiterung gespeicherten Cookie-Daten und die Statistikzähler. Dadurch werden keine Cookies aus dem Browser selbst entfernt!",
+    "message": "Diese Schaltfläche löscht die im Verlauf gespeicherten Cookie-Daten. Dadurch werden keine Cookies aus dem Browser selbst entfernt!",
     "description": "Description for the 'clear cookie data' button."
   },
 
   "clearDataButton": {
-    "message": "Daten Löschen",
+    "message": "Verlauf Löschen",
     "description": "Clear data button label."
   },
 
   "clearDataText": {
-    "message": "Gespeicherte Daten wurden gelöscht!",
+    "message": "Verlauf wurde gelöscht!",
     "description": "Message that appears after hitting the clear data button."
   },
 
@@ -348,7 +360,7 @@
   },
 
   "sliderDescription": {
-    "message": "Diese Option regelt, wie stark die KI darauf tendiert, Cookies als 'Streng Notwendig' zu klassifizieren. Je höher der Wert, desto wahrscheinlicher. Dies kann dazu verwendet werden, die Wahrscheinlichkeit zu reduzieren, dass durch die Entfernung eines Cookies eine Webseite nicht mehr funktioniert. Bei hohen Werten wird jedoch die Präzision der Kategorisierung stark reduziert.",
+    "message": "Diese Option regelt, wie stark CookieBlock darauf tendiert, Cookies als 'Streng Notwendig' zu klassifizieren. Bei höheren Werten wird die Wahrscheinlichkeit reduziert, dass Webseiten nicht mehr korrekt funktionieren. Jedoch wird dadurch auch die Kategorisierung weniger präzise.",
     "description": "Explanation of the slider"
   },
 
@@ -363,12 +375,18 @@
   },
 
   "historyConsentDesc" :  {
-    "message": "Wenn Sie diese Option aktivieren, erklären Sie sich damit einverstanden, dass die Erweiterung einen separaten Verlauf von Cookies sammelt, einschließlich Aktualisierungen dieser Cookies. Dieser Verlauf wird vollständig lokal gehalten und verlässt niemals den internen Speicher der Erweiterung. Wenn Sie diese Option aktivieren, kann die Klassifizierung bessere Entscheidungen treffen, und es wird ermöglicht, kürzlich entfernte Cookies wiederzuerkennen und eine erneute Klassifizierung zu verhindern. Wenn diese Option deaktiviert ist, klassifiziert der Klassifikator jedes Cookie immer neu, basierend auf dem aktuellen Update.",
+    "message": "Wenn Sie diese Option aktivieren, erklären Sie sich damit einverstanden, dass die Erweiterung einen separaten Verlauf von Cookies sammelt, einschließlich Aktualisierungen dieser Cookies. Dieser Verlauf bleibt stets lokal und verlässt niemals den internen Speicher der Erweiterung. Wenn Sie diese Option aktivieren, kann CookieBlock bessere Entscheidungen treffen, und es wird ermöglicht, kürzlich entfernte Cookies wiederzuerkennen und eine erneute Klassifizierung zu verhindern. Wenn diese Option deaktiviert ist, wird jedes Cookie erneut klassifiziert.",
     "description": "Description for the cookie history consent checkbox."
   },
 
   "closeButtonText" : {
     "message": "Schliessen",
     "description": "Label for the close button."
+  },
+
+  "cookieHistoryButtonLabel" : {
+    "message": "Kompletten Cookie Verlauf einsehen",
+    "description": "Label for the button to view the entire cookie history."
   }
-  }
+
+}

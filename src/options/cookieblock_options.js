@@ -134,7 +134,11 @@ const setupLocalization = function () {
     setStaticLocaleText("options-greet","optionsGreeting");
     setStaticLocaleText("options-desc1","optionsDescriptionPG1");
     setStaticLocaleText("options-desc2","optionsDescriptionPG2");
-    setStaticLocaleText("options-desc3","optionsDescriptionPG3");
+    //setStaticLocaleText("feedback-pg1","feedbackPG1");
+    //setStaticLocaleText("feedback-pg2","feedbackPG2");
+    //setStaticLocaleText("feedback-pg3","feedbackPG3");
+    //setStaticLocaleText("feedback-survey","feedbackForm");
+    //document.getElementById("feedback-survey").href = chrome.i18n.getMessage("feedbackForm");
 
     // Consent Preference Text
     setStaticLocaleText("cprefs_legend", "optionsHeaderConsent");
@@ -201,7 +205,7 @@ const setupLocalization = function () {
     // Statistics Stuff
     setStaticLocaleText("stats_title", "categoryStatisticsHeader");
     setStaticLocaleText("stats_desc", "categoryStatisticsDesc");
-
+    setStaticLocaleText("json_button", "cookieHistoryButtonLabel");
 }
 
 

@@ -30,27 +30,47 @@
   },
 
   "optionsDescriptionPG1": {
-    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you did not consent towards. This is done independently of the website you visit. The categories you can choose from are listed below.",
+    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you do not consent towards. This is done independently of the website you visit. The categories are listed below.",
     "description": "Description paragraph 1 seen on the options page."
   },
 
   "optionsDescriptionPG2": {
-    "message": "Note that CookieBlock is experimental and still in development. It may be the case that essential website functionality is broken by the automatic removal of cookies. If this occurs, try to add an exception for that website, or increase the bias for necessary cookies. In the worst case, you can pause the removal of cookies temporarily.",
+    "message": "Note that CookieBlock is experimental and still in development. The categorization is not completely accurate, hence it may occur that an essential cookie is removed, breaking website functionality. If this is the case, try to add an exception for that website, or increase the bias for necessary cookies. In the worst case, you can pause the removal of cookies temporarily.",
     "description": "Description paragraph 2 seen on the options page."
   },
 
-  "optionsDescriptionPG3": {
+  "feedbackTitle": {
+    "message": "Feedback",
+    "description": "Title for feedback submission section."
+  },
+
+  "feedbackPG1": {
+    "message": "Do you want to report a broken website or give us feedback? Please use the following form: ",
+    "description": "Feedback text pointing towards the Google Forms survey."
+  },
+
+  "feedbackPG2": {
+    "message": "Or alternatively, send us a mail to the following address:",
+    "description": "Feedback text pointing towards the email."
+  },
+
+  "feedbackPG3": {
     "message": "We would greatly appreciate feedback on all aspects of the extension.",
     "description": "Description paragraph 3 seen on the options page."
   },
 
+  "feedbackFormURL" : {
+    "message": "",
+    "description": "Localized Forms Link"
+  },
+
   "firstTimeDescPG1": {
-    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you did not consent towards. This is done independently of the website you visit. It uses an automated machine-learning classifier to assign the cookies to the categories, which has been trained in advance on a large dataset. The categories you can choose from are listed below.",
+    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you did not consent towards. This is done independently of the website you visit. It uses an automated machine-learning classifier to assign the cookies to a predefined set of categories, which you can choose from below.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 
   "firstTimeDescPG2": {
-    "message": "Note that CookieBlock is experimental and still in development. It may be the case that essential website functionality is broken by the automatic removal of cookies. If this occurs, try to add an exception for that website, or increase the bias for necessary cookies. In the worst case, you can pause the removal of cookies temporarily.",
+    "message": "Note that CookieBlock is experimental and still in development. It may occur that essential website functionality is broken by the automatic removal of cookies. If this is the case, try to add an exception for that website, or increase the bias for necessary cookies. Alternatively, you can pause the removal of cookies temporarily.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
@@ -125,12 +145,12 @@
   },
 
   "buttonExitSetup" : {
-    "message": "Apply Policy and Close",
+    "message": "Classify current cookies and close",
     "description": "Label for the close button on the first time setup"
   },
 
   "popupText" : {
-    "message": "Trust cookies from this website?",
+    "message": "Trust cookies of this website?",
     "description": "Text present on the popup."
   },
 
@@ -155,7 +175,7 @@
   },
 
   "currentCookieEnforceTitle" : {
-    "message": "Enforce Policy on Current Cookies",
+    "message": "Enforce Policy On Current Cookies",
     "description": "Header for the policy enforcement button."
   },
 
@@ -165,7 +185,7 @@
   },
 
   "currentCookieEnforceDescriptionSetup" : {
-    "message" : "Clicking the button below will enforce the policy you selected above on all cookies currently stored in your browser, and close the setup window. This will remove any cookies that you did not consent towards. You can also skip this step and close the window manually if you want to keep your current cookies.",
+    "message" : "This button will enforce the policy you selected on all cookies currently stored in the browser and close the setup window. This will remove any cookies that you did not consent towards.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
@@ -230,19 +250,19 @@
     "description" : "exception description"
   },
 
+  "addButton" : {
+    "message" : "Add",
+    "description" : "Text on button for adding exceptions"
+  },
+
   "categoryStatisticsHeader" : {
     "message" : "Category Statistics",
     "description": "Header for the category statistics"
   },
 
   "categoryStatisticsDesc" : {
-    "message" : "Number of cookies in the cookie history by category:",
+    "message" : "Number of unique cookies currently stored in the history, separated by category. Click on any of the items to open the current cookie storage for that label in JSON format.",
     "description" : "Description of the statistics."
-  },
-
-  "addButton" : {
-    "message" : "Add",
-    "description" : "Text on button for adding exceptions"
   },
 
   "statsNecessary": {
@@ -271,14 +291,6 @@
   },
   "statsAdvertising": {
     "message": "$COUNT$ Advertising Cookies",
-    "placeholders": {
-      "count" : {
-        "content" : "$1"
-      }
-    }
-  },
-  "statsWhitelist": {
-    "message": "$COUNT$ Skipped Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -322,22 +334,22 @@
   },
 
   "clearDataTitle": {
-    "message": "Clear Extension Data",
+    "message": "Clear Cookie History",
     "description": "Title for the 'clear cookie data' button."
   },
 
   "clearDataDescription": {
-    "message": "This button deletes the cookie data stored inside the extension, and resets the stat counters. It does not remove cookies from the browser itself!",
+    "message": "This button deletes the current cookie history. It does not remove cookies from the browser itself!",
     "description": "Description for the 'clear cookie data' button."
   },
 
   "clearDataButton": {
-    "message": "Clear Data",
+    "message": "Clear History",
     "description": "Clear data button label."
   },
 
   "clearDataText": {
-    "message": "Extension data wiped!",
+    "message": "History wiped!",
     "description": "Message that appears after hitting the clear data button."
   },
 
@@ -369,6 +381,11 @@
   "closeButtonText" : {
     "message": "Close Tab",
     "description": "Label for the close button."
+  },
+
+  "cookieHistoryButtonLabel" : {
+    "message": "View Full Cookie History JSON",
+    "description": "Label for the button to view the entire cookie history."
   }
 
 }

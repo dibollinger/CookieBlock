@@ -8,12 +8,11 @@ Released under the MIT License, see included LICENSE file.
 */
 //-------------------------------------------------------------------------------
 
-
 // for debugging
 var httpRemovalCounter = 0;
 var httpsRemovalCounter = 0;
 
-// Lookup for known cookies, to prevent some critical login issues.
+// lookup for known cookies, to prevent some critical login issues.
 var known_cookies = {};
 
 // key used with the known_cookies object
