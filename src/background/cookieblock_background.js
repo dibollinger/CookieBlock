@@ -9,8 +9,55 @@ Released under the MIT License, see included LICENSE file.
 //-------------------------------------------------------------------------------
 
 // local counters for debugging
-var httpRemovalCounter = 0;
-var httpsRemovalCounter = 0;
+var debug_httpRemovalCounter = 0;
+var debug_httpsRemovalCounter = 0;
+
+// debug performance timers (FE, FE + Prediction)
+var debug_perfsum = [BigInt(0), BigInt(0)];
+var debug_perfsum_squared = [BigInt(0), BigInt(0)];
+var debug_Ntotal = [BigInt(0), BigInt(0)];
+var debug_maxTime = [BigInt(0), BigInt(0)];
+var debug_minTime = [BigInt(1e10), BigInt(1e10)];
+
+var debug_Nskipped = BigInt(0);
+
+/**
+ * Helper function to record the debug timing value.
+ * @param {*} elapsed
+ */
+ const recordDebugTimings = function(elNum, idx) {
+    let elapsed = BigInt(elNum);
+    if (elapsed > debug_maxTime[idx]) {
+        debug_maxTime[idx] = elapsed;
+    } else if (elapsed < debug_minTime[idx]) {
+        debug_minTime[idx] = elapsed;
+    }
+    debug_perfsum[idx] += elapsed;
+    debug_perfsum_squared[idx] += elapsed * elapsed;
+    debug_Ntotal[idx]++;
+}
+
+/**
+ * To be used in the debug console.
+ */
+var timingsDebug = function () {
+    for (let i = 0; i < 2; i++) {
+        console.log(`------------- INDEX ${i} ---------------`)
+        if (debug_Ntotal[i] === BigInt(0)){
+            console.error(`No cookies classified for index ${i} yet!`)
+        } else {
+            let mean = debug_perfsum[i] / debug_Ntotal[i];
+            let variance = (debug_perfsum_squared[i] / debug_Ntotal[i]) - (mean * mean);
+            console.log(`Total Cookies for index ${i}: ${debug_Ntotal[i]}`);
+            console.log(`Mean Time: ${mean} ms`);
+            console.log(`Variance Time: ${variance} ms`);
+            console.log(`Minimum Time: ${debug_minTime[i]} ms`);
+            console.log(`Maximum Time: ${debug_maxTime[i]} ms`);
+        }
+    }
+    console.log(`Number of cookies with labels already known: ${debug_Nskipped}`);
+    return 0;
+}
 
 // lookup for known cookies, to prevent some critical login issues
 // will be imported form an external file and kept here
@@ -56,7 +103,6 @@ openDBRequest.onerror = function(event) {
 const constructKeyFromCookie = function(cookieDat) {
     return `${cookieDat.name};${urlToUniformDomain(cookieDat.domain)};${cookieDat.path}`;
 }
-
 
 
 /**
@@ -270,9 +316,17 @@ const classifyCookie = async function(cookieDat, feature_input) {
     try {
         label = cookieLookup(cookieDat);
         if (label === -1) {
+            let startTime = window.performance.now();
+
             let features = extractFeatures(feature_input);
+            recordDebugTimings(window.performance.now() - startTime, 0);
+
             let pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
             label = await predictClass(features, pscale);
+
+            recordDebugTimings(window.performance.now() - startTime, 1);
+        } else {
+            debug_Nskipped++;
         }
     } catch (err) {
         throw new Error("Could not predict the label. Error: " + err.msg)
@@ -338,12 +392,12 @@ const makePolicyDecision = async function(cookieDat, label) {
                             console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                         } else {
                             //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-                            httpRemovalCounter += 1;
+                            debug_httpRemovalCounter += 1;
                         }
                     });
                 } else {
                     //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-                    httpsRemovalCounter += 1;
+                    debug_httpsRemovalCounter += 1;
                 }
             });
         }
@@ -379,6 +433,7 @@ const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) 
             serializedCookie["label_ts"] = Date.now();
             console.debug("Perform Prediction: Cookie (%s;%s;%s) receives label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, classIndexToString(clabel));
         } else {
+            debug_Nskipped++;
             clabel = serializedCookie["current_label"];
             console.debug("Skip Prediction: Cookie (%s;%s;%s) with label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, classIndexToString(clabel));
         }
