@@ -11,6 +11,7 @@ Released under the MIT License, see included LICENSE file.
 // local counters for debugging
 var debug_httpRemovalCounter = 0;
 var debug_httpsRemovalCounter = 0;
+var debug_classifyAllCounter = [0, 0, 0, 0];
 
 // debug performance timers (FE, FE + Prediction)
 var debug_perfsum = [BigInt(0), BigInt(0)];
@@ -373,6 +374,7 @@ const classifyCookie = async function(cookieDat, feature_input) {
         throw new Error(`Predicted label exceeded valid range: ${label}`);
     }
 
+    debug_classifyAllCounter[label] += 1;
     return label;
 };
 
@@ -578,6 +580,7 @@ const constructHistoryJSON = function(type) {
     });
 }
 
+
 /**
  * Handle messages from other content scripts within the extension.
  * @param {Object} request Request object, containing the function type.
@@ -591,6 +594,7 @@ const handleInternalMessage = function(request, sender, sendResponse) {
             if (chrome.runtime.lastError) {
                 console.error("Encountered an error when trying to retrieve all cookies: " + chrome.runtime.lastError);
             } else {
+                debug_classifyAllCounter = [0, 0, 0, 0];
                 for (let cookieDat of allCookies) {
                     if (cblk_hconsent) {
                         enforcePolicyWithHistory(cookieDat, false);
@@ -598,6 +602,7 @@ const handleInternalMessage = function(request, sender, sendResponse) {
                         enforcePolicyWithoutHistory(cookieDat);
                     }
                 }
+                console.debug(`Classified all current browser cookies. Number of cookies classified: ${debug_classifyAllCounter}`);
                 sendResponse({response: "All cookies classified and policy enforced."});
             }
         });
