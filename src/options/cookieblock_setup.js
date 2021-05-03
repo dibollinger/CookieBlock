@@ -80,7 +80,6 @@ document.addEventListener("DOMContentLoaded", setupInitPage);
  */
 const updateSelectionOnChange = function(changes, area) {
     let changedItems = Object.keys(changes);
-    console.debug(`Changes for area '${area}' in: ${changedItems}`);
     if (area === "sync") {
         // update the consent checkboxes
         if (changedItems.includes("cblk_userpolicy")) {

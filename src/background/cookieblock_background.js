@@ -21,6 +21,19 @@ var debug_minTime = [BigInt(1e10), BigInt(1e10)];
 
 var debug_Nskipped = BigInt(0);
 
+// Variables for all the user options, which is persisted in storage.local and storage.sync
+// Retrieving these from disk all the time is a bottleneck.
+var cblk_userpolicy = undefined;
+var cblk_pscale = undefined;
+var cblk_pause = undefined;
+var cblk_ulimit = undefined;
+var cblk_hconsent = undefined;
+var cblk_exglobal = undefined;
+var cblk_exfunc = undefined;
+var cblk_exanal = undefined;
+var cblk_exadvert = undefined;
+var cblk_mintime = undefined;
+
 /**
  * Helper function to record the debug timing value.
  * @param {*} elapsed
@@ -179,17 +192,47 @@ const getCurrentLabelCount = function() {
  * This initializes all chrome local and sync storage objects if undefined.
  * @param {Object} resp  Default configuration
  */
- const initDefaults = function(dfConfig) {
-    setStorageValue([...dfConfig["cblk_userpolicy"]], chrome.storage.sync, "cblk_userpolicy", false);
-    setStorageValue(dfConfig["cblk_pscale"], chrome.storage.sync, "cblk_pscale", false);
-    setStorageValue(dfConfig["cblk_pause"], chrome.storage.local, "cblk_pause", false);
-    setStorageValue(dfConfig["cblk_ulimit"], chrome.storage.local, "cblk_ulimit", false);
-    setStorageValue(dfConfig["cblk_hconsent"], chrome.storage.sync, "cblk_hconsent", false);
-    setStorageValue([...dfConfig["cblk_exglobal"]], chrome.storage.sync, "cblk_exglobal", false);
-    setStorageValue([...dfConfig["cblk_exfunc"]], chrome.storage.sync, "cblk_exfunc", false);
-    setStorageValue([...dfConfig["cblk_exanal"]], chrome.storage.sync, "cblk_exanal", false);
-    setStorageValue([...dfConfig["cblk_exadvert"]], chrome.storage.sync, "cblk_exadvert", false);
-    setStorageValue(dfConfig["cblk_mintime"], chrome.storage.sync, "cblk_mintime", false);
+ const initDefaults = async function(dfConfig, override) {
+    await setStorageValue([...dfConfig["cblk_userpolicy"]], chrome.storage.sync, "cblk_userpolicy", override);
+    cblk_userpolicy = getStorageValue(chrome.storage.sync, "cblk_userpolicy");
+
+    await setStorageValue(dfConfig["cblk_pscale"], chrome.storage.sync, "cblk_pscale", override);
+    cblk_pscale = getStorageValue(chrome.storage.sync, "cblk_pscale");
+
+    await setStorageValue(dfConfig["cblk_pause"], chrome.storage.local, "cblk_pause", override);
+    cblk_pause = getStorageValue(chrome.storage.local, "cblk_pause");
+
+    await setStorageValue(dfConfig["cblk_ulimit"], chrome.storage.local, "cblk_ulimit", override);
+    cblk_ulimit = getStorageValue(chrome.storage.local, "cblk_ulimit");
+
+    await setStorageValue(dfConfig["cblk_hconsent"], chrome.storage.sync, "cblk_hconsent", override);
+    cblk_hconsent = getStorageValue(chrome.storage.sync, "cblk_hconsent");
+
+    await setStorageValue([...dfConfig["cblk_exglobal"]], chrome.storage.sync, "cblk_exglobal", override);
+    cblk_exglobal = getStorageValue(chrome.storage.sync, "cblk_exglobal");
+
+    await setStorageValue([...dfConfig["cblk_exfunc"]], chrome.storage.sync, "cblk_exfunc", override);
+    cblk_exfunc = getStorageValue(chrome.storage.sync, "cblk_exfunc");
+
+    await setStorageValue([...dfConfig["cblk_exanal"]], chrome.storage.sync, "cblk_exanal", override);
+    cblk_exanal = getStorageValue(chrome.storage.sync, "cblk_exanal");
+
+    await setStorageValue([...dfConfig["cblk_exadvert"]], chrome.storage.sync, "cblk_exadvert", override);
+    cblk_exadvert = getStorageValue(chrome.storage.sync, "cblk_exadvert");
+
+    await setStorageValue(dfConfig["cblk_mintime"], chrome.storage.sync, "cblk_mintime", override);
+    cblk_mintime = getStorageValue(chrome.storage.sync, "cblk_mintime");
+}
+
+
+/**
+ * Reset the default values no matter what is currently stored.
+ * @param {Object} resp  Default configuration
+ */
+ const overrideDefaults = function() {
+    getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (dfConfig) => {
+        initDefaults(dfConfig, true);
+    });
   }
 
 
@@ -233,7 +276,7 @@ const createFEInput = function(cookie) {
 const updateFEInput = async function(storedFEInput, rawCookie) {
 
     let updateArray = storedFEInput["variable_data"];
-    let updateLimit = await getStorageValue(chrome.storage.local, "cblk_ulimit");
+    let updateLimit = cblk_ulimit;
 
     let updateStruct = {
         "host_only": rawCookie.hostOnly,
@@ -312,25 +355,19 @@ const serializeOrUpdate = async function(cookieDat) {
  * @return {Promise<Number>}        Cookie category label as an integer, ranging from [0,3].
  */
 const classifyCookie = async function(cookieDat, feature_input) {
-    let label;
-    try {
-        label = cookieLookup(cookieDat);
-        if (label === -1) {
-            let startTime = window.performance.now();
+    let label = cookieLookup(cookieDat);
+    if (label === -1) {
+        let startTime = window.performance.now();
 
-            let features = extractFeatures(feature_input);
-            let pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
-            recordDebugTimings(window.performance.now() - startTime, 0);
+        let features = extractFeatures(feature_input);
+        recordDebugTimings(window.performance.now() - startTime, 0);
 
-            label = await predictClass(features, pscale);
-
-            recordDebugTimings(window.performance.now() - startTime, 1);
-        } else {
-            debug_Nskipped++;
-        }
-    } catch (err) {
-        throw new Error("Could not predict the label. Error: " + err.msg)
+        label = await predictClass(features, cblk_pscale);
+        recordDebugTimings(window.performance.now() - startTime, 1);
+    } else {
+        debug_Nskipped++;
     }
+
 
     if (label < 0 && label > 3) {
         throw new Error(`Predicted label exceeded valid range: ${label}`);
@@ -354,13 +391,13 @@ const makePolicyDecision = async function(cookieDat, label) {
     try {
         switch(label) {
             case 1: // functionality
-                skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exfunc")).includes(ckDomain);
+                skipRejection = cblk_exfunc.includes(ckDomain);
                 break;
             case 2: // analytics
-                skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exanal")).includes(ckDomain);
+                skipRejection = cblk_exanal.includes(ckDomain);
                 break;
             case 3: // advertising
-                skipRejection = (await getStorageValue(chrome.storage.sync, "cblk_exadvert")).includes(ckDomain);
+                skipRejection = cblk_exadvert.includes(ckDomain);
                 break;
         }
     } catch (err){
@@ -370,37 +407,33 @@ const makePolicyDecision = async function(cookieDat, label) {
 
     if (skipRejection) {
         console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
-    } else {
-        let consentArray = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
-
-        if (!consentArray[label]) {
-            // First try to remove the cookie, using https as the protocol
-            chrome.cookies.remove({
-                "name": cookieDat.name,
-                "url": "https://" + cookieDat.domain + cookieDat.path,
-                "storeId": cookieDat.storeId
-            }, (remResultHTTPS) => {
-                // check if removal was successful -- if not, retry with http protocol
-                if (remResultHTTPS === null){
-                    remResultHTTPS = chrome.cookies.remove({
-                        "name": cookieDat.name,
-                        "url": "http://" + cookieDat.domain + cookieDat.path,
-                        "storeId": cookieDat.storeId
-                    }, (remResultHTTP) => {
-                        if (remResultHTTP === null){
-                            // If failed again, report error.
-                            console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-                        } else {
-                            //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-                            debug_httpRemovalCounter += 1;
-                        }
-                    });
-                } else {
-                    //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
-                    debug_httpsRemovalCounter += 1;
-                }
-            });
-        }
+    } else if (!cblk_userpolicy[label]) {
+        // First try to remove the cookie, using https as the protocol
+        chrome.cookies.remove({
+            "name": cookieDat.name,
+            "url": "https://" + cookieDat.domain + cookieDat.path,
+            "storeId": cookieDat.storeId
+        }, (remResultHTTPS) => {
+            // check if removal was successful -- if not, retry with http protocol
+            if (remResultHTTPS === null){
+                remResultHTTPS = chrome.cookies.remove({
+                    "name": cookieDat.name,
+                    "url": "http://" + cookieDat.domain + cookieDat.path,
+                    "storeId": cookieDat.storeId
+                }, (remResultHTTP) => {
+                    if (remResultHTTP === null){
+                        // If failed again, report error.
+                        console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                    } else {
+                        //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                        debug_httpRemovalCounter += 1;
+                    }
+                });
+            } else {
+                //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                debug_httpsRemovalCounter += 1;
+            }
+        });
     }
 };
 
@@ -412,22 +445,15 @@ const makePolicyDecision = async function(cookieDat, label) {
  */
 const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) {
     let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
-    let globalExcepts = {};
-    try {
-        globalExcepts = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
-    } catch (err) {
-        console.error("Could not retrieve the domain exceptions: " + err.msg);
-    }
 
     let ckDomain = sanitizeDomain(serializedCookie.domain);
-    if (globalExcepts.includes(ckDomain)) {
+    if (cblk_exglobal.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
     } else {
-        let minTime = await getStorageValue(chrome.storage.sync, "cblk_mintime");
         let elapsed = Date.now() - serializedCookie["label_ts"];
 
         let clabel = -1;
-        if (serializedCookie["current_label"] === -1 || elapsed > minTime) {
+        if (serializedCookie["current_label"] === -1 || elapsed > cblk_mintime) {
             clabel = await classifyCookie(cookieDat, serializedCookie);
             serializedCookie["current_label"] = clabel;
             serializedCookie["label_ts"] = Date.now();
@@ -438,8 +464,7 @@ const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) 
             console.debug("Skip Prediction: Cookie (%s;%s;%s) with label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, classIndexToString(clabel));
         }
 
-        let pmode = await getStorageValue(chrome.storage.local, "cblk_pause")
-        if (pmode) {
+        if (cblk_pause) {
             console.debug(`Pause Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${classIndexToString(clabel)}`);
         } else {
             makePolicyDecision(cookieDat, clabel);
@@ -489,8 +514,7 @@ const cookieChangeListener = async function(changeInfo) {
 
     // check if consent is given for history storing
     try {
-        let history_consent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
-        if (history_consent) {
+        if (cblk_hconsent) {
             enforcePolicyWithHistory(changeInfo.cookie, true);
         } else {
             enforcePolicyWithoutHistory(changeInfo.cookie);
@@ -563,17 +587,19 @@ const constructHistoryJSON = function(type) {
 const handleInternalMessage = function(request, sender, sendResponse) {
     console.debug("Background script received a message.")
     if (request.classify_all) {
-        getStorageValue(chrome.storage.sync, "cblk_hconsent").then((history_consent) => {
-            chrome.cookies.getAll({}, (allCookies) => {
+        chrome.cookies.getAll({}, (allCookies) => {
+            if (chrome.runtime.lastError) {
+                console.error("Encountered an error when trying to retrieve all cookies: " + chrome.runtime.lastError);
+            } else {
                 for (let cookieDat of allCookies) {
-                    if (history_consent) {
+                    if (cblk_hconsent) {
                         enforcePolicyWithHistory(cookieDat, false);
                     } else {
                         enforcePolicyWithoutHistory(cookieDat);
                     }
                 }
                 sendResponse({response: "All cookies classified and policy enforced."});
-            });
+            }
         });
         return true;
     } else if (request.get_stats) {
@@ -590,7 +616,7 @@ const handleInternalMessage = function(request, sender, sendResponse) {
         return true;
     } else if (request.reset_storage) {
         historyDB.transaction("cookies", "readwrite").objectStore("cookies").clear();
-        sendResponse({response: "Local cookie and stats storage cleared."});
+        sendResponse({response: "Cookie history cleared."});
     } else if (request.open_json) {
         let sendJSONResponse = async () => {
             try {
@@ -603,15 +629,63 @@ const handleInternalMessage = function(request, sender, sendResponse) {
         }
         sendJSONResponse();
         return true;
-    }
-    else {
+    } else if (request.reset_defaults) {
+        overrideDefaults();
+        sendResponse({response: "Defaults overridden by BG."});
+    } else {
         sendResponse({response: undefined});
     }
 }
 
 
+/**
+ * Whenever storage.local or storage.sync updates, update the local
+ * variables that track these as well.
+ * @param {Object} changes Stores the objects that were altered.
+ * @param {Object} area Storage area that was changed
+ */
+ const updateStorageVars = function(changes, area) {
+    let changedItems = Object.keys(changes);
+    if (area === "sync") {
+        if (changedItems.includes("cblk_userpolicy")) {
+            cblk_userpolicy = changes["cblk_userpolicy"].newValue;
+        }
+        if (changedItems.includes("cblk_pscale")) {
+            cblk_pscale = changes["cblk_pscale"].newValue;
+        }
+        if (changedItems.includes("cblk_hconsent")) {
+            cblk_hconsent = changes["cblk_hconsent"].newValue;
+        }
+        if (changedItems.includes("cblk_exglobal")) {
+            cblk_exglobal = changes["cblk_exglobal"].newValue;
+        }
+        if (changedItems.includes("cblk_exfunc")) {
+            cblk_exfunc = changes["cblk_exfunc"].newValue;
+        }
+        if (changedItems.includes("cblk_exanal")) {
+            cblk_exanal = changes["cblk_exanal"].newValue;
+        }
+        if (changedItems.includes("cblk_exadvert")) {
+            cblk_exadvert = changes["cblk_exadvert"].newValue;
+        }
+        if (changedItems.includes("cblk_mintime")) {
+            cblk_mintime = changes["cblk_mintime"].newValue;
+        }
+    } else if (area === "local") {
+        if (changedItems.includes("cblk_pause")) {
+            cblk_pause = changes["cblk_pause"].newValue;
+        }
+        if (changedItems.includes("cblk_ulimit")) {
+            cblk_ulimit = changes["cblk_ulimit"].newValue;
+        }
+    }
+}
+
+chrome.storage.onChanged.addListener(updateStorageVars);
+
+
 // set up defaults and listeners
-getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", initDefaults);
+getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (dConfig) => {initDefaults(dConfig, false)});
 getExtensionFile(chrome.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
     for (let k of Object.keys(result["regex_match"])) {
         result["regex_match"][k][regexKey] = new RegExp(k);

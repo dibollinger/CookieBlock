@@ -201,23 +201,6 @@ const setStaticLocaleText = (elemID, locID, args=[]) => {
     }
 };
 
-/**
- * Reset the default values no matter what is currently stored.
- * @param {Object} resp  Default configuration
- */
- const overrideDefaults = function(dfConfig) {
-    setStorageValue([...dfConfig["cblk_userpolicy"]], chrome.storage.sync, "cblk_userpolicy");
-    setStorageValue(dfConfig["cblk_pscale"], chrome.storage.sync, "cblk_pscale");
-    setStorageValue(dfConfig["cblk_pause"], chrome.storage.local, "cblk_pause");
-    setStorageValue(dfConfig["cblk_ulimit"], chrome.storage.local, "cblk_ulimit");
-    setStorageValue([...dfConfig["cblk_exglobal"]], chrome.storage.sync, "cblk_exglobal");
-    setStorageValue([...dfConfig["cblk_exfunc"]], chrome.storage.sync, "cblk_exfunc");
-    setStorageValue([...dfConfig["cblk_exanal"]], chrome.storage.sync, "cblk_exanal");
-    setStorageValue([...dfConfig["cblk_exadvert"]], chrome.storage.sync, "cblk_exadvert");
-    setStorageValue(dfConfig["cblk_hconsent"], chrome.storage.sync, "cblk_hconsent");
-    setStorageValue(dfConfig["cblk_mintime"], chrome.storage.sync, "cblk_mintime");
-  }
-
 
 // default configuration
 var defaultConfig = undefined;

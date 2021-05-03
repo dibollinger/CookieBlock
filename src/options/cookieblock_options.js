@@ -348,8 +348,8 @@ addPrefClickListener(advertisingCheckbox, 3);
 // classify all cookies button
 classifyButton.addEventListener("click", async () => {
     setStaticLocaleText("classify_applytext", "currentCookieProgressMsg");
-    document.getElementById("classify_applytext").hidden = false;
-    chrome.runtime.sendMessage({"classify_all": true}, (msg) =>{
+    chrome.runtime.sendMessage({"classify_all": true}, (msg) => {
+        document.getElementById("classify_applytext").hidden = false;
         if (chrome.runtime.lastError){
             console.error(chrome.runtime.lastError);
             setStaticLocaleText("classify_applytext", "applyErrorText");
@@ -360,11 +360,18 @@ classifyButton.addEventListener("click", async () => {
     });
 });
 
+
 // reset defaults button
 defaultButton.addEventListener("click", () => {
-    getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (dfConfig) => {
-        overrideDefaults(dfConfig);
+    chrome.runtime.sendMessage({"reset_defaults": true}, (msg) => {
         document.getElementById("default_applytext").hidden = false;
+        if (chrome.runtime.lastError){
+            console.error(chrome.runtime.lastError);
+            setStaticLocaleText("default_applytext", "applyErrorText");
+        } else {
+            console.debug(msg.response);
+            setStaticLocaleText("default_applytext", "defaultApplyText");
+        }
     });
 });
 
