@@ -319,9 +319,9 @@ const classifyCookie = async function(cookieDat, feature_input) {
             let startTime = window.performance.now();
 
             let features = extractFeatures(feature_input);
+            let pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
             recordDebugTimings(window.performance.now() - startTime, 0);
 
-            let pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
             label = await predictClass(features, pscale);
 
             recordDebugTimings(window.performance.now() - startTime, 1);

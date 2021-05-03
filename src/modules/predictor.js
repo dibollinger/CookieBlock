@@ -22,21 +22,29 @@ getExtensionFile(chrome.extension.getURL("ext_data/model/forest_class3.json"), "
  * Recursive function. Recursion depth is limited to the maximum tree depth in the forest.
  * > Example Node: {"f": 470, "c": 0, "u": "l", "l": {}, "r": {}}
  * > Example Leaf: {"v": 32.0}
- * @param {Object} treeNode: Node or Leaf of the tree, represented by a js object.
+ * @param {Object} treeNode:  Root node of the tree, represented by a js object.
  * @param {Object} features:  Features to base decisions on. Any key not found is missing data.
  * @return {Promise<Number>}           The score resulting from the input features.
  */
- const traverseDecisionTree = function(treeNode, features){
-    if ("v" in treeNode) {
-        return treeNode["v"];
-    } else {
-        let fidx = treeNode["f"];
-        if (!(fidx in features)) {
-            return traverseDecisionTree(treeNode[treeNode["u"]], features);
-        } else if (features[fidx] < treeNode["c"]) {
-            return traverseDecisionTree(treeNode["l"], features);
+ const traverseDecisionTree = function(rootNode, features){
+    let treeNode = rootNode;
+    while (true) {
+        if ("v" in treeNode) {
+            return treeNode["v"];
         } else {
-            return traverseDecisionTree(treeNode["r"], features);
+            try {
+                let fidx = treeNode["f"];
+                if (!(fidx in features)) {
+                    treeNode = treeNode[treeNode["u"]];
+                } else if (features[fidx] < treeNode["c"]) {
+                    treeNode = treeNode["l"];
+                } else {
+                    treeNode = treeNode["r"];
+                }
+            } catch (err) {
+                console.error("Failed to traverse a tree. Error: " + err.msg);
+                throw err;
+            }
         }
     }
 }
@@ -69,11 +77,10 @@ const predictClass = async function (features, nfactor = 1){
 
     let minIndex = -1
     try {
-        let forestPromises = [];
+        let classScores = [];
         for (let i = 0; i < forests.length; i++) {
-            forestPromises.push(getForestScore(forests[i], features));
+            classScores.push(Math.exp(getForestScore(forests[i], features)));
         }
-        let classScores = (await Promise.all(forestPromises)).map(Math.exp);
         let totalScore = classScores.reduce((total,num) => {return total + num}, 0);
         let probabilities = classScores.map((x) => {return x / totalScore});
 
