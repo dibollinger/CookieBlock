@@ -55,7 +55,7 @@ getExtensionFile(chrome.extension.getURL("ext_data/model/forest_class3.json"), "
  * @param {Object} features: Extracted features in sparse object representation. {"index": value}
  * @returns {Promise<Number>}  Total score for the forest.
  */
-const getForestScore = async function(forest, features) {
+const getForestScore = function(forest, features) {
     let treeScores = forest.map((root) => traverseDecisionTree(root, features));
     return treeScores.reduce((total, nv) => {return total + nv}, 0);
 }
@@ -68,7 +68,7 @@ const getForestScore = async function(forest, features) {
 * @param {Object} features   Cookie features formatted as {"index": value}.
 * @return {Promise<Number>}  The predicted label for the cookie.
 */
-const predictClass = async function (features, nfactor = 1){
+const predictClass = async function (features, nfactor){
 
     let existsUndefined = forests.reduce((total, f) => {return total || (f === undefined)}, false)
     if (existsUndefined) {
@@ -103,5 +103,6 @@ const predictClass = async function (features, nfactor = 1){
     } catch(err) {
         console.error("Error while performing prediction: " + err.msg)
     }
+
     return minIndex;
 }
