@@ -187,12 +187,7 @@ const createFEInput = function(cookie) {
 const updateFEInput = async function(storedFEInput, rawCookie) {
 
     let updateArray = storedFEInput["variable_data"];
-    let updateLimit;
-    try {
-        updateLimit = await getStorageValue(chrome.storage.local, "cblk_ulimit");
-    } catch (err) {
-        throw new Error("Failed to retrieve the update limit from local storage. Error : " + err.msg)
-    }
+    let updateLimit = await getStorageValue(chrome.storage.local, "cblk_ulimit");
 
     let updateStruct = {
         "host_only": rawCookie.hostOnly,
@@ -242,22 +237,49 @@ const serializeOrUpdate = async function(cookieDat) {
 
 
 /**
+ * Given a cookie, checks the local known_cookies listing (exact domain match and regex).
+ * @param {Object} cookieDat Contains the current cookie's data.
+ */
+ const cookieLookup = function(cookieDat) {
+    let nameLookup = (cName, namesObj) => {
+        if (cName in namesObj) return namesObj[cName];
+        else return -1;
+    };
+
+    let cleanDomain = sanitizeDomain(cookieDat.domain);
+    if (cleanDomain in known_cookies["exact_match"]) {
+        return nameLookup(cookieDat.name, known_cookies["exact_match"][cleanDomain]);
+    } else {
+        for (let obj of Object.values(known_cookies["regex_match"])) {
+            if (obj[regexKey].test(cleanDomain)){
+                return nameLookup(cookieDat.name, obj);
+            }
+        }
+        return -1;
+    }
+}
+
+
+/**
  * Using the cookie input, extract features from the cookie and classify it, retrieving a label.
  * @param  {Object} feature_input   Transformed cookie data input, for the feature extraction.
  * @return {Promise<Number>}        Cookie category label as an integer, ranging from [0,3].
  */
-const classifyCookie = async function(feature_input) {
-    let features = extractFeatures(feature_input);
+const classifyCookie = async function(cookieDat, feature_input) {
     let label;
     try {
-        let pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
-        label = await predictClass(features, pscale);
-        if (label < 0 && label > 3) {
-            throw new Error(`Predicted label exceeded valid range: ${label}`);
+        label = cookieLookup(cookieDat);
+        if (label === -1) {
+            let features = extractFeatures(feature_input);
+            let pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
+            label = await predictClass(features, pscale);
         }
     } catch (err) {
-        console.error("Label prediction failed: " + err.msg);
-        throw err;
+        throw new Error("Could not predict the label. Error: " + err.msg)
+    }
+
+    if (label < 0 && label > 3) {
+        throw new Error(`Predicted label exceeded valid range: ${label}`);
     }
 
     return label;
@@ -295,14 +317,9 @@ const makePolicyDecision = async function(cookieDat, label) {
     if (skipRejection) {
         console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
     } else {
-        let consentArray = undefined;
-        try {
-            consentArray = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
-        } catch(err) {
-            console.error("Failed to retrieve user policy! Error: " + err.msg);
-        }
+        let consentArray = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
 
-        if (consentArray !== undefined && !consentArray[label]) {
+        if (!consentArray[label]) {
             // First try to remove the cookie, using https as the protocol
             chrome.cookies.remove({
                 "name": cookieDat.name,
@@ -335,30 +352,6 @@ const makePolicyDecision = async function(cookieDat, label) {
 
 
 /**
- * Given a cookie, checks the local known_cookies listing (exact domain match and regex).
- * @param {Object} cookieDat Contains the current cookie's data.
- */
-const cookieLookup = function(cookieDat) {
-    let nameLookup = (cName, namesObj) => {
-        if (cName in namesObj) return namesObj[cName];
-        else return -1;
-    };
-
-    let cleanDomain = sanitizeDomain(cookieDat.domain);
-    if (cleanDomain in known_cookies["exact_match"]) {
-        return nameLookup(cookieDat.name, known_cookies["exact_match"][cleanDomain]);
-    } else {
-        for (let obj of Object.values(known_cookies["regex_match"])) {
-            if (obj[regexKey].test(cleanDomain)){
-                return nameLookup(cookieDat.name, obj);
-            }
-        }
-        return -1;
-    }
-}
-
-
-/**
  * Enforce the consent policy.
  * @param {Object} cookieDat Original untransformed cookie object.
  * @param {Object} serializedCookie Transformed cookie object, with potential updates.
@@ -376,55 +369,29 @@ const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) 
     if (globalExcepts.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${ckey})`);
     } else {
-        let minTime = 60000;
-        try {
-            minTime = await getStorageValue(chrome.storage.sync, "cblk_mintime");
-        } catch (err) {
-            console.error("Could not retrieve the minimum label retention time. Error: " + err.msg)
-        }
+        let minTime = await getStorageValue(chrome.storage.sync, "cblk_mintime");
         let elapsed = Date.now() - serializedCookie["label_ts"];
 
-        let label = -1;
+        let clabel = -1;
         if (serializedCookie["current_label"] === -1 || elapsed > minTime) {
-            // classify the cookie
-            try {
-                label = cookieLookup(cookieDat);
-                if (label === -1) {
-                    label = await classifyCookie(serializedCookie);
-                }
-
-                serializedCookie["current_label"] = label;
-                serializedCookie["label_ts"] = Date.now();
-                let cName = classIndexToString(label);
-                console.debug("Perform Prediction: Cookie (%s;%s;%s) receives label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName)
-            } catch (err) {
-                throw new Error("Could not predict the label. Error: " + err.msg)
-            }
+            clabel = await classifyCookie(cookieDat, serializedCookie);
+            serializedCookie["current_label"] = clabel;
+            serializedCookie["label_ts"] = Date.now();
+            console.debug("Perform Prediction: Cookie (%s;%s;%s) receives label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, classIndexToString(clabel));
         } else {
-            label = serializedCookie["current_label"];
-            let cName = classIndexToString(label);
-            console.debug("Skip Prediction: Cookie (%s;%s;%s) with label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName)
+            clabel = serializedCookie["current_label"];
+            console.debug("Skip Prediction: Cookie (%s;%s;%s) with label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, classIndexToString(clabel));
         }
 
-        // retrieve pause state
-        let dstate = false;
-        try {
-            dstate = await getStorageValue(chrome.storage.local, "cblk_pause")
-        } catch (err) {
-            console.error("Could not retrieve pause state. Continuing with policy enforcement without pause. Error: " + err.msg)
-        }
-
-        // make the decision
-        if (dstate) {
-            let cName = classIndexToString(label);
-            console.debug(`Pause Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${cName}`);
+        let pmode = await getStorageValue(chrome.storage.local, "cblk_pause")
+        if (pmode) {
+            console.debug(`Pause Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${classIndexToString(clabel)}`);
         } else {
-            makePolicyDecision(cookieDat, label);
+            makePolicyDecision(cookieDat, clabel);
         }
     }
 
     if (storeUpdate) {
-        // check if consent is given for history storing
         insertCookieIntoStorage(serializedCookie);
     }
 }
@@ -447,7 +414,7 @@ const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) 
  const enforcePolicyWithHistory = async function (cookieDat, storeUpdate){
     try {
         let serializedCookie = await serializeOrUpdate(cookieDat);
-         enforcePolicy(cookieDat, serializedCookie, storeUpdate);
+        enforcePolicy(cookieDat, serializedCookie, storeUpdate);
     } catch (err) {
         console.error("Policy enforcement with history failed. Skipping enforcement. Error: " + err.msg);
     }
