@@ -361,13 +361,15 @@ const classifyCookie = async function(cookieDat, feature_input) {
 
     let label = cookieLookup(cookieDat);
     if (label === -1) {
+        // Feature extraction timing
         let startTime = window.performance.now();
-
         let features = extractFeatures(feature_input);
-        recordDebugTimings(window.performance.now() - startTime, 0);
-
-        label = await predictClass(features, cblk_pscale);
         recordDebugTimings(window.performance.now() - startTime, 1);
+
+        // Prediction timing
+        startTime = window.performance.now();
+        label = await predictClass(features, cblk_pscale);
+        recordDebugTimings(window.performance.now() - startTime, 2);
     } else {
         debug_Nskipped++;
     }
@@ -458,6 +460,7 @@ const makePolicyDecision = async function(cookieDat, label) {
     await maybeRestoreCBLKVar(cblk_mintime, "cblk_mintime");
     await maybeRestoreCBLKVar(cblk_pause, "cblk_pause");
 
+    let startTime = window.performance.now();
     // First, if consent is given, check if the cookie has already been stored.
     let serializedCookie, storedCookie;
     try {
@@ -477,6 +480,8 @@ const makePolicyDecision = async function(cookieDat, label) {
         serializedCookie = createFEInput(newCookie);
     }
 
+    // Record debug timing for cookie retrieval
+    recordDebugTimings(window.performance.now() - startTime, 0);
     console.assert(serializedCookie !== undefined, "Cookie object was still undefined!");
 
     // Check if the domain is contained in the whitelist
