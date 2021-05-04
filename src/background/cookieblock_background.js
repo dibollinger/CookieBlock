@@ -14,20 +14,20 @@ var debug_httpsRemovalCounter = 0;
 var debug_classifyAllCounter = [0, 0, 0, 0];
 
 // debug performance timers (FE, FE + Prediction)
-var debug_perfsum = [BigInt(0), BigInt(0), BigInt(0)];
-var debug_perfsum_squared = [BigInt(0), BigInt(0), BigInt(0)];
-var debug_Ntotal = [BigInt(0), BigInt(0), BigInt(0)];
-var debug_maxTime = [BigInt(0), BigInt(0), BigInt(0)];
-var debug_minTime = [BigInt(1e10), BigInt(1e10), BigInt(1e10)];
+var debug_perfsum = [0.0, 0.0, 0.0];
+var debug_perfsum_squared = [0.0, 0.0, 0.0];
+var debug_maxTime = [0.0, 0.0, 0.0];
+var debug_minTime = [1e10, 1e10, 1e10];
 
-var debug_Nskipped = BigInt(0);
+var debug_Ntotal = [0, 0, 0];
+var debug_Nskipped = 0;
 
 /**
  * Helper function to record the debug timing value.
- * @param {*} elapsed
+ * @param {Number} elapsed Elapsed time in milliseconds.
+ * @param {Number} idx Index to store the measurement in.
  */
- const recordDebugTimings = function(elNum, idx) {
-    let elapsed = BigInt(elNum);
+ const recordDebugTimings = function(elapsed, idx) {
     if (elapsed > debug_maxTime[idx]) {
         debug_maxTime[idx] = elapsed;
     } else if (elapsed < debug_minTime[idx]) {
@@ -44,14 +44,14 @@ var debug_Nskipped = BigInt(0);
 var timingsDebug = function () {
     for (let i = 0; i < debug_Ntotal.length; i++) {
         console.log(`------------- INDEX ${i} ---------------`)
-        if (debug_Ntotal[i] === BigInt(0)){
+        if (debug_Ntotal[i] === 0){
             console.error(`No cookies classified for index ${i} yet!`)
         } else {
             let mean = debug_perfsum[i] / debug_Ntotal[i];
             let variance = (debug_perfsum_squared[i] / debug_Ntotal[i]) - (mean * mean);
             console.log(`Total Cookies for index ${i}: ${debug_Ntotal[i]}`);
             console.log(`Mean Time: ${mean} ms`);
-            console.log(`Variance Time: ${variance} ms`);
+            console.log(`Std-Dev Time: ${Math.sqrt(variance)} ms`);
             console.log(`Minimum Time: ${debug_minTime[i]} ms`);
             console.log(`Maximum Time: ${debug_maxTime[i]} ms`);
         }
