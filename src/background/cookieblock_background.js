@@ -582,7 +582,7 @@ const handleInternalMessage = function(request, sender, sendResponse) {
                 for (let cookieDat of allCookies) {
                     await handleCookie(cookieDat, false, true);
                 }
-                console.debug(`Classified all current browser cookies. Number of cookies classified: ${debug_classifyAllCounter}`);
+                console.info(`classify_all: ${debug_classifyAllCounter}`);
                 sendResponse({response: "All cookies classified and policy enforced."});
             }
         });

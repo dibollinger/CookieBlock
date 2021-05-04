@@ -45,6 +45,7 @@
             "bang": 0
         },
         "twitter.com": {
+            "eu_cn": 0,
             "guest_id": 0,
             "personalization_id":0,
             "ct0": 0,
@@ -97,6 +98,10 @@
             "session-id": 0,
             "csm-hit": 0,
             "session-id-time": 0
+        },
+        "^facebook\\..*": {
+            "datr": 0,
+            "c_user": 0
         }
     }
 }
