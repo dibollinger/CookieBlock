@@ -454,7 +454,8 @@ const message_openJSON = (inMSG) => {
             console.error("Could not open the resulting JSON file!");
         } else {
             let tab = window.open(inMSG + ".json", "_blank");
-            tab.document.write("<pre>" + JSON.stringify(msg.response, null, 4) + "</pre>");
+            tab.document.write('<pre id="json_body"></pre>');
+            tab.document.getElementById("json_body").textContent = JSON.stringify(msg.response, null, 4);
             tab.document.close();
         }
     });
