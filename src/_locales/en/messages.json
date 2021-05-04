@@ -29,16 +29,6 @@
     "description": "Greeting message on the options page."
   },
 
-  "optionsDescriptionPG1": {
-    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you do not consent towards. This is done independently of the website you visit. The categories are listed below.",
-    "description": "Description paragraph 1 seen on the options page."
-  },
-
-  "optionsDescriptionPG2": {
-    "message": "Note that CookieBlock is experimental and still in development. The categorization is not completely accurate, hence it may occur that an essential cookie is removed, breaking website functionality. If this is the case, try to add an exception for that website, or increase the bias for necessary cookies. In the worst case, you can pause the removal of cookies temporarily.",
-    "description": "Description paragraph 2 seen on the options page."
-  },
-
   "feedbackTitle": {
     "message": "Feedback",
     "description": "Title for feedback submission section."
@@ -50,12 +40,12 @@
   },
 
   "feedbackPG2": {
-    "message": "Or alternatively, send us a mail to the following email address:",
+    "message": "Or alternatively, send us a mail to the following address:",
     "description": "Feedback text pointing towards the email."
   },
 
   "feedbackPG3": {
-    "message": "We would greatly appreciate feedback on all aspects of the extension.",
+    "message": "We would greatly appreciate your feedback on the extension!",
     "description": "Description paragraph 3 seen on the options page."
   },
 
@@ -65,17 +55,17 @@
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock allows you to automatically delete cookies that are used for purposes you did not consent towards. This is done independently of the website you visit. It uses an automated machine-learning classifier to assign the cookies to a predefined set of categories, which you can choose from below.",
+    "message": "CookieBlock allows you to automatically remove cookies that are used for purposes you do not consent to. It uses artificial intelligence to assign cookies to a predefined set of categories, which you can individually choose to consent to below.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 
   "firstTimeDescPG2": {
-    "message": "Note that CookieBlock is experimental and still in development. It may occur that essential website functionality is broken by the automatic removal of cookies. If this is the case, try to add an exception for that website, or increase the bias for necessary cookies. Alternatively, you can pause the removal of cookies temporarily.",
+    "message": "Note that CookieBlock is experimental and still in development. The classifier is not perfectly accurate, and may occasionally break website functions. If this is the case, you can add an exception for that website. Alternatively, you can pause the removal of cookies temporarily.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
   "firstTimeDescPG3": {
-    "message": "We would greatly appreciate feedback on all aspects of the extension.",
+    "message": "We would greatly appreciate your feedback on the extension!",
     "description": "Description paragraph 3 seen on the first time setup page."
   },
 
@@ -105,7 +95,7 @@
   },
 
   "catNecessaryDesc": {
-    "message": "Strictly necessary cookies are required for essential services of the website to operate. Some examples for this are login tokens which remember that a user is logged in, or cookies that keep track of the contents of a shopping cart. These cookies cannot be rejected, as doing so would cause websites to stop working correctly.",
+    "message": "Strictly necessary cookies are required for essential services of the website to operate. Examples for this are login tokens which remember that a user is logged in, or cookies that keep track of the contents of a shopping cart. These cookies cannot be rejected, as doing so would cause websites to stop working correctly.",
     "description": "Description of the 'Necessary' category."
   },
 
@@ -115,12 +105,12 @@
   },
 
   "catAnalyticsDesc" : {
-    "message": "Analytics cookies are used to collect statistical information about how visitors use a website. These cookies serve to measure and improve the site performance. In principle, they do not require sensitive, personal information to be collected, and can rely on anonymized data.",
+    "message": "Analytics cookies are used to collect statistical information about how visitors use a website. These cookies serve to measure and improve the site performance. These cookies typically do not collect personally identifiable information, but some websites may violate this practice.",
     "description": "Description of the 'Analytics' category."
   },
 
   "catAdvertisingDesc" : {
-    "message": "Advertising cookies collect sensitive user data and track visitor actions across the web to display personalized advertisements. The data collected in this way may also be sold off to third-parties. To protect your privacy, we recommend rejecting consent for these types of cookies.",
+    "message": "Advertising cookies collect sensitive user data and track visitor actions across the web to display personalized advertisements. The data collected in this way may also be sold to third-parties. To protect your privacy, we recommend rejecting these types of cookies.",
     "description": "Description of the 'Advertising' category."
   },
 
@@ -130,7 +120,7 @@
   },
 
   "additionalOptionsDesc" : {
-    "message": "Settings that adjust the extension behavior or trigger additional functions:",
+    "message": "Settings that adjust the general extension behavior:",
     "description": "Additional options description."
   },
 
@@ -175,17 +165,17 @@
   },
 
   "currentCookieEnforceTitle" : {
-    "message": "Enforce Policy On Current Cookies",
+    "message": "Enforce policy on current cookies",
     "description": "Header for the policy enforcement button."
   },
 
   "currentCookieEnforceDescription" : {
-    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all cookies that are assigned to categories you did not consent to.",
+    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all cookies that are assigned to categories you do not consent towards.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
   "currentCookieEnforceDescriptionSetup" : {
-    "message" : "This button will enforce the policy you selected on all cookies currently stored in the browser and close the setup window. This will remove any cookies that you did not consent towards.",
+    "message" : "This button will categorize and enforce the policy you selected on all cookies currently stored by the browser. If a cookie belongs to a category that has been rejected, it will be removed. Afterwards, the setup window will be closed.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
@@ -210,7 +200,7 @@
   },
 
   "globalExceptionsDescription" : {
-    "message" : "Cookies that originate from the domains in this list will always be permitted, regardless of the current cookie consent policy. Use this to add exceptions to domains you trust, or if website functionality breaks.",
+    "message" : "Cookies that originate from the domains in this list will always be permitted, regardless of the current consent policy. Use this to add exceptions to domains you trust, or if website functionality breaks.",
     "description" : "Decription for the global website exceptions."
   },
 
@@ -359,7 +349,7 @@
   },
 
   "sliderDescription": {
-    "message": "This slider adjusts how commonly CookieBlock will assign cookies to the 'Strictly Necessary' class. Higher values will make CookieBlock decide on the 'Necessary' category more often. Increasing this can reduce website breakage at the cost of classification precision.",
+    "message": "This slider adjusts how commonly CookieBlock will assign cookies to the 'Strictly Necessary' class.  Increasing this can reduce the frequency at which website functionality breaks, but it comes at the cost of classification accuracy and potential privacy gain.",
     "description": "Explanation of the slider"
   },
 
@@ -374,7 +364,7 @@
   },
 
   "historyConsentDesc" :  {
-    "message": "By enabling this option, you consent to collection of a separate history of cookies, including updates to said cookies. This history is entirely local and never leaves the extension storage. Enabling this option allows the cookie classifier to make more informed decisions, and it allows the extension to recognize previously removed cookies, preventing repeat classification. If disabled, the classifier will always reclassify each cookie based on the current contents.",
+    "message": "By enabling this option, you consent to collection of a separate history of cookies, which can contain potentially sensitive information, such as the URLs you visited. This history is stored locally and will never leave the extension storage. Enabling this option allows the cookie classifier to make more informed decisions and remember previously categorized cookies, thus improving the performance of the extension.",
     "description": "Description for the cookie history consent checkbox."
   },
 

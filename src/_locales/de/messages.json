@@ -30,16 +30,6 @@
     "description": "Greeting message on the Options."
   },
 
-  "optionsDescriptionPG1": {
-    "message": "CookieBlock ermöglicht es Ihnen, Cookies, welche für Zwecke verwendet werden denen Sie nicht zustimmen, automatisch aus Ihrem Browser zu entfernen. Die Kategorien werden unten aufgelistet.",
-    "description": "Description paragraph 1 seen on the options page."
-  },
-
-  "optionsDescriptionPG2": {
-    "message": "Beachten Sie bitte, dass CookieBlock sich noch in der Entwicklungsphase befindet, und dass die Kategorisierung der Cookies fehlerhaft sein kann. Das heisst auch dass es vorkommen kann, dass einige Webseiten nicht mehr korrekt funktionieren. Sollte dies auftreten, können sie für besagte Seiten eine Ausnahme definieren.",
-    "description": "Description paragraph 2 seen on the options page."
-  },
-
   "feedbackTitle": {
     "message": "Feedback",
     "description": "Title for Feedback submission section."
