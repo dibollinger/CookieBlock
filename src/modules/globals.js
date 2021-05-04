@@ -66,7 +66,7 @@ const setStorageValue = async function(newValue, stType, key, override = true) {
     try {
         value = await chromeWorkaround(stType, key);
     } catch(err) {
-        console.error("Failed to access storage! Error: " + err.msg)
+        console.error("Failed to access storage! Error: " + err.message)
     }
 
     // error handling

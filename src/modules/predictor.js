@@ -19,7 +19,6 @@ getExtensionFile(chrome.extension.getURL("ext_data/model/forest_class3.json"), "
 
 /**
  * Given a tree node and corresponding features, retrieve the weight from the decision tree.
- * Recursive function. Recursion depth is limited to the maximum tree depth in the forest.
  * > Example Node: {"f": 470, "c": 0, "u": "l", "l": {}, "r": {}}
  * > Example Leaf: {"v": 32.0}
  * @param {Object} treeNode:  Root node of the tree, represented by a js object.
@@ -42,7 +41,7 @@ getExtensionFile(chrome.extension.getURL("ext_data/model/forest_class3.json"), "
                     treeNode = treeNode["r"];
                 }
             } catch (err) {
-                console.error("Failed to traverse a tree. Error: " + err.msg);
+                console.error("Failed to traverse a tree.\nError: " + err.message);
                 throw err;
             }
         }
@@ -101,7 +100,7 @@ const predictClass = async function (features, nfactor){
             }
         }
     } catch(err) {
-        console.error("Error while performing prediction: " + err.msg)
+        console.error("Error while performing prediction: \n" + err.message)
     }
 
     return minIndex;
