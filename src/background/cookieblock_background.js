@@ -80,7 +80,7 @@ var cblk_mintime = undefined;
  */
 const maybeRestoreCBLKVar = async function (cValue, varName) {
     if (cValue === undefined) {
-        console.warning(`Variable '${varName}' undefined, retrieving from storage...`);
+        console.warn(`Variable '${varName}' undefined, retrieving from storage...`);
         switch (varName) {
             case "cblk_userpolicy": cblk_userpolicy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy"); break;
             case "cblk_pscale": cblk_pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale"); break;
