@@ -14,13 +14,51 @@ var debug_httpsRemovalCounter = 0;
 var debug_classifyAllCounter = [0, 0, 0, 0];
 
 // debug performance timers (FE, FE + Prediction)
-var debug_perfsum = [BigInt(0), BigInt(0)];
-var debug_perfsum_squared = [BigInt(0), BigInt(0)];
-var debug_Ntotal = [BigInt(0), BigInt(0)];
-var debug_maxTime = [BigInt(0), BigInt(0)];
-var debug_minTime = [BigInt(1e10), BigInt(1e10)];
+var debug_perfsum = [BigInt(0), BigInt(0), BigInt(0)];
+var debug_perfsum_squared = [BigInt(0), BigInt(0), BigInt(0)];
+var debug_Ntotal = [BigInt(0), BigInt(0), BigInt(0)];
+var debug_maxTime = [BigInt(0), BigInt(0), BigInt(0)];
+var debug_minTime = [BigInt(1e10), BigInt(1e10), BigInt(1e10)];
 
 var debug_Nskipped = BigInt(0);
+
+/**
+ * Helper function to record the debug timing value.
+ * @param {*} elapsed
+ */
+ const recordDebugTimings = function(elNum, idx) {
+    let elapsed = BigInt(elNum);
+    if (elapsed > debug_maxTime[idx]) {
+        debug_maxTime[idx] = elapsed;
+    } else if (elapsed < debug_minTime[idx]) {
+        debug_minTime[idx] = elapsed;
+    }
+    debug_perfsum[idx] += elapsed;
+    debug_perfsum_squared[idx] += elapsed * elapsed;
+    debug_Ntotal[idx]++;
+}
+
+/**
+ * To be used in the debug console.
+ */
+var timingsDebug = function () {
+    for (let i = 0; i < debug_Ntotal.length; i++) {
+        console.log(`------------- INDEX ${i} ---------------`)
+        if (debug_Ntotal[i] === BigInt(0)){
+            console.error(`No cookies classified for index ${i} yet!`)
+        } else {
+            let mean = debug_perfsum[i] / debug_Ntotal[i];
+            let variance = (debug_perfsum_squared[i] / debug_Ntotal[i]) - (mean * mean);
+            console.log(`Total Cookies for index ${i}: ${debug_Ntotal[i]}`);
+            console.log(`Mean Time: ${mean} ms`);
+            console.log(`Variance Time: ${variance} ms`);
+            console.log(`Minimum Time: ${debug_minTime[i]} ms`);
+            console.log(`Maximum Time: ${debug_maxTime[i]} ms`);
+        }
+    }
+    console.log(`Number of cookies with labels already known: ${debug_Nskipped}`);
+    return 0;
+}
 
 // Variables for all the user options, which is persisted in storage.local and storage.sync
 // Retrieving these from disk all the time is a bottleneck.
@@ -57,44 +95,6 @@ const maybeRestoreCBLKVar = async function (cValue, varName) {
             default: throw new Error("Unrecognized variable name.");
         }
     }
-}
-
-/**
- * Helper function to record the debug timing value.
- * @param {*} elapsed
- */
- const recordDebugTimings = function(elNum, idx) {
-    let elapsed = BigInt(elNum);
-    if (elapsed > debug_maxTime[idx]) {
-        debug_maxTime[idx] = elapsed;
-    } else if (elapsed < debug_minTime[idx]) {
-        debug_minTime[idx] = elapsed;
-    }
-    debug_perfsum[idx] += elapsed;
-    debug_perfsum_squared[idx] += elapsed * elapsed;
-    debug_Ntotal[idx]++;
-}
-
-/**
- * To be used in the debug console.
- */
-var timingsDebug = function () {
-    for (let i = 0; i < 2; i++) {
-        console.log(`------------- INDEX ${i} ---------------`)
-        if (debug_Ntotal[i] === BigInt(0)){
-            console.error(`No cookies classified for index ${i} yet!`)
-        } else {
-            let mean = debug_perfsum[i] / debug_Ntotal[i];
-            let variance = (debug_perfsum_squared[i] / debug_Ntotal[i]) - (mean * mean);
-            console.log(`Total Cookies for index ${i}: ${debug_Ntotal[i]}`);
-            console.log(`Mean Time: ${mean} ms`);
-            console.log(`Variance Time: ${variance} ms`);
-            console.log(`Minimum Time: ${debug_minTime[i]} ms`);
-            console.log(`Maximum Time: ${debug_maxTime[i]} ms`);
-        }
-    }
-    console.log(`Number of cookies with labels already known: ${debug_Nskipped}`);
-    return 0;
 }
 
 // lookup for known cookies, to prevent some critical login issues
@@ -320,34 +320,10 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
         updateArray.shift();
 
     updateArray.push(updateStruct);
+    console.assert(updateArray.length > 1, "Error: Performed an update without appending to the cookie?");
     console.assert(updateArray.length <= updateLimit, "Error: cookie update limit still exceeded!");
 
     return storedFEInput;
-};
-
-
-/**
-* Update the extension-specific cookie update storage, for feature extraction inputs.
-* Either creates a new object or updates an existing one if found.
-* @param  {Object} cookieDat     Cookie data object as received from the browser.
-* @param  {Object} cookieStore   Object in which all cookies are indexed.
-* @return {Promise<object>}      The new feature extraction input.
-*/
-const serializeOrUpdate = async function(cookieDat) {
-
-    let serializedCookie;
-    try {
-        let storedDat = await retrieveCookieFromStorage(cookieDat);
-        if (storedDat) {
-            serializedCookie = await updateFEInput(storedDat, cookieDat);
-        } else {
-            serializedCookie = createFEInput(cookieDat);
-        }
-    } catch(err) {
-        console.error("Retrieving or updating FE Input failed unexpectedly. Proceeding with raw cookie data instead. \n Original error : " + err.message);
-        serializedCookie = createFEInput(cookieDat);
-    }
-    return serializedCookie;
 };
 
 
@@ -417,7 +393,6 @@ const makePolicyDecision = async function(cookieDat, label) {
     await maybeRestoreCBLKVar(cblk_exadvert, "cblk_exadvert");
     await maybeRestoreCBLKVar(cblk_userpolicy, "cblk_userpolicy");
 
-    // Actual logic
     let cName = classIndexToString(label);
 
     let ckDomain = sanitizeDomain(escapeString(cookieDat.domain));
@@ -457,7 +432,7 @@ const makePolicyDecision = async function(cookieDat, label) {
                 }, (remResultHTTP) => {
                     if (remResultHTTP === null){
                         // If failed again, report error.
-                        console.error("Could not remove cookie (%s;%s;%s) with label (%s).", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
+                        console.error("Removal failed: Could not find cookie (%s;%s;%s) in storage. Assigned label: (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                     } else {
                         //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                         debug_httpRemovalCounter += 1;
@@ -473,101 +448,72 @@ const makePolicyDecision = async function(cookieDat, label) {
 
 
 /**
- * Enforce the consent policy.
- * @param {Object} cookieDat Original untransformed cookie object.
- * @param {Object} serializedCookie Transformed cookie object, with potential updates.
+ * Retrieve the cookie, classify it, then apply the policy.
+ * @param {Object} newCookie Raw cookie object directly from the browser.
+ * @param {Object} storeUpdate Whether
  */
-const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) {
+ const handleCookie = async function (newCookie, storeUpdate, overrideTimeCheck){
+    await maybeRestoreCBLKVar(cblk_hconsent, "cblk_hconsent");
     await maybeRestoreCBLKVar(cblk_exglobal, "cblk_exglobal");
     await maybeRestoreCBLKVar(cblk_mintime, "cblk_mintime");
     await maybeRestoreCBLKVar(cblk_pause, "cblk_pause");
 
-    let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
+    // First, if consent is given, check if the cookie has already been stored.
+    let serializedCookie, storedCookie;
+    try {
+        if (cblk_hconsent && (storedCookie = await retrieveCookieFromStorage(newCookie))) {
+            if (storeUpdate) {
+                serializedCookie = await updateFEInput(storedCookie, newCookie);
+            } else {
+                serializedCookie = storedCookie;
+            }
+        }
+    } catch(err) {
+        console.error("Retrieving or updating cookie failed unexpectedly.\nOriginal error: " + err.message);
+    }
 
+    // if consent not given, or cookie not present, create a new feature extraction object
+    if (serializedCookie === undefined) {
+        serializedCookie = createFEInput(newCookie);
+    }
+
+    console.assert(serializedCookie !== undefined, "Cookie object was still undefined!");
+
+    // Check if the domain is contained in the whitelist
     let ckDomain = sanitizeDomain(serializedCookie.domain);
     if (cblk_exglobal.includes(ckDomain)) {
-        console.debug(`Cookie found in domain whitelist: (${ckey})`);
+        console.debug(`Cookie found in domain whitelist: (${constructKeyFromCookie(newCookie)})`);
     } else {
+        // If cookie recently classified, use previous label.
         let elapsed = Date.now() - serializedCookie["label_ts"];
 
-        let clabel = -1;
-        if (serializedCookie["current_label"] === -1 || elapsed > cblk_mintime) {
-            clabel = await classifyCookie(cookieDat, serializedCookie);
+        let clabel = serializedCookie["current_label"];
+        console.assert(clabel !== undefined, "Stored cookie label was undefined!!");
+
+        if (overrideTimeCheck || clabel === -1 || elapsed > cblk_mintime) {
+            clabel = await classifyCookie(newCookie, serializedCookie);
+
+            // Update timestamp and label of the stored cookie
             serializedCookie["current_label"] = clabel;
             serializedCookie["label_ts"] = Date.now();
-            console.debug("Perform Prediction: Cookie (%s;%s;%s) receives label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, classIndexToString(clabel));
+            console.debug("Perform Prediction: Cookie (%s;%s;%s) receives label (%s)", newCookie.name, newCookie.domain, newCookie.path, classIndexToString(clabel));
         } else {
             debug_Nskipped++;
-            clabel = serializedCookie["current_label"];
-            console.debug("Skip Prediction: Cookie (%s;%s;%s) with label (%s)", cookieDat.name, cookieDat.domain, cookieDat.path, classIndexToString(clabel));
+            console.debug("Skip Prediction: Cookie (%s;%s;%s) with label (%s)", newCookie.name, newCookie.domain, newCookie.path, classIndexToString(clabel));
         }
 
+        // If removal is paused, don't make the decision.
         if (cblk_pause) {
-            console.debug(`Pause Mode Removal Skip: Cookie Identifier: ${ckey} -- Assigned Label: ${classIndexToString(clabel)}`);
+            console.debug(`Pause Mode Removal Skip: Cookie Identifier: ${constructKeyFromCookie(newCookie)} -- Assigned Label: ${classIndexToString(clabel)}`);
         } else {
-            makePolicyDecision(cookieDat, clabel);
+            makePolicyDecision(newCookie, clabel);
         }
     }
 
-    if (storeUpdate) {
+    // If consent is given, store the cookie again.
+    if (cblk_hconsent) {
         insertCookieIntoStorage(serializedCookie);
     }
-}
-
-/**
- * Enforces the cookie consent policy without using or updating a local cookie storage.
- * @param {Object} cookieDat Object that contains the data for the current cookie.
- */
- const enforcePolicyWithoutHistory = function (cookieDat) {
-    let serializedCookie = createFEInput(cookieDat);
-    enforcePolicy(cookieDat, serializedCookie, false);
-}
-
-
-/**
- * Enforce the cookie consent policy, utilizing and updating the local cookie history.
- * @param {Object} cookieDat Object that contains the data for the current cookie update.
- * @param {Boolean} storeUpdate If true, will store the update to the cookie.
- */
- const enforcePolicyWithHistory = async function (cookieDat, storeUpdate){
-    let serializedCookie = await serializeOrUpdate(cookieDat);
-    enforcePolicy(cookieDat, serializedCookie, storeUpdate);
-}
-
-
-/**
-* Listener that is executed any time a cookie is added, updated or removed.
-* Classifies the cookie and rejects it based on user policy.
-* @param {Object} changeInfo  Contains the cookie itself, and cause info.
-*/
-const cookieChangeListener = async function(changeInfo) {
-    // do nothing in this case
-    if (changeInfo.removed) {
-        return;
-    }
-
-    // check if consent is given for history storing
-    try {
-        await maybeRestoreCBLKVar(cblk_hconsent, "cblk_hconsent");
-        if (cblk_hconsent) {
-            enforcePolicyWithHistory(changeInfo.cookie, true);
-        } else {
-            enforcePolicyWithoutHistory(changeInfo.cookie);
-        }
-    } catch (err) {
-        console.error("Failed to run classification due to an unexpected error: " + err.message)
-    }
-};
-
-
-/**
- * Listener function that opens the first time setup when the extension is installed.
- * @param {Object} details Contains the reason for the change.
- */
-const firstTimeSetup = function(details) {
-  if (details.reason === "install") {
-    chrome.tabs.create({"active": true, "url": "/options/cookieblock_setup.html"});
-  }
 }
 
 /**
@@ -627,14 +573,9 @@ const handleInternalMessage = function(request, sender, sendResponse) {
             if (chrome.runtime.lastError) {
                 console.error("Encountered an error when trying to retrieve all cookies: " + chrome.runtime.lastError);
             } else {
-                await maybeRestoreCBLKVar(cblk_hconsent, "cblk_hconsent");
                 debug_classifyAllCounter = [0, 0, 0, 0];
                 for (let cookieDat of allCookies) {
-                    if (cblk_hconsent) {
-                        enforcePolicyWithHistory(cookieDat, false);
-                    } else {
-                        enforcePolicyWithoutHistory(cookieDat);
-                    }
+                    await handleCookie(cookieDat, false, true);
                 }
                 console.debug(`Classified all current browser cookies. Number of cookies classified: ${debug_classifyAllCounter}`);
                 sendResponse({response: "All cookies classified and policy enforced."});
@@ -675,6 +616,8 @@ const handleInternalMessage = function(request, sender, sendResponse) {
         sendResponse({response: undefined});
     }
 }
+
+chrome.runtime.onMessage.addListener(handleInternalMessage);
 
 
 /**
@@ -722,15 +665,37 @@ const handleInternalMessage = function(request, sender, sendResponse) {
 
 chrome.storage.onChanged.addListener(updateStorageVars);
 
+// Load the default configuration
+getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (dConfig) => {
+    initDefaults(dConfig, false)
+});
 
-// set up defaults and listeners
-getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (dConfig) => {initDefaults(dConfig, false)});
+// Load the cookie exceptions
 getExtensionFile(chrome.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
     for (let k of Object.keys(result["regex_match"])) {
         result["regex_match"][k][regexKey] = new RegExp(k);
     }
     known_cookies = result;
 });
-chrome.cookies.onChanged.addListener(cookieChangeListener);
-chrome.runtime.onInstalled.addListener(firstTimeSetup);
-chrome.runtime.onMessage.addListener(handleInternalMessage);
+
+/**
+* Listener that is executed any time a cookie is added, updated or removed.
+* Classifies the cookie and rejects it based on user policy.
+* @param {Object} changeInfo  Contains the cookie itself, and cause info.
+*/
+chrome.cookies.onChanged.addListener((changeInfo) => {
+    //console.log(changeInfo);
+    if (!changeInfo.removed) {
+        handleCookie(changeInfo.cookie, true, false);
+    }
+});
+
+/**
+ * Listener function that opens the first time setup when the extension is installed.
+ * @param {Object} details Contains the reason for the change.
+ */
+chrome.runtime.onInstalled.addListener((details) => {
+    if (details.reason === "install") {
+        chrome.tabs.create({"active": true, "url": "/options/cookieblock_setup.html"});
+    }
+});
