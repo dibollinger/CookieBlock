@@ -36,6 +36,30 @@ var cblk_exadvert = undefined;
 var cblk_mintime = undefined;
 
 /**
+ * Helper function to restore one of the above vars if they should revert to undefined for some reason.
+ * @param {*} cValue Value currently stored in the variable. If this is undefined, the variable will be restored.
+ * @param {String} varName Name of the corresponding variable.
+ */
+const maybeRestoreCBLKVar = async function (cValue, varName) {
+    if (cValue === undefined) {
+        console.warning(`Variable '${varName}' undefined, retrieving from storage...`);
+        switch (varName) {
+            case "cblk_userpolicy": cblk_userpolicy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy"); break;
+            case "cblk_pscale": cblk_pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale"); break;
+            case "cblk_pause" : cblk_pause = await getStorageValue(chrome.storage.local, "cblk_pause"); break;
+            case "cblk_ulimit" : cblk_ulimit = await getStorageValue(chrome.storage.local, "cblk_ulimit"); break;
+            case "cblk_hconsent" : cblk_hconsent = await getStorageValue(chrome.storage.sync, "cblk_hconsent"); break;
+            case "cblk_exglobal" : cblk_exglobal = await getStorageValue(chrome.storage.sync, "cblk_exglobal"); break;
+            case "cblk_exfunc" : cblk_exfunc = await getStorageValue(chrome.storage.sync, "cblk_exfunc"); break;
+            case "cblk_exanal" : cblk_exanal = await getStorageValue(chrome.storage.sync, "cblk_exanal"); break;
+            case "cblk_exadvert" : cblk_exadvert = await getStorageValue(chrome.storage.sync, "cblk_exadvert"); break;
+            case "cblk_mintime" : cblk_mintime = await getStorageValue(chrome.storage.sync, "cblk_mintime"); break;
+            default: throw new Error("Unrecognized variable name.");
+        }
+    }
+}
+
+/**
  * Helper function to record the debug timing value.
  * @param {*} elapsed
  */
@@ -195,34 +219,34 @@ const getCurrentLabelCount = function() {
  */
  const initDefaults = async function(dfConfig, override) {
     await setStorageValue([...dfConfig["cblk_userpolicy"]], chrome.storage.sync, "cblk_userpolicy", override);
-    cblk_userpolicy = getStorageValue(chrome.storage.sync, "cblk_userpolicy");
+    cblk_userpolicy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");
 
     await setStorageValue(dfConfig["cblk_pscale"], chrome.storage.sync, "cblk_pscale", override);
-    cblk_pscale = getStorageValue(chrome.storage.sync, "cblk_pscale");
+    cblk_pscale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
 
     await setStorageValue(dfConfig["cblk_pause"], chrome.storage.local, "cblk_pause", override);
-    cblk_pause = getStorageValue(chrome.storage.local, "cblk_pause");
+    cblk_pause = await getStorageValue(chrome.storage.local, "cblk_pause");
 
     await setStorageValue(dfConfig["cblk_ulimit"], chrome.storage.local, "cblk_ulimit", override);
-    cblk_ulimit = getStorageValue(chrome.storage.local, "cblk_ulimit");
+    cblk_ulimit = await getStorageValue(chrome.storage.local, "cblk_ulimit");
 
     await setStorageValue(dfConfig["cblk_hconsent"], chrome.storage.sync, "cblk_hconsent", override);
-    cblk_hconsent = getStorageValue(chrome.storage.sync, "cblk_hconsent");
+    cblk_hconsent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
 
     await setStorageValue([...dfConfig["cblk_exglobal"]], chrome.storage.sync, "cblk_exglobal", override);
-    cblk_exglobal = getStorageValue(chrome.storage.sync, "cblk_exglobal");
+    cblk_exglobal = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
 
     await setStorageValue([...dfConfig["cblk_exfunc"]], chrome.storage.sync, "cblk_exfunc", override);
-    cblk_exfunc = getStorageValue(chrome.storage.sync, "cblk_exfunc");
+    cblk_exfunc = await getStorageValue(chrome.storage.sync, "cblk_exfunc");
 
     await setStorageValue([...dfConfig["cblk_exanal"]], chrome.storage.sync, "cblk_exanal", override);
-    cblk_exanal = getStorageValue(chrome.storage.sync, "cblk_exanal");
+    cblk_exanal = await getStorageValue(chrome.storage.sync, "cblk_exanal");
 
     await setStorageValue([...dfConfig["cblk_exadvert"]], chrome.storage.sync, "cblk_exadvert", override);
-    cblk_exadvert = getStorageValue(chrome.storage.sync, "cblk_exadvert");
+    cblk_exadvert = await getStorageValue(chrome.storage.sync, "cblk_exadvert");
 
     await setStorageValue(dfConfig["cblk_mintime"], chrome.storage.sync, "cblk_mintime", override);
-    cblk_mintime = getStorageValue(chrome.storage.sync, "cblk_mintime");
+    cblk_mintime = await getStorageValue(chrome.storage.sync, "cblk_mintime");
 }
 
 
@@ -275,6 +299,7 @@ const createFEInput = function(cookie) {
  * @return {Promise<object>}        The existing cookie object, updated with new data.
  */
 const updateFEInput = async function(storedFEInput, rawCookie) {
+    await maybeRestoreCBLKVar(cblk_ulimit, "cblk_ulimit");
 
     let updateArray = storedFEInput["variable_data"];
     let updateLimit = cblk_ulimit;
@@ -291,7 +316,7 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
     };
 
     // remove head if limit reached
-    if (updateArray.length === updateLimit)
+    if (updateArray.length >= updateLimit)
         updateArray.shift();
 
     updateArray.push(updateStruct);
@@ -309,6 +334,7 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
 * @return {Promise<object>}      The new feature extraction input.
 */
 const serializeOrUpdate = async function(cookieDat) {
+
     let serializedCookie;
     try {
         let storedDat = await retrieveCookieFromStorage(cookieDat);
@@ -317,11 +343,10 @@ const serializeOrUpdate = async function(cookieDat) {
         } else {
             serializedCookie = createFEInput(cookieDat);
         }
-    } catch (err) {
-        console.error("Retrieving or updating FE Input failed unexpectedly. Proceeding with raw cookie data instead. Error : " + err.msg);
+    } catch(err) {
+        console.error("Retrieving or updating FE Input failed unexpectedly. Proceeding with raw cookie data instead. \n Original error : " + err.message);
         serializedCookie = createFEInput(cookieDat);
     }
-
     return serializedCookie;
 };
 
@@ -356,6 +381,8 @@ const serializeOrUpdate = async function(cookieDat) {
  * @return {Promise<Number>}        Cookie category label as an integer, ranging from [0,3].
  */
 const classifyCookie = async function(cookieDat, feature_input) {
+    await maybeRestoreCBLKVar(cblk_pscale, "cblk_pscale");
+
     let label = cookieLookup(cookieDat);
     if (label === -1) {
         let startTime = window.performance.now();
@@ -385,7 +412,12 @@ const classifyCookie = async function(cookieDat, feature_input) {
  * @param  {Number} label       Label predicted by the classifier.
  */
 const makePolicyDecision = async function(cookieDat, label) {
+    await maybeRestoreCBLKVar(cblk_exfunc, "cblk_exfunc");
+    await maybeRestoreCBLKVar(cblk_exanal, "cblk_exanal");
+    await maybeRestoreCBLKVar(cblk_exadvert, "cblk_exadvert");
+    await maybeRestoreCBLKVar(cblk_userpolicy, "cblk_userpolicy");
 
+    // Actual logic
     let cName = classIndexToString(label);
 
     let ckDomain = sanitizeDomain(escapeString(cookieDat.domain));
@@ -403,7 +435,7 @@ const makePolicyDecision = async function(cookieDat, label) {
                 break;
         }
     } catch (err){
-        console.error(`Failed to retrieve exception storage value. Error: ${err.msg}`);
+        console.error(`Failed to retrieve exception storage value. Error: ${err.message}`);
         console.error("Continuing without exceptions.")
     }
 
@@ -446,6 +478,10 @@ const makePolicyDecision = async function(cookieDat, label) {
  * @param {Object} serializedCookie Transformed cookie object, with potential updates.
  */
 const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) {
+    await maybeRestoreCBLKVar(cblk_exglobal, "cblk_exglobal");
+    await maybeRestoreCBLKVar(cblk_mintime, "cblk_mintime");
+    await maybeRestoreCBLKVar(cblk_pause, "cblk_pause");
+
     let ckey = cookieDat.name + ";" + cookieDat.domain + ";" + cookieDat.path;
 
     let ckDomain = sanitizeDomain(serializedCookie.domain);
@@ -494,12 +530,8 @@ const enforcePolicy = async function (cookieDat, serializedCookie, storeUpdate) 
  * @param {Boolean} storeUpdate If true, will store the update to the cookie.
  */
  const enforcePolicyWithHistory = async function (cookieDat, storeUpdate){
-    try {
-        let serializedCookie = await serializeOrUpdate(cookieDat);
-        enforcePolicy(cookieDat, serializedCookie, storeUpdate);
-    } catch (err) {
-        console.error("Policy enforcement with history failed. Skipping enforcement. Error: " + err.msg);
-    }
+    let serializedCookie = await serializeOrUpdate(cookieDat);
+    enforcePolicy(cookieDat, serializedCookie, storeUpdate);
 }
 
 
@@ -516,13 +548,14 @@ const cookieChangeListener = async function(changeInfo) {
 
     // check if consent is given for history storing
     try {
+        await maybeRestoreCBLKVar(cblk_hconsent, "cblk_hconsent");
         if (cblk_hconsent) {
             enforcePolicyWithHistory(changeInfo.cookie, true);
         } else {
             enforcePolicyWithoutHistory(changeInfo.cookie);
         }
     } catch (err) {
-        console.error("Failed to run classification due to an unexpected error: " + err.msg)
+        console.error("Failed to run classification due to an unexpected error: " + err.message)
     }
 };
 
@@ -590,10 +623,11 @@ const constructHistoryJSON = function(type) {
 const handleInternalMessage = function(request, sender, sendResponse) {
     console.debug("Background script received a message.")
     if (request.classify_all) {
-        chrome.cookies.getAll({}, (allCookies) => {
+        chrome.cookies.getAll({}, async (allCookies) => {
             if (chrome.runtime.lastError) {
                 console.error("Encountered an error when trying to retrieve all cookies: " + chrome.runtime.lastError);
             } else {
+                await maybeRestoreCBLKVar(cblk_hconsent, "cblk_hconsent");
                 debug_classifyAllCounter = [0, 0, 0, 0];
                 for (let cookieDat of allCookies) {
                     if (cblk_hconsent) {
@@ -613,7 +647,7 @@ const handleInternalMessage = function(request, sender, sendResponse) {
                 let statsCount = await getCurrentLabelCount();
                 sendResponse({response: statsCount});
             } catch (err) {
-                console.error("Failed to retrieve label count. Error : " + err.msg)
+                console.error("Failed to retrieve label count. Error : " + err.message)
                 sendResponse({response: null});
             }
         };
