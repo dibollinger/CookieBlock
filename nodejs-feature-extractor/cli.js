@@ -1,6 +1,13 @@
 #!/usr/bin/env node
-// Author: Dino Bollinger
-// MIT License
+//-------------------------------------------------------------------------------
+/*
+Copyright (C) 2021 Dino Bollinger, ETH Zürich, Information Security Group
+
+This file is part of CookieBlock.
+
+Released under the MIT License, see included LICENSE file.
+*/
+//-------------------------------------------------------------------------------
 
 /**
  * This command line script can either perform feature extraction, which is necessary to

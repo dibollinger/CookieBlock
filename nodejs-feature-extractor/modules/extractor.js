@@ -1,5 +1,12 @@
-// Author: Dino Bollinger
-// License: MIT
+//-------------------------------------------------------------------------------
+/*
+Copyright (C) 2021 Dino Bollinger, ETH Zürich, Information Security Group
+
+This file is part of CookieBlock.
+
+Released under the MIT License, see included LICENSE file.
+*/
+//-------------------------------------------------------------------------------
 
 let utils = require('./utils.js');
 var difflib = require('difflib');
@@ -340,11 +347,7 @@ const perCookieFeatures = {
         }
     },
     "feature_is_third_party":  (sparse, curr_idx, cookie_data, args) => {
-        let cookie_domain = urlToUniformDomain(cookie_data["domain"]);
-        let website_domain = urlToUniformDomain(cookie_data["first_party_domain"]);
-        if (!(cookie_domain.includes(website_domain))){
-            sparse[curr_idx] = 1.0;
-        }
+        throw new Error("Not Supported");
     },
     "feature_non_root_path":  (sparse, curr_idx, cookie_data, args) => {
         if (cookie_data["path"].normalize() !== "/"){

@@ -1,5 +1,12 @@
-// Author: Dino Bollinger
-// License: MIT
+//-------------------------------------------------------------------------------
+/*
+Copyright (C) 2021 Dino Bollinger, ETH Zürich, Information Security Group
+
+This file is part of CookieBlock.
+
+Released under the MIT License, see included LICENSE file.
+*/
+//-------------------------------------------------------------------------------
 
 let fs = require('fs');
 
