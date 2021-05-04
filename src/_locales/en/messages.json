@@ -45,12 +45,12 @@
   },
 
   "feedbackPG1": {
-    "message": "Do you want to report a broken website or give us feedback? Please use the following form: ",
+    "message": "Do you want to report a broken website or give us feedback? Then please use the following form: ",
     "description": "Feedback text pointing towards the Google Forms survey."
   },
 
   "feedbackPG2": {
-    "message": "Or alternatively, send us a mail to the following address:",
+    "message": "Or alternatively, send us a mail to the following email address:",
     "description": "Feedback text pointing towards the email."
   },
 
@@ -60,7 +60,7 @@
   },
 
   "feedbackFormURL" : {
-    "message": "",
+    "message": "https://forms.gle/tL21ruvPZq2q218P8",
     "description": "Localized Forms Link"
   },
 

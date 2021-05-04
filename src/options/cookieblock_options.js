@@ -134,11 +134,11 @@ const setupLocalization = function () {
     setStaticLocaleText("options-greet","optionsGreeting");
     setStaticLocaleText("options-desc1","optionsDescriptionPG1");
     setStaticLocaleText("options-desc2","optionsDescriptionPG2");
-    //setStaticLocaleText("feedback-pg1","feedbackPG1");
-    //setStaticLocaleText("feedback-pg2","feedbackPG2");
-    //setStaticLocaleText("feedback-pg3","feedbackPG3");
-    //setStaticLocaleText("feedback-survey","feedbackForm");
-    //document.getElementById("feedback-survey").href = chrome.i18n.getMessage("feedbackForm");
+    setStaticLocaleText("feedback-pg1","feedbackPG1");
+    setStaticLocaleText("feedback-pg2","feedbackPG2");
+    setStaticLocaleText("feedback-pg3","feedbackPG3");
+    setStaticLocaleText("feedback-survey","feedbackFormURL");
+    document.getElementById("feedback-survey").href = chrome.i18n.getMessage("feedbackFormURL");
 
     // Consent Preference Text
     setStaticLocaleText("cprefs_legend", "optionsHeaderConsent");

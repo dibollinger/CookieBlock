@@ -46,7 +46,7 @@
   },
 
   "feedbackPG1": {
-    "message": "Feedback kann über die folgende Google Forms Umfrage abgegeben werden:",
+    "message": "Möchten Sie einen Defekt melden, oder uns Feedback geben? Dann füllen Sie bitte das folgende Formular aus (Englisch): ",
     "description": "Feedback text pointing towards the Google Forms survey."
   },
 
@@ -56,12 +56,12 @@
   },
 
   "feedbackPG3": {
-    "message": "Wir wären dankbar wenn Sie uns Feedback zu der Extension geben könnten!",
+    "message": "Wir sind dankbar für jegliches Feedback zur Extension!",
     "description": "Description paragraph 3 seen on the options page."
   },
 
   "feedbackFormURL" : {
-    "message": "",
+    "message": "https://forms.gle/tL21ruvPZq2q218P8",
     "description": "Localized Forms Link"
   },
 

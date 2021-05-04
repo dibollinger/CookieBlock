@@ -32,7 +32,11 @@ const pauseDiv = document.getElementById("pause-div");
     setStaticLocaleText("setup_greet", "firstTimeGreeting");
     setStaticLocaleText("setup_desc1","firstTimeDescPG1");
     setStaticLocaleText("setup_desc2","firstTimeDescPG2");
-    setStaticLocaleText("setup_desc3","firstTimeDescPG3");
+    setStaticLocaleText("feedback-pg1","feedbackPG1");
+    setStaticLocaleText("feedback-pg2","feedbackPG2");
+    setStaticLocaleText("feedback-pg3","feedbackPG3");
+    setStaticLocaleText("feedback-survey","feedbackFormURL");
+    document.getElementById("feedback-survey").href = chrome.i18n.getMessage("feedbackFormURL");
 
     setStaticLocaleText("cprefs_legend", "optionsHeaderConsent");
     setStaticLocaleText("cprefs_desc","consentDescription");
