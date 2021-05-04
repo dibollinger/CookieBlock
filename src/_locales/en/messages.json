@@ -55,7 +55,7 @@
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock allows you to automatically remove cookies that are used for purposes you do not consent to. It uses artificial intelligence to assign cookies to a predefined set of categories, which you can individually choose to consent to below.",
+    "message": "CookieBlock allows you to automatically remove cookies that are used for purposes you do not consent to. It uses artificial intelligence to assign cookies to a predefined set of categories, which you can choose from below.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 
@@ -251,7 +251,7 @@
   },
 
   "categoryStatisticsDesc" : {
-    "message" : "Number of unique cookies currently stored in the history, separated by category. Click on any of the items to open the current cookie storage for that label in JSON format.",
+    "message" : "Number of unique cookies currently stored in the history, separated by category. Click on any of the items to receive a snapshot of the current cookie history for that label in JSON format.",
     "description" : "Description of the statistics."
   },
 

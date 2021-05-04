@@ -111,7 +111,7 @@
   },
 
   "catAdvertisingDesc" : {
-    "message": "Werbe-Cookies werden verwendet, um persönliche Daten des Besuchers zu sammeln, dessen Aktivitäten zu verfolgen, und ein Profil zum Besucher zu erstellen. Dieses wird dazu verwendet, um die angezeigte Werbung auf den Besucher abzustimmen. Die gesammelten Daten können auch an Dritte weiterverkauft werden. Zum Schutz der Privatsphäre empfehlen wir, diese Art von Cookies abzulehnen.",
+    "message": "Werbe-Cookies werden verwendet um persönliche Daten des Besuchers zu sammeln, dessen Aktivitäten zu verfolgen und ein Profil zum Besucher zu erstellen. Dieses wird dazu verwendet, um die angezeigte Werbung auf den Besucher abzustimmen. Die gesammelten Daten können auch an Dritte weiterverkauft werden. Zum Schutz der Privatsphäre empfehlen wir, diese Art von Cookies abzulehnen.",
     "description": "Description of the 'Advertising' category."
   },
 
@@ -252,7 +252,7 @@
   },
 
   "categoryStatisticsDesc" : {
-    "message" : "Anzahl Cookies im Verlauf, nach Kategorie:",
+    "message" : "Anzahl Cookies die zurzeit im Verlauf gespeichert sind, nach Kategorie sortiert.",
     "description" : "Description of the statistics."
   },
 
@@ -305,17 +305,17 @@
   },
 
   "defaultTitle": {
-    "message": "Standardeinstellungen Wiederherstellen",
+    "message": "Standardeinstellungen wiederherstellen",
     "description": "Restore defaults title"
   },
 
   "defaultDescription": {
-    "message": "Mit dieser Schaltfläche werden die Standardeinstellungen der Erweiterung wiederhergestellt.",
+    "message": "Mit diesem Schalter werden die Standardeinstellungen der Erweiterung wiederhergestellt.",
     "description": "Description for the restore defaults button."
   },
 
   "defaultButton": {
-    "message": "Standardeinstellungen wiederherstellen",
+    "message": "Reset Defaults",
     "description": "Button text for resetting."
   },
 
@@ -325,12 +325,12 @@
   },
 
   "clearDataTitle": {
-    "message": "Cookieverlauf Löschen",
+    "message": "Cookieverlauf löschen",
     "description": "Title for the 'clear cookie data' button."
   },
 
   "clearDataDescription": {
-    "message": "Diese Schaltfläche löscht die im Verlauf gespeicherten Cookie-Daten. Dadurch werden keine Cookies aus dem Browser selbst entfernt!",
+    "message": "Dieser Schalter löscht alle im Verlauf gespeicherten Daten. Dadurch werden keine Cookies aus dem Browser selbst entfernt!",
     "description": "Description for the 'clear cookie data' button."
   },
 
@@ -350,7 +350,7 @@
   },
 
   "sliderDescription": {
-    "message": "Diese Option regelt, wie stark CookieBlock darauf tendiert, Cookies als 'Streng Notwendig' zu klassifizieren. Bei höheren Werten wird die Wahrscheinlichkeit reduziert, dass Webseiten nicht mehr korrekt funktionieren. Jedoch wird dadurch auch die Kategorisierung weniger präzise, und die Privatsphäre wird schlechter geschützt.",
+    "message": "Diese Option regelt, wie stark CookieBlock darauf tendiert, Cookies als 'Streng Notwendig' zu klassifizieren. Bei höheren Werten wird die Wahrscheinlichkeit reduziert, dass Webseiten nicht mehr korrekt funktionieren. Jedoch wird dadurch auch die Kategorisierung weniger präzise, und die Privatsphäre wird weniger gut geschützt.",
     "description": "Explanation of the slider"
   },
 
