@@ -36,7 +36,7 @@
   },
 
   "feedbackPG1": {
-    "message": "Möchten Sie einen Defekt melden, oder uns Feedback geben? Dann füllen Sie bitte das folgende Formular aus (Englisch): ",
+    "message": "Möchten Sie einen Defekt melden, oder uns Feedback geben? Dann füllen Sie bitte das folgende Formular aus: (derzeit nur in Englisch verfügbar)",
     "description": "Feedback text pointing towards the Google Forms survey."
   },
 
@@ -46,7 +46,7 @@
   },
 
   "feedbackPG3": {
-    "message": "Wir sind dankbar für jegliches Feedback zur Extension!",
+    "message": "Wir sind dankbar für jegliches Feedback zu CookieBlock!",
     "description": "Description paragraph 3 seen on the options page."
   },
 
@@ -56,12 +56,12 @@
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock ermöglicht es Ihnen, Cookies, die für Zwecke verwendet werden denen Sie nicht zustimmen, automatisch aus dem Browser zu entfernen. Dies geschieht unabhängig von der Webseite die Sie besuchen. Die einzelnen Verwendungszwecke werden unten aufgelistet.",
+    "message": "CookieBlock ermöglicht es Ihnen, Cookies, die für Zwecke verwendet werden denen Sie nicht zustimmen, automatisch aus Ihrem Browser zu entfernen. Die Cookies werden mithilfe von künstlicher Intelligenz kategorisiert. Die einzelnen Verwendungszwecke werden unten aufgelistet.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 
   "firstTimeDescPG2": {
-    "message": "Dieses Addon befindet sich noch in der Entwicklungsphase! Es kann also vorkommen, dass Cookies entfernt werden, welche von der Webseite benötigt werden. Sollte dies geschehen, können Sie versuchen, über das CookieBlock-Symbol in der Browserleiste eine Ausnahme für diese Domain hinzuzufügen. Dadurch wird verhindert, dass Cookies, die von dieser Website stammen, gelöscht werden. Alternativ können Sie auch die Entfernung pausieren.",
+    "message": "Diese Erweiterung befindet sich noch in der Entwicklungsphase! Es kann vorkommen, dass Cookies entfernt werden, welche von der Webseite benötigt werden. Bitte melden Sie uns solche Vorfälle über den Feedback Fragebogen. Über das CookieBlock-Symbol in der Browserleiste kann eine Ausnahme für die Webseite hinzugefügt werden, welches das Problem umgeht. Alternativ kann die Entfernung von Cookies auch temporär pausiert werden.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
@@ -106,12 +106,12 @@
   },
 
   "catAnalyticsDesc" : {
-    "message": "Analytische Cookies werden dafür verwendet, statistische Informationen über die Verwendung der Webseite durch Besucher zu sammeln. Die gesammelten Daten können hierbei prinzipiell anonymisiert werden. Analytische Cookies werden dazu verwendet, die Webseite zu verbessern, und diese als Werbeplatform attraktiver darzustellen.",
+    "message": "Analytische Cookies werden dafür verwendet, statistische Informationen über die Verwendung der Webseite durch Besucher zu sammeln, und um die Webseite zu verbessern. Die gesammelten Daten können hierbei prinzipiell anonymisiert werden. Nicht alle Webseiten halten sich jedoch daran.",
     "description": "Description of the 'Analytics' category."
   },
 
   "catAdvertisingDesc" : {
-    "message": "Werbe-Cookies werden verwendet, um persönliche Daten des Besuchers zu sammeln, und ein Profil zu diesem zu erstellen. Dieses Profil wird dazu verwendet, um die angezeigte Werbung auf den Besucher abzustimmen, und die gesammelten Daten können auch an Dritte weiterverkauft werden. Weiterhin dienen diese Cookies auch zu Aktivitätenverfolgung. Zum Schutz der Privatsphäre empfehlen wir, die Zustimmung für diese Arten von Cookies abzulehnen.",
+    "message": "Werbe-Cookies werden verwendet, um persönliche Daten des Besuchers zu sammeln, dessen Aktivitäten zu verfolgen, und ein Profil zum Besucher zu erstellen. Dieses wird dazu verwendet, um die angezeigte Werbung auf den Besucher abzustimmen. Die gesammelten Daten können auch an Dritte weiterverkauft werden. Zum Schutz der Privatsphäre empfehlen wir, diese Art von Cookies abzulehnen.",
     "description": "Description of the 'Advertising' category."
   },
 
@@ -121,12 +121,12 @@
   },
 
   "additionalOptionsDesc" : {
-    "message": "Optionen welche das Verhalten der Erweiterung anpassen, oder zusätzliche Funktionen aktivieren:",
+    "message": "Weitere Optionen um das Verhalten der Erweiterung anzupassen:",
     "description": "Additional options description."
   },
 
   "pauseCookieRemoval" : {
-    "message": "Cookie Entfernung Pausieren",
+    "message": "Cookie Entfernung pausieren",
     "description": "Text for the cookie removal pause button."
   },
 
@@ -166,7 +166,7 @@
   },
 
   "currentCookieEnforceTitle" : {
-    "message": "Bestehende Cookies klassifizieren & entfernen",
+    "message": "Bestehende Cookies klassifizieren und entfernen",
     "description": "Header for the policy enforcement button."
   },
 
@@ -176,7 +176,7 @@
   },
 
   "currentCookieEnforceDescriptionSetup" : {
-    "message" : "Diese Option löscht alle im Browser derzeit gespeicherten Cookies, denen Sie nicht zustimmen, und schliesst danach dieses Browser Fenster.",
+    "message" : "Dieser Schalter löscht alle im Browser derzeit gespeicherten Cookies, denen Sie nicht zustimmen, und schliesst danach dieses Browser Fenster.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
@@ -196,12 +196,12 @@
   },
 
   "globalExceptionsHeader" : {
-    "message" : "Domain Ausnahmen",
+    "message" : "Globale Ausnahmen",
     "description" : "Header for the global extensions listing."
   },
 
   "globalExceptionsDescription" : {
-    "message" : "Cookies, die von Domänen in dieser Liste stammen, werden immer zugelassen, unabhängig von der aktuellen Richtlinie. Dies kann für Webseiten verwendet werden, denen Sie vertrauen, oder wenn eine Webseite nicht korrekt funktionieren sollte.",
+    "message" : "Cookies, die von Domänen in dieser Liste stammen, werden immer zugelassen, unabhängig von der aktuellen Cookie-Richtlinie. Dies kann für Webseiten verwendet werden, denen Sie vertrauen, oder wenn eine Webseite nicht korrekt funktionieren sollte.",
     "description" : "Decription for the global website exceptions."
   },
 
@@ -350,7 +350,7 @@
   },
 
   "sliderDescription": {
-    "message": "Diese Option regelt, wie stark CookieBlock darauf tendiert, Cookies als 'Streng Notwendig' zu klassifizieren. Bei höheren Werten wird die Wahrscheinlichkeit reduziert, dass Webseiten nicht mehr korrekt funktionieren. Jedoch wird dadurch auch die Kategorisierung weniger präzise.",
+    "message": "Diese Option regelt, wie stark CookieBlock darauf tendiert, Cookies als 'Streng Notwendig' zu klassifizieren. Bei höheren Werten wird die Wahrscheinlichkeit reduziert, dass Webseiten nicht mehr korrekt funktionieren. Jedoch wird dadurch auch die Kategorisierung weniger präzise, und die Privatsphäre wird schlechter geschützt.",
     "description": "Explanation of the slider"
   },
 
@@ -365,7 +365,7 @@
   },
 
   "historyConsentDesc" :  {
-    "message": "Wenn Sie diese Option aktivieren, erklären Sie sich damit einverstanden, dass die Erweiterung einen separaten Verlauf von Cookies sammelt, einschließlich Aktualisierungen dieser Cookies. Dieser Verlauf bleibt stets lokal und verlässt niemals den internen Speicher der Erweiterung. Wenn Sie diese Option aktivieren, kann CookieBlock bessere Entscheidungen treffen, und es wird ermöglicht, kürzlich entfernte Cookies wiederzuerkennen und eine erneute Klassifizierung zu verhindern. Wenn diese Option deaktiviert ist, wird jedes Cookie erneut klassifiziert.",
+    "message": "Wenn Sie diese Option aktivieren, erklären Sie sich damit einverstanden, dass die Erweiterung einen separaten Verlauf von Cookies sammelt. Dieser Verlauf kann persönliche Informationen beinhalten, wie zum Beispiel eine Liste aller Domains, die Sie besucht haben. Die Daten bleiben stets lokal gespeichert und verlassen niemals den internen Speicher der Erweiterung. Wenn Sie diese Option aktivieren, kann CookieBlock bessere Entscheidungen treffen, und es wird ermöglicht, kürzlich entfernte Cookies wiederzuerkennen.",
     "description": "Description for the cookie history consent checkbox."
   },
 

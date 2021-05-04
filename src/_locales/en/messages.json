@@ -60,7 +60,7 @@
   },
 
   "firstTimeDescPG2": {
-    "message": "Note that CookieBlock is experimental and still in development. The classifier is not perfectly accurate, and may occasionally break website functions. If this is the case, you can add an exception for that website. Alternatively, you can pause the removal of cookies temporarily.",
+    "message": "Note that CookieBlock is experimental and still in development. The classifier is not perfectly accurate, and may occasionally break website functions. If this occurs, please report it to us so that we can fix it. To bypass the problem, you can add an exception for the website over the browser-bar icon. Alternatively, you can pause the removal of cookies temporarily.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
