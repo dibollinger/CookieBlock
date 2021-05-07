@@ -11,7 +11,7 @@ body, html {
 }
 body {
   display: flexbox;
-  min-width: 15em;
+  min-width: 20em;
   max-width: 20em;
   background: radial-gradient(ellipse, rgb(12, 72, 129), rgb(2, 1, 42));
   color: white;
@@ -28,7 +28,7 @@ button {
 .titlebox {
   display: flex;
   width: 100%;
-  font-size: 1.12em;
+  font-size: 1.25em;
   font-weight: 800;
   align-items: center;
 }

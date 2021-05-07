@@ -145,12 +145,12 @@
   },
 
   "popupButtonAdd" : {
-    "message": "Add Site Exception",
+    "message": "Add this site as an exception",
     "description": "Button text for adding exceptions"
   },
 
   "popupButtonRemove" : {
-    "message": "Remove Site Exception",
+    "message": "Remove this site from exceptions",
     "description": "Button text for removing exceptions"
   },
 

@@ -146,7 +146,7 @@
   },
 
   "popupButtonAdd" : {
-    "message": "Ausnahme hinzufügen",
+    "message": "Diese Webseite als Ausnahme hinzufügen",
     "description": "Button text for adding exceptions"
   },
 
