@@ -9,6 +9,9 @@
         "fandom.com": {
             "access_token": 0
         },
+        "forums.frontier.co.uk": {
+            "CookieConsent": 0
+        },
         "gog.com": {
             "gog_lc": 0,
             "gog-al": 0
@@ -43,6 +46,9 @@
             "bjar": 0,
             "flash": 0,
             "bang": 0
+        },
+        "todoist.com": {
+            "todoistd": 0
         },
         "twitter.com": {
             "eu_cn": 0,
