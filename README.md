@@ -23,6 +23,15 @@ Note that CookieBlock does not handle the cookie banner itself. In order to remo
 
 * https://github.com/cavi-au/Consent-O-Matic
 
+
+## Links to browser stores
+
+ * Chrome: https://chrome.google.com/webstore/detail/cookieblock/fbhiolckidkciamgcobkokpelckgnnol
+ * Edge: https://microsoftedge.microsoft.com/addons/detail/cookieblock/mnfolmjlccppcgdeinhidialajfiopcc
+ * Firefox: https://addons.mozilla.org/en-US/firefox/addon/cookieblock/
+ * Opera: https://addons.opera.com/en/extensions/details/cookieblock/
+
+
 ## Repository Contents
 
 * `nodejs-feature-extractor/`:  Contains the NodeJS feature extractor. Used to extract features with the same JavaScript code as the extension.
