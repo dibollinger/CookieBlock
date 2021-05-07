@@ -353,7 +353,7 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
     } else {
         for (let obj of Object.values(known_cookies["domain_regex"])) {
             if (obj[regexKey].test(cookieDomain)){
-                return nameLookup(ccookieName, obj);
+                return nameLookup(cookieName, obj);
             }
         }
         return -1;
