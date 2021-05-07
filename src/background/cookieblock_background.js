@@ -328,7 +328,8 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
 
 
 /**
- * Given a cookie, checks the local known_cookies listing (exact domain match and regex).
+ * Given a cookie, checks the hardcoded known_cookies json for predefined classes.
+ * This is used to define exceptions and correct mistakes in the classification.
  * @param {Object} cookieDat Contains the current cookie's data.
  */
  const cookieLookup = function(cookieDat) {
@@ -337,13 +338,22 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
         else return -1;
     };
 
-    let cleanDomain = sanitizeDomain(cookieDat.domain);
-    if (cleanDomain in known_cookies["exact_match"]) {
-        return nameLookup(cookieDat.name, known_cookies["exact_match"][cleanDomain]);
+    let cookieName = cookieDat.name;
+    let cookieDomain = sanitizeDomain(cookieDat.domain);
+
+    // Check name exceptions
+    let label = nameLookup(cookieName, known_cookies["name_match"]);
+    if (label !== undefined && label !== -1) {
+        return label;
+    }
+
+    // Check domain exception, then check for name
+    if (cookieDomain in known_cookies["domain_match"]) {
+        return nameLookup(cookieName, known_cookies["domain_match"][cookieDomain]);
     } else {
-        for (let obj of Object.values(known_cookies["regex_match"])) {
-            if (obj[regexKey].test(cleanDomain)){
-                return nameLookup(cookieDat.name, obj);
+        for (let obj of Object.values(known_cookies["domain_regex"])) {
+            if (obj[regexKey].test(cookieDomain)){
+                return nameLookup(ccookieName, obj);
             }
         }
         return -1;
@@ -677,8 +687,8 @@ getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json"
 
 // Load the cookie exceptions
 getExtensionFile(chrome.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
-    for (let k of Object.keys(result["regex_match"])) {
-        result["regex_match"][k][regexKey] = new RegExp(k);
+    for (let k of Object.keys(result["domain_regex"])) {
+        result["domain_regex"][k][regexKey] = new RegExp(k);
     }
     known_cookies = result;
 });

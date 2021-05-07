@@ -1,5 +1,9 @@
 {
-    "exact_match": {
+    "name_match": {
+        "CookieConsent" : 0,
+        "OptanonConsent" : 0
+    },
+    "domain_match": {
         "bethesda.net": {
             "bnet-username": 0
         },
@@ -8,9 +12,6 @@
         },
         "fandom.com": {
             "access_token": 0
-        },
-        "forums.frontier.co.uk": {
-            "CookieConsent": 0
         },
         "gog.com": {
             "gog_lc": 0,
@@ -75,7 +76,7 @@
             "ua": 0
         }
     },
-    "regex_match": {
+    "domain_regex": {
         "^google\\..*": {
             "CONSENT": 0,
             "NID" : 0,
