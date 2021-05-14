@@ -21,7 +21,9 @@ let extractor = require("./modules/extractor.js");
 let predictor = require("./modules/predictor.js");
 let process = require('process');
 
-const skippedNamesRegex = new RegExp("(OptanonConsent|CookieConsent)");
+const skippedNamesRegex = new RegExp("(OptanonConsent|OptanonAlertBoxClosed|CookieConsent)");
+const skippedNamesRatio = 0.7;
+var skippedCount = 0;
 
 const sparseMatrixPath = "./outputs/processed.libsvm";
 const classWeightPath = "./outputs/class_weights.txt";
@@ -143,7 +145,8 @@ if (args[0] === "extract"){
             }
 
             // filter out specific cookie names
-            if (skippedNamesRegex.test(cookieValue["name"])){
+            if (skippedNamesRegex.test(cookieValue["name"]) && Math.random() < skippedNamesRatio){
+                skippedCount++;
                 continue
             }
 
@@ -159,11 +162,11 @@ if (args[0] === "extract"){
 
             ctr++;
             if (ctr % 1000 == 0){
-                console.info(`Completed: ${ctr}`)
+                console.info(`Completed: ${ctr}`);
             }
-
         }
     }
+    console.info(`Skipped Cookies: ${skippedCount}`);
     console.info("Features written to path: " + sparseMatrixPath);
 } else if (args[0] === "predict") {
 
