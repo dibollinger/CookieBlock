@@ -73,7 +73,7 @@ Available cookie categories are:
 
 Granularity is intentionally kept low to make the decision as simple as possible for the user. Note that "strictly necessary" cookies cannot be rejected, as this is the class of cookies that is required to make the website work. Without them, essential services such as logins would stop working.
 
-An offline variant of the feature extractor can be found in the subfolder `nodejs-feature-extractor/`. This feature extractor was used to extract the training data for the classifier.
+An offline variant of the feature extractor can be found in the subfolder `nodejs-feature-extractor/`. This feature extractor was used to extract the features for the training data set.
 
 For the classifier implementation, see:
 
@@ -82,11 +82,11 @@ https://github.com/dibollinger/CookieBlock-Consent-Classifier
 
 ## Known Issues
 
-The classifier is not completely accurate. It may occur that certain functions on some sites are broken because essential cookies get misclassified. This is hard to resolve without gathering more cookie data to train on, as such the approach has its limits.
+The classifier is not completely accurate. It may occur that certain functions on some sites are broken because essential cookies get misclassified. This is hard to resolve without gathering more cookie data to train on. As such, the approach has its limits.
 
-To fix these problems, we maintain a list of known cookie categories. This is a JSON file storing cookie labels for known cookie identifiers. If a cookie is contained in this file. the prediction is skipped, and the know class is applied.
+To resolve these problems, we maintain a list of known cookie categories. This is a JSON file storing cookie labels for known cookie identifiers. If a cookie is contained in this file. the prediction is skipped, and the known class is applied.
 
-By reporting broken websites, you can help us keep an updated list of cookie exceptions, to make the extension more useable for everyone while also keeping a high level of privacy.
+By reporting broken websites, you can help us keep an updated list of cookie exceptions. This makes the extension more useable for everyone while also keeping a high level of privacy.
 
 ## Repository Contents
 
@@ -98,19 +98,19 @@ By reporting broken websites, you can help us keep an updated list of cookie exc
     - `/cli.js`: Command-line script used to run the feature extraction.
 * `logo/`: Contains the original CookieBlock logo files.
 * `src/`: Source code for the CookieBlock extension.
-    - `/_locales/`: JSON files with locale strings, for translation.
-    - `/_background/`: JavaScript code and HTML for the extension background process.
-    - `/ext_data/`: All external data required to perform the feature extraction and class label prediction.
-        - `/model/`: Extracted CART prediction tree forests, one for each class of cookies.
-        - `/resources/`: Resources used with the feature extraction.
-        - `/default_config.json`: Defines default storage values used in the extension.
-        - `/features.json`: Defines how the feature extraction operates, and which individual feature are enabled.
-        - `/known_cookies.json`: Defines default categorizations for some known cookies.
-    - `/icons/`: Browser extension icons.
-    - `/modules/`: Contains scripts that handle certain aspects of the feature extraction and prediction.
-        - `/third_party/`: Third party code libraries.
-    - `/options/`: Contains the options and first time setup page of the extension.
-    - `/popup/`: Contains code for the extension popup.
+    - `_locales/`: JSON files with locale strings, for translation.
+    - `background/`: JavaScript code and HTML for the extension background process.
+    - `ext_data/`: All external data required to perform the feature extraction and class label prediction.
+        - `model/`: Extracted CART prediction tree forests, one for each class of cookies.
+        - `resources/`: Resources used with the feature extraction.
+        - `default_config.json`: Defines default storage values used in the extension.
+        - `features.json`: Defines how the feature extraction operates, and which individual feature are enabled.
+        - `known_cookies.json`: Defines default categorizations for some known cookies.
+    - `icons/`: Browser extension icons.
+    - `modules/`: Contains scripts that handle certain aspects of the feature extraction and prediction.
+        - `third_party/`: Third party code libraries.
+    - `options/`: Contains the options and first time setup page of the extension.
+    - `popup/`: Contains code for the extension popup.
     - `credits.txt`: Links to the third-party libraries and credits to the respective authors.
     - `LICENSE`: License of the extension.
 
