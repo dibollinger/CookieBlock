@@ -4,31 +4,18 @@ CookieBlock is a browser extension that automatically enforces your GDPR consent
 
 This can help enforce user privacy without having to rely on the website hosting the cookies.
 
-## Browser Stores
-
-CookieBlock is compatible with both Firefox and Chromium-based browsers, and it is available on the following addon stores:
- * [Firefox](https://addons.mozilla.org/en-US/firefox/addon/cookieblock/)
- * [Chrome](https://chrome.google.com/webstore/detail/cookieblock/fbhiolckidkciamgcobkokpelckgnnol)
- * [Edge](https://microsoftedge.microsoft.com/addons/detail/cookieblock/mnfolmjlccppcgdeinhidialajfiopcc)
- * [Opera](https://addons.opera.com/en/extensions/details/cookieblock/)
-
-## Feedback
-
-If you would like to submit feedback, or report websites that break because of the addon, you can open an issue on this Github page, or alternatively use [this Google Forms document](https://forms.gle/tL21ruvPZq2q218P8).
-
-----
 
 ## Table of Contents
 
 * [Description](#description)
+* [Download Links](#download-links)
+* [Feedback](#feedback)
 * [Build Instructions](#build-instructions)
 * [How It Works](#how-it-works)
 * [Known Issues](#known-issues)
 * [Repository Contents](#repository-contents)
 * [Credits](#credits)
 * [License](#license)
-
-----
 
 ## Description
 
@@ -42,6 +29,18 @@ This is intended to ensure that the privacy of the user is preserved. One can re
 Note that CookieBlock does not handle the cookie banner itself. In order to remove these annoying banners, we recommend using the Consent-O-Matic extension:
 
 * https://github.com/cavi-au/Consent-O-Matic
+
+## Download Links
+
+CookieBlock is compatible with both Firefox and Chromium-based browsers, and it is available on the following addon stores:
+ * [Firefox Extension](https://addons.mozilla.org/en-US/firefox/addon/cookieblock/)
+ * [Chrome Extension](https://chrome.google.com/webstore/detail/cookieblock/fbhiolckidkciamgcobkokpelckgnnol)
+ * [Edge Extension](https://microsoftedge.microsoft.com/addons/detail/cookieblock/mnfolmjlccppcgdeinhidialajfiopcc)
+ * [Opera Extension](https://addons.opera.com/en/extensions/details/cookieblock/)
+
+## Feedback
+
+If you would like to submit feedback, or report websites that break because of the addon, you can open an issue on this Github page, or alternatively use [this Google Forms document](https://forms.gle/tL21ruvPZq2q218P8).
 
 
 ## Build Instructions
@@ -114,29 +113,6 @@ By reporting broken websites, you can help us keep an updated list of cookie exc
     - `/popup/`: Contains code for the extension popup.
     - `credits.txt`: Links to the third-party libraries and credits to the respective authors.
     - `LICENSE`: License of the extension.
-
-
-
-
-
-----
-
-This extension was created as part of the master thesis *"Analyzing Cookies Compliance with the GDPR*.
-See also the following repositories for other components that were developed as part of the thesis:
-
-__Related Repositories:__
-* CookieBlock: https://github.com/dibollinger/CookieBlock
-* Prototype Crawler: https://github.com/dibollinger/CookieBlock-Crawler-Prototype
-* Final Crawler: https://github.com/dibollinger/CookieBlock-Consent-Crawler
-* Cookie Classifier: https://github.com/dibollinger/CookieBlock-Consent-Classifier
-* Violation Detection & More: https://github.com/dibollinger/CookieBlock-Other-Scripts
-* Collected Data: https://drive.google.com/drive/folders/1P2ikGlnb3Kbb-FhxrGYUPvGpvHeHy5ao
-
-__Thesis Supervision and Assistance:__
-* Karel Kubicek
-* Dr. Carlos Cotrini
-* Prof. Dr. David Basin
-* The Institute of Information Security at ETH Zürich
 
 
 ## Credits
