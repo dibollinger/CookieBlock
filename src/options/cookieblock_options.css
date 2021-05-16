@@ -234,3 +234,20 @@ hr.thick {
     margin-top: -2em;
     margin-bottom: 2em;
 }
+
+.tf-input {
+    width: 25em;
+}
+
+#predef-submit {
+    clear: both;
+}
+
+#kc-checkbox {
+    margin-top: 1.5em;
+}
+
+#kc-checkbox-title {
+    margin-left: 1em;
+    font-weight: bold;
+}

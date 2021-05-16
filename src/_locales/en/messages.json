@@ -242,7 +242,7 @@
 
   "addButton" : {
     "message" : "Add",
-    "description" : "Text on button for adding exceptions"
+    "description" : "Text on button for adding list items"
   },
 
   "categoryStatisticsHeader" : {
@@ -376,6 +376,23 @@
   "cookieHistoryButtonLabel" : {
     "message": "View Full Cookie History JSON",
     "description": "Label for the button to view the entire cookie history."
+  },
+
+  "predefTitle": {
+    "message": "Predefined Cookie Labels"
+  },
+
+  "predefDesc" : {
+    "message": "Here you can add paths to JSON files containing categories for known cookies. This can be used to correct classification errors manually."
+  },
+
+  "predefPlaceholder" : {
+    "message": "Path to Cookies JSON"
+  },
+
+  "predefIntegratedText" : {
+    "message": "Use integrated cookie labels"
   }
+
 
 }

@@ -128,7 +128,7 @@ Released under the MIT License, see included LICENSE file.
         <legend id="wheader_title"></legend>
         <div id="wheader_desc" class="overview_description"></div>
         <ul id="website_exceptions" class=rulelist></ul>
-        <input id="website_excepts_input" type="text">
+        <input id="website_excepts_input" class="tf-input" type="text">
         <button id="website_excepts_submit" type="submit"></button>
         </fieldset>
     </div>
@@ -141,7 +141,7 @@ Released under the MIT License, see included LICENSE file.
             <legend id="fheader_title"></legend>
             <div id="fheader_desc" class="overview_description"></div>
             <ul id="functional_exceptions" class=rulelist></ul>
-            <input id="func_excepts_input" type="text">
+            <input id="func_excepts_input" class="tf-input" type="text">
             <button id="func_excepts_submit" type="submit"></button>
             </fieldset>
         </div>
@@ -152,7 +152,7 @@ Released under the MIT License, see included LICENSE file.
             <legend id="anheader_title"></legend>
             <div id="anheader_desc" class="overview_description"></div>
             <ul id="analytics_exceptions" class=rulelist></ul>
-            <input id="analytics_excepts_input" type="text">
+            <input id="analytics_excepts_input" class="tf-input" type="text">
             <button id="analytics_excepts_submit" type="submit"></button>
             </fieldset>
         </div>
@@ -163,13 +163,27 @@ Released under the MIT License, see included LICENSE file.
             <legend id="adheader_title"></legend>
             <div id="adheader_desc" class="overview_description"></div>
             <ul id="advertising_exceptions" class=rulelist></ul>
-            <input id="advert_excepts_input" type="text">
+            <input id="advert_excepts_input" class="tf-input" type="text">
             <button id="advert_excepts_submit" type="submit"></button>
             </fieldset>
         </div>
         <hr class="thick">
     </div>
 
+    <div class="settings_group">
+        <fieldset>
+        <legend id="predef-title"></legend>
+        <div id="predef-desc" class="overview_description"></div>
+        <ul id="predef-paths" class="rulelist"></ul>
+        <input id="predef-input" type="text" class="tf-input">
+        <button id="predef-submit" type="submit"></button>
+        <br>
+        <input id="kc-checkbox" class="checkbox" type="checkbox">
+        <label id="kc-checkbox-title" class="catname" for="kc-checkbox"></label>
+        </fieldset>
+    </div>
+
+    <hr class="thick">
     <div id="stats-div">
         <div class="settings_group">
             <fieldset>

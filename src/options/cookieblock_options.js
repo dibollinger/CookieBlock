@@ -202,6 +202,13 @@ const setupLocalization = function () {
     document.getElementById("advert_excepts_input").placeholder = chrome.i18n.getMessage("exceptionPlaceholderText");
     setStaticLocaleText("advert_excepts_submit", "addButton");
 
+    // Predefined Cookie List
+    setStaticLocaleText("predef-title", "predefTitle");
+    setStaticLocaleText("predef-desc", "predefDesc");
+    document.getElementById("predef-input").placeholder = chrome.i18n.getMessage("predefPlaceholder");
+    setStaticLocaleText("predef-submit", "addButton");
+    setStaticLocaleText("kc-checkbox-title", "predefIntegratedText");
+
     // Statistics Stuff
     setStaticLocaleText("stats_title", "categoryStatisticsHeader");
     setStaticLocaleText("stats_desc", "categoryStatisticsDesc");
@@ -262,6 +269,8 @@ const setupSettingsPage = async function() {
 
     document.getElementById("extra_settings").hidden = !enableExtraOptions;
 }
+
+document.addEventListener("DOMContentLoaded", setupSettingsPage);
 
 /**
  * Whenever storage.local or storage.sync updates, reflect this in the selection
@@ -326,8 +335,6 @@ const updateSelectionsOnStorageChanged = function(changes, area) {
 chrome.storage.onChanged.addListener(updateSelectionsOnStorageChanged);
 
 
-// Listeners
-document.addEventListener("DOMContentLoaded", setupSettingsPage);
 
 /**
  * Helper for adding consent toggle listeners
