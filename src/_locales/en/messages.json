@@ -392,7 +392,55 @@
 
   "predefIntegratedText" : {
     "message": "Use integrated cookie labels"
-  }
+  },
 
+  "cookieConfigSubtitle" : {
+    "message": "Cookie Configuration",
+    "description": "Subtitle for the cookie config page."
+  },
+
+  "cookieConfigDescTitle" : {
+    "message": "Instructions"
+  },
+
+  "cookieConfigDescPG1" : {
+    "message": "On this page you can define custom categories for each individual cookie, which will take precedence before the classifier. Click on the list entry to display the cookies that were created by that domain. Transparent labels are temporary and were assigned by the classifier. Opaque labels are permanent and were assigned by the user. By selecting 'None', a new class will be predicted the next time the cookie is observed."
+  },
+
+  "cookieConfigDescPG2" : {
+    "message": "You can also define exceptions for specific domains in this menu, and delete or restore individual cookies from the browser by pressing the respective buttons in the list."
+  },
+
+  "cookieConfigListTitle" : {
+    "message": "Cookies by Origin"
+  },
+
+  "classOptionEmpty" : {
+    "message": "None"
+  },
+
+  "classOption0" : {
+    "message": "Necessary"
+  },
+
+  "classOption1" : {
+    "message": "Functionality"
+  },
+
+  "classOption2" : {
+    "message": "Analytics"
+  },
+
+  "classOption3" : {
+    "message": "Advertising"
+  },
+
+  "configDropDownClassify" : {
+    "message": "-"
+  },
+
+  "configDropDownAccept" : {
+    "message": "Exempted"
+  }
 
 }

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="cookieblock_cconfig.css">
+</head>
+
+<body>
+<div class="header">
+    <img src="../icons/cookieblock-128.png">
+    <div class="title">
+        <h1 id="cconfig-title"></h1>
+        <h2 id="cconfig-subtitle"></h2>
+    </div>
+</div>
+
+<div class="contents">
+    <div class="config-div">
+
+        <fieldset>
+            <legend id="cconfig-desc-title"></legend>
+            <div class="cconfig-desc">
+                <p id="cconfig-desc-pg1"></p>
+                <p id="cconfig-desc-pg2"></p>
+            </div>
+        </fieldset>
+
+        <hr class="thin">
+
+        <fieldset id="cconfig-fieldset">
+            <legend id="cconfig-list-title"></legend>
+            <ul class="choice-list">
+                <li>
+                    <div class="domain-entry">example.com</div>
+                    <select class="exception-selector">
+                        <option value="false">-</option>
+                        <option value="true">Exempted</option>
+                    </select>
+                    <button class="item-button">Remove All</button>
+                </li>
+
+                <li>
+                    <ul class="choice-list">
+                    <li>
+                        <div class="cookie-name">CookieConsent</div>
+                        <select class="cat-selector">
+                            <option value="-1">None</option>
+                            <option value="0">Necessary</option>
+                            <option value="1">Functionality</option>
+                            <option value="2">Analytics</option>
+                            <option value="3">Advertising</option>
+                        </select>
+                        <button class="item-button">Remove</button>
+                    </li>
+                    <li>
+                        <div class="cookie-name">OptanonAlertBoxClosed</div>
+                        <select class="cat-selector">
+                            <option value="-1">None</option>
+                            <option value="0">Necessary</option>
+                            <option value="1">Functionality</option>
+                            <option value="2">Analytics</option>
+                            <option value="3">Advertising</option>
+                        </select>
+                        <button class="item-button">Restore</button>
+                    </li>
+                    </ul>
+                </li>
+            </ul>
+        </fieldset>
+    </div>
+    <hr class="thick">
+
+    <script type="text/javascript" src="../modules/globals.js"></script>
+    <script type="text/javascript" src="cookieblock_cconfig.js"></script>
+
+</div>
+
+
+</body></html>

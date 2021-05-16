@@ -393,6 +393,54 @@
 
   "predefIntegratedText" : {
     "message": "Integrierte Cookie Kategorien verwenden"
+  },
+  "cookieConfigSubtitle" : {
+    "message": "Cookie Konfiguration",
+    "description": "Subtitle for the cookie config page."
+  },
+
+  "cookieConfigDescTitle" : {
+    "message": "Anleitung"
+  },
+
+  "cookieConfigDescPG1" : {
+    "message": "Auf dieser Seite können Sie den einzelnen Cookies benutzerdefinierte Kategorien zuweisen. Klicken Sie auf eine der aufgelisteten Domänen, um alle dazugehörigen Cookies anzuzeigen. Für jedes Cookie wird die zugewiesene Kategorie angezeigt. Graue Kategorien sind temporär und wurden von der künstlichen Intelligenz zugewiesen. Schwarze Kategorien sind permanent und wurden vom Benutzer zugewiesen. Wenn Sie 'Keine' auswählen, wird das Cookie bei erneutem Auftreten neu klassifiziert."
+  },
+
+  "cookieConfigDescPG2" : {
+    "message": "Für jede Domain kann man hier auch eine Ausnahme festlegen, wodurch alle Cookies dieser Domain in Zukunft zugelassen werden. Weiterhin können Sie einzelne Cookies aus dem Browser löschen und wiederherstellen."
+  },
+
+  "cookieConfigListTitle" : {
+    "message": "Cookies nach Ursprung"
+  },
+
+  "classOptionEmpty" : {
+    "message": "Keine"
+  },
+
+  "classOption0" : {
+    "message": "Notwendig"
+  },
+
+  "classOption1" : {
+    "message": "Funktionalität"
+  },
+
+  "classOption2" : {
+    "message": "Analytisch"
+  },
+
+  "classOption3" : {
+    "message": "Werbung/Tracking"
+  },
+
+  "configDropDownClassify" : {
+    "message": "-"
+  },
+
+  "configDropDownAccept" : {
+    "message": "Ausnahme"
   }
 
 }

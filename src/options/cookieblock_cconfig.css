@@ -1,0 +1,190 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    min-height: 100vh;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: top;
+    background: radial-gradient(ellipse, rgb(12, 72, 129), rgb(2, 1, 42));
+    max-width: 50em;
+    border-style: groove;
+    border-left: .125em solid black;
+    border-right: .125em solid black;
+    margin-top: 5em;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 1em rgba(0,0,0,0.5);
+    line-height: 1.25em;
+}
+
+.header {
+    position: relative;
+    padding: 1em;
+    color: white;
+    font-family: sans-serif;
+    display: flex;
+    margin-bottom: 0em;
+    background: radial-gradient(ellipse, rgb(5, 25, 44), rgb(2, 1, 42));
+    border-style: ridge;
+    border-color: whitesmoke;
+    border-width: .3em;
+}
+.header .title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.header h1 {
+    margin-top:0;
+    margin-bottom: 0;
+    line-height: 1.2em;
+    margin-left: 1em;
+}
+.header h2 {
+    margin-top: 0.5em;
+    font-weight: 400;
+    font-size: larger;
+    margin-left: 2.0em;
+
+}
+.header img {
+    margin-left: 1.2em;
+    height: 6em;
+}
+
+
+legend {
+    font-size: 1.75em;
+    font-weight: bold;
+}
+
+fieldset {
+    border: 0;
+}
+
+.contents {
+    flex: 1 0 auto;
+    background: white;
+}
+.contents ul {
+    list-style: none;
+    margin-left: 0em;
+    padding-left: 0em;
+}
+
+.contents ul li {
+    background: rgba(0,0,100,0.025);
+    position: relative;
+    padding: 1em;
+    margin-left: 0;
+    cursor: pointer;
+}
+.contents ul li.active {
+    background: rgba(100,255,100,0.2);
+}
+.contents ul li:hover {
+    background: rgba(0,0,100,0.075);
+}
+.contents ul li.active:hover {
+    background: rgba(50,255,50,0.2);
+}
+
+
+.config-div {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+}
+
+.choice-list li {
+    display: flex;
+    align-items: center;
+    word-wrap: break-word;
+    cursor: initial !important;
+}
+.choice-list li button {
+    pointer-events: all;
+    left: 2em;
+    border: 0;
+    cursor: pointer;
+    size: 1em;
+}
+.choice-list li button:hover {
+    background: red;
+}
+
+hr.thin {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    border-top: 1px solid black;
+    width: 100%;
+}
+
+hr.thick {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    border-top: 2px solid black;
+}
+
+.tf-input {
+    width: 25em;
+}
+
+.cconfig-desc {
+    margin-top: 1.3em;
+    margin-bottom: .7em;
+    line-height: 1.4;
+    font-size: large;
+    width:40em;
+}
+
+#cconfig-desc-title {
+    margin-top: 1em;
+
+}
+
+#cconfig-list-title {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}
+
+.exception-selector {
+    float: left;
+    margin-left: 1em;
+}
+
+.item-button {
+    margin-left:0.5em;
+    white-space: nowrap;
+}
+
+.cookie-name {
+    float:left;
+    width:26em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.cat-selector {
+    float:left;
+    margin-left:1em;
+    color: gray;
+    opacity: 80%;
+}
+
+.domain-entry{
+    display:flex;
+    align-items:center;
+    float:left;
+    height:4em;
+    width:26em;
+    text-overflow: ellipsis;
+    overflow: hidden; white-space: nowrap
+}
