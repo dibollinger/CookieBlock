@@ -470,6 +470,27 @@
 
   "udButton": {
     "message": "Cookie Konfiguration Öffnen"
+  },
+
+  "inputErrorInvalid": {
+    "message": "Eingabe ist keine korrekte Domain!",
+    "description": "Message that appears if the domain input had invalid characters or format."
+  },
+
+  "inputErrorDuplicate": {
+    "message": "Eingabe ist bereits in der Liste vorhanden!",
+    "description": "Message that appears if the input is a duplicate."
+  },
+
+  "inputErrorNoResolve": {
+    "message": "JSON URL ist nicht korrekt oder konnte nicht verbunden werden.",
+    "description": "Message that appears if json path is invalid or cannot be resolved."
+  },
+
+  "inputErrorNoJSON": {
+    "message": "Angegebener Pfad ist kein korrekt formatiertest JSON objekt.",
+    "description": "Message that appears if the resulting object is invalid.."
   }
+
 
 }

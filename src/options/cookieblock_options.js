@@ -29,6 +29,11 @@ const functionalStats = document.getElementById("li_f");
 const analyticsStats = document.getElementById("li_an");
 const advertisingStats = document.getElementById("li_ad");
 
+
+// Characters allowed in a domain -- if regex does not match, the domain contains invalid characters
+const validDomainChars = new RegExp("[a-zA-Z0-9-.]+\\.[a-zA-Z0-9-.]+");
+
+
 /**
  * Remove an item from a dynamically generated exception list.
  * @param {String} removedDomain Domain that needs to be removed.
@@ -39,7 +44,7 @@ const advertisingStats = document.getElementById("li_ad");
     let exlist = listItem.parentElement;
 
     // remove the internal stored string (async with promise)
-    domainList = await getStorageValue(chrome.storage.sync, storageID);
+    let domainList = await getStorageValue(chrome.storage.sync, storageID);
     let index = domainList.indexOf(removedDomain);
     domainList.splice(index, 1)
 
@@ -76,36 +81,6 @@ const appendExceptionToList = async function(exceptionDomain, listID, storageID)
     document.getElementById(listID).appendChild(node);
 }
 
-
-
-/**
- * Handle the mouse click event to submit a custom domain exception to the list.
- * @param {String} inputID    Identity of the input box.
- * @param {String} storageID  Storage identity for the exception list.
- * @param {String} listID     Identity of the list to append the exception to.
- */
-const handleExceptionSubmit = async function(inputID, storageID, listID) {
-    let iElem = document.getElementById(inputID);
-    if (iElem.value != null && iElem.value != "")
-    {
-        let domainOrURL = (' ' + iElem.value).slice(1);
-        let sanitizedDomain = undefined;
-        try {
-            sanitizedDomain = urlToUniformDomain(new URL(domainOrURL).hostname);
-        } catch(error) {
-            sanitizedDomain = urlToUniformDomain(domainOrURL);
-        }
-
-        let domainList = await getStorageValue(chrome.storage.sync, storageID);
-        domainList.push(domainOrURL);
-        setStorageValue(domainList, chrome.storage.sync, storageID);
-
-        appendExceptionToList(sanitizedDomain, listID, storageID);
-
-        // empty the input box
-        iElem.value = "";
-    }
-}
 
 /**
  * Helper to enable the necessary checkbox
@@ -221,6 +196,7 @@ const setupLocalization = function () {
     setStaticLocaleText("json_button", "cookieHistoryButtonLabel");
 }
 
+
 /**
  * Send a message to background script to retrieve the label stats.
  */
@@ -233,6 +209,7 @@ const getLabelStatsFromBackground = function () {
         setStaticLocaleText("num_advertising", "statsAdvertising", [stats[3]]);
     });
 }
+
 
 /**
  * This function is executed when opening the settings page.
@@ -277,6 +254,7 @@ const setupSettingsPage = async function() {
 }
 
 document.addEventListener("DOMContentLoaded", setupSettingsPage);
+
 
 /**
  * Whenever storage.local or storage.sync updates, reflect this in the selection
@@ -339,7 +317,6 @@ const updateSelectionsOnStorageChanged = function(changes, area) {
 }
 
 chrome.storage.onChanged.addListener(updateSelectionsOnStorageChanged);
-
 
 
 /**
@@ -406,23 +383,56 @@ clearButton.addEventListener("click", () => {
 
 
 /**
- * Helper for adding exception add click listeners.
- * @param {String} buttonID
- * @param {String} inputID
- * @param {String} storageID
- * @param {String} listID
-*/
-const addExcClickListener = function (buttonID, inputID, storageID, listID) {
-    document.getElementById(buttonID).addEventListener("click", (e) => {
+ * Handle the mouse click event to submit a custom domain exception to the list.
+ * @param {String} buttonID   Identity of the button that will be clicked.
+ * @param {String} inputID    Identity of the input box.
+ * @param {String} storageID  Storage identity for the exception list.
+ * @param {String} listID     Identity of the list to append the exception to.
+ * @param {String} errorID    Error box identity, if it needs to be displayed.
+ */
+const addExcClickListener = function (buttonID, inputID, storageID, listID, errorID) {
+    document.getElementById(buttonID).addEventListener("click", async (e) => {
         e.preventDefault();
-        handleExceptionSubmit(inputID, storageID, listID);
+        let iElem = document.getElementById(inputID);
+        let inputDomain = iElem.value;
+        let errorElem = document.getElementById(errorID);
+        if (validDomainChars.test(inputDomain)) {
+            let domainOrURL = (' ' + inputDomain).slice(1);
+
+            let sanitizedDomain = undefined;
+            try {
+                sanitizedDomain = urlToUniformDomain(new URL(domainOrURL).hostname);
+            } catch(error) {
+                sanitizedDomain = urlToUniformDomain(domainOrURL);
+            }
+
+
+            let domainList = await getStorageValue(chrome.storage.sync, storageID);
+            if (!domainList.includes(sanitizedDomain)) {
+                domainList.push(domainOrURL);
+                setStorageValue(domainList, chrome.storage.sync, storageID);
+                appendExceptionToList(sanitizedDomain, listID, storageID);
+                iElem.value = "";
+                iElem.style.color = "black";
+                errorElem.hidden = true;
+            } else {
+                setStaticLocaleText(errorID, "inputErrorDuplicate");
+                iElem.style.color = "red";
+                errorElem.hidden = false;
+            }
+        } else {
+            console.info("User entered invalid characters for domain string.");
+            setStaticLocaleText(errorID, "inputErrorInvalid");
+            iElem.style.color = "red";
+            errorElem.hidden = false;
+        }
     });
 }
 
-addExcClickListener("website_excepts_submit", "website_excepts_input", "cblk_exglobal", "website_exceptions");
-addExcClickListener("func_excepts_submit", "func_excepts_input", "cblk_exfunc", "functional_exceptions");
-addExcClickListener("analytics_excepts_submit", "analytics_excepts_input", "cblk_exanal", "analytics_exceptions");
-addExcClickListener("advert_excepts_submit", "advert_excepts_input", "cblk_exadvert", "advertising_exceptions");
+addExcClickListener("website_excepts_submit", "website_excepts_input", "cblk_exglobal", "website_exceptions", "wexcepts-error");
+addExcClickListener("func_excepts_submit", "func_excepts_input", "cblk_exfunc", "functional_exceptions", "func-error");
+addExcClickListener("analytics_excepts_submit", "analytics_excepts_input", "cblk_exanal", "analytics_exceptions", "analytics-error");
+addExcClickListener("advert_excepts_submit", "advert_excepts_input", "cblk_exadvert", "advertising_exceptions", "advert-error");
 
 /**
  * Helper function for setting up enter events on the text input fields.

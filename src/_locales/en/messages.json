@@ -470,6 +470,26 @@
 
   "udButton": {
     "message": "Open Cookie Configuration Page"
+  },
+
+  "inputErrorInvalid": {
+    "message": "Input is not a valid domain name!",
+    "description": "Message that appears if the domain input had invalid characters or format."
+  },
+
+  "inputErrorDuplicate": {
+    "message": "Input is already present in the list!",
+    "description": "Message that appears if the input is a duplicate."
+  },
+
+  "inputErrorNoResolve": {
+    "message": "Given json path is invalid or could not be resolved!",
+    "description": "Message that appears if json path is invalid or cannot be resolved."
+  },
+
+  "inputErrorNoJSON": {
+    "message": "Given path is not a valid JSON file, or does not have the expected format!",
+    "description": "Message that appears if the resulting object is invalid.."
   }
 
 }
