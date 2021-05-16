@@ -9,6 +9,7 @@ Released under the MIT License, see included LICENSE file.
 //-------------------------------------------------------------------------------
 
 const pauseCheckbox = document.getElementById("pause-check");
+const configButton = document.getElementById("config");
 const exceptionButton = document.getElementById("add-exception");
 
 const addText = chrome.i18n.getMessage("popupButtonAdd");
@@ -48,7 +49,13 @@ const popupSetup = async function() {
     setStaticLocaleText("popup-title", "extensionName");
     setStaticLocaleText("pause-desc", "pauseCookieRemoval");
     setStaticLocaleText("desc-box", "popupText");
+    setStaticLocaleText("config", "popupButtonConfig");
     setStaticLocaleText("options", "popupButtonOptions");
+
+    if (!await getStorageValue(chrome.storage.sync, "cblk_hconsent")){
+        configButton.disabled = true;
+        configButton.style.opacity = "0.5";
+    }
 
     pauseCheckbox.checked = await getStorageValue(chrome.storage.local, "cblk_pause");
 
@@ -134,6 +141,12 @@ pauseCheckbox.addEventListener("click", async () => {
 
 // On click, get the current tab URL and add it to the global exceptions
 document.querySelector("#add-exception").addEventListener("click", addGlobalException);
+
+// Open extension options page
+document.querySelector("#config").addEventListener("click", () => {
+    chrome.tabs.create({"active": true, "url": "/options/cookieblock_cconfig.html"});
+    window.close();
+});
 
 // Open extension options page
 document.querySelector("#options").addEventListener("click", () => {

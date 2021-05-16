@@ -97,7 +97,6 @@ fieldset {
 
 .config-div {
     padding-top: 1em;
-    padding-bottom: 1em;
     margin-left: 1.5em;
     margin-right: 1.5em;
 }
@@ -144,16 +143,6 @@ hr.thick {
     width:40em;
 }
 
-#cconfig-desc-title {
-    margin-top: 1em;
-
-}
-
-#cconfig-list-title {
-    margin-top: 1em;
-    margin-bottom: 0.5em;
-}
-
 .exception-selector {
     float: left;
     margin-left: 1em;
@@ -187,4 +176,8 @@ hr.thick {
     width:26em;
     text-overflow: ellipsis;
     overflow: hidden; white-space: nowrap
+}
+
+#cconfig-desc-title {
+    margin-top: 0.5em;
 }

@@ -156,8 +156,13 @@
   },
 
   "popupButtonOptions" : {
-    "message": "Weitere Optionen",
+    "message": "Allgemeine Optionen",
     "description": "Button for opening the options page"
+  },
+
+  "popupButtonConfig" : {
+    "message": "Cookie Konfiguration",
+    "description": "Button for opening the cookie config page"
   },
 
   "optionsHeaderConsent" : {
@@ -412,7 +417,7 @@
   },
 
   "cookieConfigListTitle" : {
-    "message": "Cookies nach Ursprung"
+    "message": "Bekannte Cookies"
   },
 
   "classOptionEmpty" : {
@@ -441,6 +446,30 @@
 
   "configDropDownAccept" : {
     "message": "Ausnahme"
+  },
+
+  "configExportDesc": {
+    "message": "Klicken Sie auf einen Eintrag, um dessen Inhalt zu erweitern."
+  },
+
+  "configExportButton": {
+    "message": "Benutzerdefinierte Kategorien als JSON exportieren"
+  },
+
+  "configNoCookies": {
+    "message": "Es wurden keine Cookies im Verlauf gefunden!"
+  },
+
+  "udTitle" : {
+    "message": "Benutzerdefinierte Cookie Kategorien"
+  },
+
+  "udDescription": {
+    "message":"Die Schaltfläche unten öffnet die Cookie-Konfigurationsseite. Dort können Sie die zugeordneten Kategorien für einzelne Cookies im Verlauf ändern. Sie können auch Cookies manuell aus dem Browser löschen oder wiederherstellen."
+  },
+
+  "udButton": {
+    "message": "Cookie Konfiguration Öffnen"
   }
 
 }

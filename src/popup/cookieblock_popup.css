@@ -23,6 +23,9 @@ button {
   width: 100%;
   padding: 0.10em;
   margin: 0.2em 0;
+  margin-top: 1.em;
+  font-size: large;
+  text-align: center;
 }
 
 .titlebox {
@@ -48,20 +51,6 @@ button {
 .error {
   color:red;
   font-weight: 600;
-}
-
-
-#add-exception {
-
-  font-size: large;
-  align-content: center;
-  text-align: center;
-}
-
-#options {
-  margin-top: 1.em;
-  font-size: large;
-  text-align: center;
 }
 
 #pause-div {

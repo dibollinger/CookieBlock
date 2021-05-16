@@ -23,6 +23,7 @@ const analyticsCheckbox = document.getElementById("anal_checkbox");
 const advertisingCheckbox = document.getElementById("advert_checkbox");
 const statisticsSection = document.getElementById("stats-div");
 const jsonButton = document.getElementById("json_button");
+const cconfigButton = document.getElementById("ud-button");
 const necessaryStats = document.getElementById("li_n");
 const functionalStats = document.getElementById("li_f");
 const analyticsStats = document.getElementById("li_an");
@@ -208,6 +209,11 @@ const setupLocalization = function () {
     document.getElementById("predef-input").placeholder = chrome.i18n.getMessage("predefPlaceholder");
     setStaticLocaleText("predef-submit", "addButton");
     setStaticLocaleText("kc-checkbox-title", "predefIntegratedText");
+
+    // User-defined Cookies Page
+    setStaticLocaleText("ud-title", "udTitle");
+    setStaticLocaleText("ud-desc", "udDescription");
+    setStaticLocaleText("ud-button", "udButton");
 
     // Statistics Stuff
     setStaticLocaleText("stats_title", "categoryStatisticsHeader");
@@ -467,6 +473,10 @@ const message_openJSON = (inMSG) => {
         }
     });
 }
+
+cconfigButton.addEventListener("click", (ev) => {
+    chrome.tabs.create({"active": true, "url": "/options/cookieblock_cconfig.html"});
+});
 
 // listeners to open JSON documents in new tabs
 jsonButton.addEventListener("click", (ev) => { message_openJSON("full"); });

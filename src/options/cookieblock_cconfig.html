@@ -16,20 +16,24 @@
 
 <div class="contents">
     <div class="config-div">
-
         <fieldset>
-            <legend id="cconfig-desc-title"></legend>
+            <legend id="cconfig-desc-title" class="cconfig-title-element"></legend>
             <div class="cconfig-desc">
                 <p id="cconfig-desc-pg1"></p>
                 <p id="cconfig-desc-pg2"></p>
             </div>
         </fieldset>
+    </div>
 
-        <hr class="thin">
+    <hr class="thick">
 
+    <div class="config-div">
         <fieldset id="cconfig-fieldset">
-            <legend id="cconfig-list-title"></legend>
+            <legend id="cconfig-list-title" class="cconfig-title-element"></legend>
+            <div id="cconfig-expand-desc" class="cconfig-desc"></div>
             <ul class="choice-list">
+                <li id="li-no-cookies"></li>
+                <!--
                 <li>
                     <div class="domain-entry">example.com</div>
                     <select class="exception-selector">
@@ -65,7 +69,9 @@
                     </li>
                     </ul>
                 </li>
+                -->
             </ul>
+            <button id="export-button" class="item-button"></button>
         </fieldset>
     </div>
     <hr class="thick">

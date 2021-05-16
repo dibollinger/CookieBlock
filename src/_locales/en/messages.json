@@ -154,8 +154,13 @@
     "description": "Button text for removing exceptions"
   },
 
+  "popupButtonConfig" : {
+    "message": "Open Cookie Configuration",
+    "description": "Button for opening the cookie config page"
+  },
+
   "popupButtonOptions" : {
-    "message": "Open Settings",
+    "message": "Open General Settings",
     "description": "Button for opening the options page"
   },
 
@@ -412,7 +417,7 @@
   },
 
   "cookieConfigListTitle" : {
-    "message": "Cookies by Origin"
+    "message": "Current Cookies"
   },
 
   "classOptionEmpty" : {
@@ -441,6 +446,30 @@
 
   "configDropDownAccept" : {
     "message": "Exempted"
+  },
+
+  "configExpandDesc": {
+    "message": "Click on an entry to expand its contents."
+  },
+
+  "configExportButton": {
+    "message": "Export user-defined categories as JSON"
+  },
+
+  "configNoCookies": {
+    "message": "No cookies recorded in the history!"
+  },
+
+  "udTitle" : {
+    "message": "User-defined Cookie Categories"
+  },
+
+  "udDescription": {
+    "message":"The button below will open the cookie configuration page. There you will be able to change the label for individual cookies in the history. You can also manually delete or restore individual cookies from the browser."
+  },
+
+  "udButton": {
+    "message": "Open Cookie Configuration Page"
   }
 
 }
