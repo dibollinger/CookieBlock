@@ -84,13 +84,13 @@ const setStorageValue = async function(newValue, stType, key, override = true) {
 
 
 /**
-* Retrieves the data at the given URL with the specified type. Only intended for local extension data access.
+* Retrieves the data at the given URL with the specified type.
 * Once the response arrives, a callback is executed with the response object.
 * @param {String} url          URL to send the GET request to, intended to be a local extension URL.
 * @param {String} dtype        Type of the data. Examples: "json", "text", "binary"
 * @param {Function} callback   Callback function that will be executed as soon as the data is available, receives data as first argument.
 */
-const getExtensionFile = function(url, dtype, callback) {
+const getExtensionFile = function(url, dtype, callback, errorCallback = null) {
     const req = new XMLHttpRequest();
 
     req.responseType = dtype;
@@ -103,6 +103,9 @@ const getExtensionFile = function(url, dtype, callback) {
             }
             else {
                 console.error("Error -- could not retrieve data at (%s): %d (%s)", url, this.status, this.statusText);
+                if (errorCallback){
+                    errorCallback(this.status);
+                }
             }
         }
     };

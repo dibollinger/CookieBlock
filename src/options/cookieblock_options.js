@@ -23,16 +23,17 @@ const analyticsCheckbox = document.getElementById("anal_checkbox");
 const advertisingCheckbox = document.getElementById("advert_checkbox");
 const statisticsSection = document.getElementById("stats-div");
 const jsonButton = document.getElementById("json_button");
-const cconfigButton = document.getElementById("ud-button");
 const necessaryStats = document.getElementById("li_n");
 const functionalStats = document.getElementById("li_f");
 const analyticsStats = document.getElementById("li_an");
 const advertisingStats = document.getElementById("li_ad");
 
+const cconfigButton = document.getElementById("ud-button");
+const internalCheckbox = document.getElementById("kc-checkbox");
 
 // Characters allowed in a domain -- if regex does not match, the domain contains invalid characters
-const validDomainChars = new RegExp("[a-zA-Z0-9-.]+\\.[a-zA-Z0-9-.]+");
-
+const validDomainCharsRegex = new RegExp("[a-zA-Z0-9-.]+\\.[a-zA-Z0-9-.]+");
+// const validPathRegex = new RegExp("^http(s)?://.*");
 
 /**
  * Remove an item from a dynamically generated exception list.
@@ -40,7 +41,7 @@ const validDomainChars = new RegExp("[a-zA-Z0-9-.]+\\.[a-zA-Z0-9-.]+");
  * @param {String} listItem List item to be removed.
  * @param {String} storageID Extension storage id for exception list.
  */
- const removeExceptionFromList = async function(removedDomain, listItem, storageID) {
+ const removeItemFromList = async function(removedDomain, listItem, storageID) {
     let exlist = listItem.parentElement;
 
     // remove the internal stored string (async with promise)
@@ -58,20 +59,20 @@ const validDomainChars = new RegExp("[a-zA-Z0-9-.]+\\.[a-zA-Z0-9-.]+");
 
 /**
  * Append an item to a dynamically generated exception list.
- * @param {String} exceptionDomain Domain to add an exception for.
+ * @param {String} addDomain Domain to add to the storage.
  * @param {String} listID HTML List identity
  * @param {String} storageID Extension storage id for exception list.
  */
-const appendExceptionToList = async function(exceptionDomain, listID, storageID) {
+const appendItemToList = async function(addDomain, listID, storageID) {
     let node = document.createElement("li")
 
     // button has the remove event set up directly
     let button = document.createElement("button");
     button.textContent = "X";
-    button.addEventListener("click", () => { removeExceptionFromList(exceptionDomain, node, storageID) });
+    button.addEventListener("click", () => { removeItemFromList(addDomain, node, storageID) });
 
     let textdiv = document.createElement("div");
-    let textnode = document.createTextNode(exceptionDomain);
+    let textnode = document.createTextNode(addDomain);
 
     textdiv.appendChild(textnode);
     textdiv.class = "text_content";
@@ -80,6 +81,7 @@ const appendExceptionToList = async function(exceptionDomain, listID, storageID)
     node.appendChild(textnode);
     document.getElementById(listID).appendChild(node);
 }
+
 
 
 /**
@@ -222,13 +224,14 @@ const setupSettingsPage = async function() {
         let storedExc = await getStorageValue(chrome.storage.sync, storageID);
         let numEntries = storedExc.length;
         for (let i = 0; i < numEntries; i++) {
-            appendExceptionToList(storedExc[i], listID, storageID);
+            appendItemToList(storedExc[i], listID, storageID);
         }
     }
     restoreExceptionList("cblk_exglobal", "website_exceptions");
     restoreExceptionList("cblk_exfunc", "functional_exceptions");
     restoreExceptionList("cblk_exanal", "analytics_exceptions");
     restoreExceptionList("cblk_exadvert", "advertising_exceptions");
+    restoreExceptionList("cblk_knowncookies", "predef-paths");
 
     let hconsent = await getStorageValue(chrome.storage.sync, "cblk_hconsent");
     histCheckbox.checked = hconsent;
@@ -247,6 +250,8 @@ const setupSettingsPage = async function() {
     let permScale = await getStorageValue(chrome.storage.sync, "cblk_pscale");
     nfslider.value = permScale;
     sliderValDisplay.textContent = permScale;
+
+    internalCheckbox.checked = await getStorageValue(chrome.storage.sync, "cblk_useinternal");
 
     getLabelStatsFromBackground();
 
@@ -275,7 +280,7 @@ const updateSelectionsOnStorageChanged = function(changes, area) {
 
         let numEntries = storedExc.length;
         for (let i = 0; i < numEntries; i++) {
-            appendExceptionToList(storedExc[i], listID, storageID);
+            appendItemToList(storedExc[i], listID, storageID);
         }
     }
 
@@ -396,7 +401,7 @@ const addExcClickListener = function (buttonID, inputID, storageID, listID, erro
         let iElem = document.getElementById(inputID);
         let inputDomain = iElem.value;
         let errorElem = document.getElementById(errorID);
-        if (validDomainChars.test(inputDomain)) {
+        if (validDomainCharsRegex.test(inputDomain)) {
             let domainOrURL = (' ' + inputDomain).slice(1);
 
             let sanitizedDomain = undefined;
@@ -411,7 +416,7 @@ const addExcClickListener = function (buttonID, inputID, storageID, listID, erro
             if (!domainList.includes(sanitizedDomain)) {
                 domainList.push(domainOrURL);
                 setStorageValue(domainList, chrome.storage.sync, storageID);
-                appendExceptionToList(sanitizedDomain, listID, storageID);
+                appendItemToList(sanitizedDomain, listID, storageID);
                 iElem.value = "";
                 iElem.style.color = "black";
                 errorElem.hidden = true;
@@ -462,12 +467,12 @@ nfslider.addEventListener("mouseup", function(ev) {
 });
 
 // history consent checkbox
-histCheckbox.addEventListener("click", async (ev) => {
+histCheckbox.addEventListener("click", (ev) => {
     setStorageValue( histCheckbox.checked, chrome.storage.sync, "cblk_hconsent");
 });
 
 // pause checkbox
-pauseCheckbox.addEventListener("click", async (ev) => {
+pauseCheckbox.addEventListener("click", (ev) => {
     setStorageValue( pauseCheckbox.checked, chrome.storage.local, "cblk_pause");
 });
 
@@ -497,3 +502,62 @@ advertisingStats.addEventListener("click", (ev) => { message_openJSON("advertisi
 
 // Update stats in 5 second intervals
 setInterval( async () => { getLabelStatsFromBackground(); }, 5_000);
+
+
+/**
+ * Handle the mouse click event to submit path to a potential known cookies JSON.
+ * @param {String} buttonID   Identity of the button that will be clicked.
+ * @param {String} inputID    Identity of the input box.
+ * @param {String} storageID  Storage identity for the path list.
+ * @param {String} listID     Identity of the list to append the exception to.
+ * @param {String} errorID    Error box identity, if it needs to be displayed.
+ */
+document.getElementById("predef-submit").addEventListener("click", async (e) => {
+    let handleError = (errorType) => {
+        console.info("User entered invalid url for cookies path.");
+        setStaticLocaleText("predef-error", errorType);
+        iElem.style.color = "red";
+        errorElem.hidden = false;
+    }
+
+    e.preventDefault();
+    let iElem = document.getElementById("predef-input");
+    let inputPath = iElem.value;
+    let errorElem = document.getElementById("predef-error");
+
+    let pathList = await getStorageValue(chrome.storage.sync, "cblk_knowncookies");
+    let pathString = (' ' + inputPath).slice(1);
+
+    if (pathList.includes(pathString)) {
+        handleError("inputErrorDuplicate");
+    } else {
+        try {
+            new URL(pathString);
+            getExtensionFile(pathString, "json", (result) => {
+                if (typeof result === "object" && result !== null && ("name_match" in result || "domain_match" in result || "domain_regex" in result)) {
+                    pathList.push(pathString);
+                    setStorageValue(pathList, chrome.storage.sync, "cblk_knowncookies");
+                    appendItemToList(pathString, "predef-paths", "cblk_knowncookies");
+                    iElem.value = "";
+                    iElem.style.color = "black";
+                    errorElem.hidden = true;
+                } else {
+                    console.log(`Retrieved file was not a JSON object.`);
+                    handleError("inputErrorNoJSON");
+                }
+             }, (errorCode) => {
+                console.log(`Could not retrieve file, error code: ${errorCode}`);
+                handleError("inputErrorNoResolve");
+            })
+        } catch(error) {
+            handleError("inputErrorNoResolve");
+        }
+    }
+});
+
+addEnterListener("predef-input", "predef-submit");
+
+// internal list checkbox
+internalCheckbox.addEventListener("click", (ev) => {
+    setStorageValue( internalCheckbox.checked, chrome.storage.sync, "cblk_useinternal");
+});

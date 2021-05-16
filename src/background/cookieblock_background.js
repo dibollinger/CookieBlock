@@ -22,6 +22,34 @@ var debug_minTime = [1e10, 1e10, 1e10];
 var debug_Ntotal = [0, 0, 0];
 var debug_Nskipped = 0;
 
+// Variables for all the user options, which is persisted in storage.local and storage.sync
+// Retrieving these from disk all the time is a bottleneck.
+var cblk_userpolicy = undefined;
+var cblk_pscale = undefined;
+var cblk_pause = undefined;
+var cblk_ulimit = undefined;
+var cblk_hconsent = undefined;
+var cblk_exglobal = undefined;
+var cblk_exfunc = undefined;
+var cblk_exanal = undefined;
+var cblk_exadvert = undefined;
+var cblk_mintime = undefined;
+var cblk_knowncookies = undefined;
+var cblk_useinternal = undefined;
+
+// lookup for known cookies, to prevent some critical login issues
+// will be imported form an external file and kept here
+var knownCookies_user = undefined;
+var knownCookies_internal = undefined;
+
+// key used to access the regular expression pattern in the known_cookies object
+const regexKey = "~regex;";
+
+// indexed DB for cookie history
+var historyDB = undefined;
+const openDBRequest = window.indexedDB.open("CookieBlockHistory", 1);
+
+
 /**
  * Helper function to record the debug timing value.
  * @param {Number} elapsed Elapsed time in milliseconds.
@@ -60,18 +88,43 @@ var timingsDebug = function () {
     return 0;
 }
 
-// Variables for all the user options, which is persisted in storage.local and storage.sync
-// Retrieving these from disk all the time is a bottleneck.
-var cblk_userpolicy = undefined;
-var cblk_pscale = undefined;
-var cblk_pause = undefined;
-var cblk_ulimit = undefined;
-var cblk_hconsent = undefined;
-var cblk_exglobal = undefined;
-var cblk_exfunc = undefined;
-var cblk_exanal = undefined;
-var cblk_exadvert = undefined;
-var cblk_mintime = undefined;
+
+/**
+ * This function reloads the current known cookies JSON from the given paths.
+ * Performs requests to remote domains to retrieve the data. Correctness is also checked.
+ */
+ const reloadUserKnownCookies = function(cookiePaths) {
+    if (cookiePaths.length === 0){
+        knownCookies_user = undefined;
+    } else {
+        knownCookies_user = { "name_match": {}, "domain_match": {}, "domain_regex": {} }
+        for (let path of cookiePaths) {
+            getExtensionFile(path, "json", (result) => {
+                if (typeof result === "object" && result !== null && ("name_match" in result || "domain_match" in result || "domain_regex" in result)) {
+                    if ("name_match" in result) {
+                        for (let k of Object.keys(result["name_match"])) {
+                            knownCookies_user["name_match"][k] = result["name_match"][k];
+                        }
+                    }
+                    if ("domain_match" in result) {
+                        for (let k of Object.keys(result["domain_match"])) {
+                            knownCookies_user["domain_match"][k] = result["domain_match"][k];
+                        }
+                    }
+                    if ("domain_regex" in result) {
+                        for (let k of Object.keys(result["domain_regex"])) {
+                            knownCookies_user["domain_regex"][k] = result["domain_regex"][k];
+                            knownCookies_user["domain_regex"][k][regexKey] = new RegExp(k);
+                        }
+                    }
+                } else {
+                    console.error(`Stored path did not point to a valid JSON: ${path}`);
+                }
+            });
+        }
+    }
+}
+
 
 /**
  * Helper function to restore one of the above vars if they should revert to undefined for some reason.
@@ -92,21 +145,16 @@ const maybeRestoreCBLKVar = async function (cValue, varName) {
             case "cblk_exanal" : cblk_exanal = await getStorageValue(chrome.storage.sync, "cblk_exanal"); break;
             case "cblk_exadvert" : cblk_exadvert = await getStorageValue(chrome.storage.sync, "cblk_exadvert"); break;
             case "cblk_mintime" : cblk_mintime = await getStorageValue(chrome.storage.sync, "cblk_mintime"); break;
+            case "cblk_knowncookies" : {
+                cblk_knowncookies = await getStorageValue(chrome.storage.sync, "cblk_knowncookies");
+                reloadUserKnownCookies(cblk_knowncookies);
+                break;
+            }
+            case "cblk_useinternal" : cblk_useinternal = await getStorageValue(chrome.storage.sync, "cblk_useinternal"); break;
             default: throw new Error("Unrecognized variable name.");
         }
     }
 }
-
-// lookup for known cookies, to prevent some critical login issues
-// will be imported form an external file and kept here
-var known_cookies = {};
-
-// key used to access the regular expression pattern in the known_cookies object
-const regexKey = "~regex;";
-
-// indexed DB for cookie history
-var historyDB = undefined;
-const openDBRequest = window.indexedDB.open("CookieBlockHistory", 1);
 
 // executed if the database is new or needs to be updated
 openDBRequest.onupgradeneeded = function(event) {
@@ -211,7 +259,6 @@ const getCurrentLabelCount = function() {
     }
 }
 
-
 /**
  * Callback function to set up config and storage defaults.
  * This initializes all chrome local and sync storage objects if undefined.
@@ -247,6 +294,13 @@ const getCurrentLabelCount = function() {
 
     await setStorageValue(dfConfig["cblk_mintime"], chrome.storage.sync, "cblk_mintime", override);
     cblk_mintime = await getStorageValue(chrome.storage.sync, "cblk_mintime");
+
+    await setStorageValue(dfConfig["cblk_knowncookies"], chrome.storage.sync, "cblk_knowncookies", override);
+    cblk_knowncookies = await getStorageValue(chrome.storage.sync, "cblk_knowncookies");
+    reloadUserKnownCookies(cblk_knowncookies);
+
+    await setStorageValue(dfConfig["cblk_useinternal"], chrome.storage.sync, "cblk_useinternal", override);
+    cblk_useinternal = await getStorageValue(chrome.storage.sync, "cblk_useinternal");
 }
 
 
@@ -332,7 +386,7 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
  * This is used to define exceptions and correct mistakes in the classification.
  * @param {Object} cookieDat Contains the current cookie's data.
  */
- const cookieLookup = function(cookieDat) {
+ const cookieLookup = function(cookieDat, knownCookiesArg) {
     let nameLookup = (cName, namesObj) => {
         if (cName in namesObj) return namesObj[cName];
         else return -1;
@@ -342,16 +396,16 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
     let cookieDomain = sanitizeDomain(cookieDat.domain);
 
     // Check name exceptions
-    let label = nameLookup(cookieName, known_cookies["name_match"]);
+    let label = nameLookup(cookieName, knownCookiesArg["name_match"]);
     if (label !== undefined && label !== -1) {
         return label;
     }
 
     // Check domain exception, then check for name
-    if (cookieDomain in known_cookies["domain_match"]) {
-        return nameLookup(cookieName, known_cookies["domain_match"][cookieDomain]);
+    if (cookieDomain in knownCookiesArg["domain_match"]) {
+        return nameLookup(cookieName, knownCookiesArg["domain_match"][cookieDomain]);
     } else {
-        for (let obj of Object.values(known_cookies["domain_regex"])) {
+        for (let obj of Object.values(knownCookiesArg["domain_regex"])) {
             if (obj[regexKey].test(cookieDomain)){
                 return nameLookup(cookieName, obj);
             }
@@ -369,7 +423,18 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
 const classifyCookie = async function(cookieDat, feature_input) {
     await maybeRestoreCBLKVar(cblk_pscale, "cblk_pscale");
 
-    let label = cookieLookup(cookieDat);
+    // First check the user-defined known cookies list (remote)
+    let label = -1;
+    if (knownCookies_user) {
+        label = cookieLookup(cookieDat, knownCookies_user);
+    }
+
+    // If not found, and toggle set, check internal cookies list
+    if (label === -1 && cblk_useinternal && knownCookies_internal) {
+        label = cookieLookup(cookieDat, knownCookies_internal);
+    }
+
+    // Otherwise, perform prediction
     if (label === -1) {
         // Feature extraction timing
         let startTime = window.performance.now();
@@ -383,7 +448,6 @@ const classifyCookie = async function(cookieDat, feature_input) {
     } else {
         debug_Nskipped++;
     }
-
 
     if (label < 0 && label > 3) {
         throw new Error(`Predicted label exceeded valid range: ${label}`);
@@ -668,6 +732,13 @@ chrome.runtime.onMessage.addListener(handleInternalMessage);
         if (changedItems.includes("cblk_mintime")) {
             cblk_mintime = changes["cblk_mintime"].newValue;
         }
+        if (changedItems.includes("cblk_knowncookies")) {
+            cblk_knowncookies = changes["cblk_knowncookies"].newValue;
+            reloadUserKnownCookies(cblk_knowncookies);
+        }
+        if (changedItems.includes("cblk_useinternal")) {
+            cblk_useinternal = changes["cblk_useinternal"].newValue;
+        }
     } else if (area === "local") {
         if (changedItems.includes("cblk_pause")) {
             cblk_pause = changes["cblk_pause"].newValue;
@@ -690,7 +761,7 @@ getExtensionFile(chrome.extension.getURL("ext_data/known_cookies.json"), "json",
     for (let k of Object.keys(result["domain_regex"])) {
         result["domain_regex"][k][regexKey] = new RegExp(k);
     }
-    known_cookies = result;
+    knownCookies_internal = result;
 });
 
 /**

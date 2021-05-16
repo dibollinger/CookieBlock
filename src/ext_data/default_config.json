@@ -8,5 +8,9 @@
     "cblk_exadvert": [],
     "cblk_pscale": 3,
     "cblk_hconsent": false,
-    "cblk_mintime": 120000
+    "cblk_mintime": 120000,
+    "cblk_knowncookies": [
+        "https://raw.githubusercontent.com/dibollinger/CookieBlock/main/src/ext_data/known_cookies.json"
+    ],
+    "cblk_useinternal": true
 }
