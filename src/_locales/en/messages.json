@@ -440,12 +440,20 @@
     "message": "Advertising"
   },
 
-  "configDropDownClassify" : {
+  "configDropdownFalse" : {
     "message": "-"
   },
 
-  "configDropDownAccept" : {
+  "configDropdownTrue" : {
     "message": "Exempted"
+  },
+
+  "configButtonRemove" : {
+    "message": "Remove"
+  },
+
+  "configButtonRemoveAll" : {
+    "message": "Remove All"
   },
 
   "configExpandDesc": {
@@ -458,6 +466,10 @@
 
   "configNoCookies": {
     "message": "No cookies recorded in the history!"
+  },
+
+  "configLoadError": {
+    "message": "Failed to load cookie history!"
   },
 
   "udTitle" : {

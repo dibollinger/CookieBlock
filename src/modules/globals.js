@@ -146,6 +146,8 @@ const urlToUniformDomain = function(url) {
     new_url = new_url.replace(/\/.*$/, "");
     return new_url;
 }
+
+
 /**
  * Transforms the given domain or URL into a uniform representation.
  * @param {String} domainOrURL    Domain or URL to transform into uniform format

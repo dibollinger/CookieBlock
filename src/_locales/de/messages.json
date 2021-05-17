@@ -440,11 +440,11 @@
     "message": "Werbung/Tracking"
   },
 
-  "configDropDownClassify" : {
+  "configDropdownFalse" : {
     "message": "-"
   },
 
-  "configDropDownAccept" : {
+  "configDropdownTrue" : {
     "message": "Ausnahme"
   },
 
@@ -456,8 +456,20 @@
     "message": "Benutzerdefinierte Kategorien als JSON exportieren"
   },
 
+  "configButtonRemove" : {
+    "message": "Entfernen"
+  },
+
+  "configButtonRemoveAll" : {
+    "message": "Alle entfernen"
+  },
+
   "configNoCookies": {
     "message": "Es wurden keine Cookies im Verlauf gefunden!"
+  },
+
+  "configLoadError": {
+    "message": "Cookie Verlauf konnte nicht geladen werden!"
   },
 
   "udTitle" : {
