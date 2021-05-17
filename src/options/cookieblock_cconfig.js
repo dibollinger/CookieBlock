@@ -293,19 +293,13 @@ const constructDomainListEntry = function(domain, path, cookies) {
     });
 }
 
-const setupConfigPage = function() {
+const refreshCookieHistory = function() {
 
-    // Text
-    setStaticLocaleText("cconfig-title", "extensionName");
-    setStaticLocaleText("cconfig-subtitle", "cookieConfigSubtitle");
-    setStaticLocaleText("cconfig-desc-title", "cookieConfigDescTitle");
-    setStaticLocaleText("cconfig-desc-pg1", "cookieConfigDescPG1");
-    setStaticLocaleText("cconfig-desc-pg2", "cookieConfigDescPG2");
-    setStaticLocaleText("cconfig-list-title", "cookieConfigListTitle");
-    setStaticLocaleText("cconfig-expand-desc", "configExpandDesc");
-    setStaticLocaleText("refresh-button", "configButtonRefresh");
-    setStaticLocaleText("export-button", "configButtonExport");
-
+    let child = domainListElem.lastElementChild;
+    while (child) {
+        domainListElem.removeChild(child);
+        child = domainListElem.lastElementChild;
+    }
 
     // Request a snapshot of the entire cookie history
     chrome.runtime.sendMessage({"open_json": "full"}, (msg) => {
@@ -340,7 +334,25 @@ const setupConfigPage = function() {
 }
 
 
+const setupConfigPage = function() {
+    setStaticLocaleText("cconfig-title", "extensionName");
+    setStaticLocaleText("cconfig-subtitle", "cookieConfigSubtitle");
+    setStaticLocaleText("cconfig-desc-title", "cookieConfigDescTitle");
+    setStaticLocaleText("cconfig-desc-pg1", "cookieConfigDescPG1");
+    setStaticLocaleText("cconfig-desc-pg2", "cookieConfigDescPG2");
+    setStaticLocaleText("cconfig-list-title", "cookieConfigListTitle");
+    setStaticLocaleText("cconfig-expand-desc", "configExpandDesc");
+    setStaticLocaleText("refresh-button", "configButtonRefresh");
+    setStaticLocaleText("export-button", "configButtonExport");
+
+    refreshCookieHistory();
+}
+
+
 document.addEventListener("DOMContentLoaded", setupConfigPage);
+
+refreshButton.addEventListener("click", () => { refreshCookieHistory(); });
+
 
 setInterval(function() {
     refreshButtons();
