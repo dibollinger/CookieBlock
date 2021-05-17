@@ -133,7 +133,7 @@ const removeOrRestoreCookie = async function(c, button) {
 const updateLabel = function(cookie, dropdownElement) {
     dropdownElement.style.color = "black";
     dropdownElement.style.opacity = "100%";
-    cookie.current_label = dropdownElement.value;
+    cookie.current_label = parseInt(dropdownElement.value);
     cookie.label_ts = sentinelTimestamp;
 
     chrome.runtime.sendMessage({"update_label": {
@@ -293,6 +293,28 @@ const constructDomainListEntry = function(domain, path, cookies) {
     });
 }
 
+
+const exportCustomLabels = function () {
+    let exportJSON = {"domain_match": {}};
+    let domainMatch = exportJSON["domain_match"];
+    for (d of Object.keys(cookieHistory)){
+        for (p of Object.keys(cookieHistory[d])){
+            for (c of Object.values(cookieHistory[d][p])){
+                if (c.label_ts === sentinelTimestamp && c.current_label !== -1) {
+                    let sanitizedDomain = cleanDomain(c.domain);
+                    domainMatch[sanitizedDomain] = domainMatch[sanitizedDomain] || {};
+                    domainMatch[sanitizedDomain][c.name] = c.current_label;
+                }
+            }
+        }
+    }
+
+    let tab = window.open("export.json", "_blank");
+    tab.document.write('<pre id="json_body"></pre>');
+    tab.document.getElementById("json_body").textContent = JSON.stringify(exportJSON, null, 4);
+    tab.document.close();
+}
+
 const refreshCookieHistory = function() {
 
     let child = domainListElem.lastElementChild;
@@ -353,6 +375,7 @@ document.addEventListener("DOMContentLoaded", setupConfigPage);
 
 refreshButton.addEventListener("click", () => { refreshCookieHistory(); });
 
+exportButton.addEventListener("click", () => { exportCustomLabels(); });
 
 setInterval(function() {
     refreshButtons();
