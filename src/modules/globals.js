@@ -148,12 +148,25 @@ const urlToUniformDomain = function(url) {
 }
 
 
+ const domainRemoveNoise = function(url) {
+    if (url === null) {
+        return null;
+    }
+    let new_url = url.trim();
+    new_url = new_url.replace(/^\./, "");
+    new_url = new_url.replace(/^http(s)?:\/\//, "");
+    new_url = new_url.replace(/^\./, "");
+    new_url = new_url.replace(/\/.*$/, "");
+    return new_url;
+}
+
+
 /**
  * Transforms the given domain or URL into a uniform representation.
  * @param {String} domainOrURL    Domain or URL to transform into uniform format
  * @return {String}               Transformed domain.
  */
- const sanitizeDomain = (domainOrURL) => {
+ const cleanDomain = (domainOrURL) => {
     try {
         return urlToUniformDomain(new URL(domainOrURL).hostname);
     } catch(error) {

@@ -404,16 +404,11 @@ const addExcClickListener = function (buttonID, inputID, storageID, listID, erro
         if (validDomainCharsRegex.test(inputDomain)) {
             let domainOrURL = (' ' + inputDomain).slice(1);
 
-            let sanitizedDomain = undefined;
-            try {
-                sanitizedDomain = urlToUniformDomain(new URL(domainOrURL).hostname);
-            } catch(error) {
-                sanitizedDomain = urlToUniformDomain(domainOrURL);
-            }
+            let sanitizedDomain = cleanDomain(domainOrURL);
 
             let domainList = await getStorageValue(chrome.storage.sync, storageID);
             if (!domainList.includes(sanitizedDomain)) {
-                domainList.push(domainOrURL);
+                domainList.push(sanitizedDomain);
                 setStorageValue(domainList, chrome.storage.sync, storageID);
                 appendItemToList(sanitizedDomain, listID, storageID);
                 iElem.value = "";

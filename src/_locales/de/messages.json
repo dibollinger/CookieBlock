@@ -460,6 +460,10 @@
     "message": "Entfernen"
   },
 
+  "configButtonRestore" : {
+    "message": "Wiederherstellen"
+  },
+
   "configButtonRemoveAll" : {
     "message": "Alle entfernen"
   },

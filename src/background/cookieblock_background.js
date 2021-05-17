@@ -335,6 +335,7 @@ const createFEInput = function(cookie) {
           "http_only": cookie.httpOnly,
           "secure": cookie.secure,
           "session": cookie.session,
+          "expirationDate": cookie.expirationDate,
           "expiry": datetimeToExpiry(cookie),
           "value": escapeString(cookie.value),
           "same_site": escapeString(cookie.sameSite),
@@ -393,7 +394,7 @@ const updateFEInput = async function(storedFEInput, rawCookie) {
     };
 
     let cookieName = cookieDat.name;
-    let cookieDomain = sanitizeDomain(cookieDat.domain);
+    let cookieDomain = cleanDomain(cookieDat.domain);
 
     // Check name exceptions
     let label = nameLookup(cookieName, knownCookiesArg["name_match"]);
@@ -471,7 +472,7 @@ const makePolicyDecision = async function(cookieDat, label) {
 
     let cName = classIndexToString(label);
 
-    let ckDomain = sanitizeDomain(escapeString(cookieDat.domain));
+    let ckDomain = cleanDomain(escapeString(cookieDat.domain));
     let skipRejection = false;
     try {
         switch(label) {
@@ -496,14 +497,14 @@ const makePolicyDecision = async function(cookieDat, label) {
         // First try to remove the cookie, using https as the protocol
         chrome.cookies.remove({
             "name": cookieDat.name,
-            "url": "https://" + cookieDat.domain + cookieDat.path,
+            "url": "https://" + domainRemoveNoise(cookieDat.domain) + cookieDat.path,
             "storeId": cookieDat.storeId
         }, (remResultHTTPS) => {
             // check if removal was successful -- if not, retry with http protocol
             if (remResultHTTPS === null){
                 remResultHTTPS = chrome.cookies.remove({
                     "name": cookieDat.name,
-                    "url": "http://" + cookieDat.domain + cookieDat.path,
+                    "url": "http://" + domainRemoveNoise(cookieDat.domain) + cookieDat.path,
                     "storeId": cookieDat.storeId
                 }, (remResultHTTP) => {
                     if (remResultHTTP === null){
@@ -559,7 +560,7 @@ const makePolicyDecision = async function(cookieDat, label) {
     console.assert(serializedCookie !== undefined, "Cookie object was still undefined!");
 
     // Check if the domain is contained in the whitelist
-    let ckDomain = sanitizeDomain(serializedCookie.domain);
+    let ckDomain = cleanDomain(serializedCookie.domain);
     if (cblk_exglobal.includes(ckDomain)) {
         console.debug(`Cookie found in domain whitelist: (${constructKeyFromCookie(newCookie)})`);
     } else {

@@ -12,10 +12,120 @@ Released under the MIT License, see included LICENSE file.
 const categories = ["classOptionEmpty", "classOption0", "classOption1", "classOption2", "classOption3"];
 var cookieHistory = undefined;
 const placeholderListItem = document.getElementById("li-placeholder");
-
 const domainListElem = document.getElementById("domain-list");
-
 const sentinelTimestamp = 9999999999999;
+
+const buttonsArray = [];
+
+const existsCookie = async function(cookie) {
+    return new Promise((resolve, reject) => {
+        chrome.cookies.get({
+            "name": cookie.name,
+            "url": "https://" + domainRemoveNoise(cookie.domain) + cookie.path,
+            "storeId": cookie.storeId
+        }, (result) => {
+            resolve(result !== null);
+        });
+    });
+}
+
+const refreshButtons = async function() {
+    for (let o of buttonsArray){
+        if (await existsCookie(o.c)){
+            o.b.textContent = chrome.i18n.getMessage("configButtonRemove");
+        } else {
+            o.b.textContent = chrome.i18n.getMessage("configButtonRestore");
+        }
+    }
+}
+
+
+const removeSingleCookie = async function(c) {
+    return new Promise((resolve, reject) => {
+        chrome.cookies.remove({
+            "name": c.name,
+            "url": "https://" + domainRemoveNoise(c.domain) + c.path,
+            "storeId": c.storeId
+        }, (remResultHTTPS) => {
+            if (remResultHTTPS === null){
+                chrome.cookies.remove({
+                    "name": c.name,
+                    "url": "http://" + domainRemoveNoise(c.domain) + c.path,
+                    "storeId": c.storeId
+                }, (remResultHTTP) => {
+                    resolve(remResultHTTP !== null);
+                });
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
+
+const restoreSingleCookie = async function(c) {
+    let lastUpdate = c.variable_data[c.variable_data.length - 1]
+
+    let maybeExpiry;
+    if ((! "expirationDate" in lastUpdate) || lastUpdate.session) {
+        maybeExpiry = null;
+    } else if (lastUpdate.expirationDate - Math.floor(Date.now() / 1000) < 0) {
+        console.info(`Cookie ${c.name} already expired! Converting to session cookie...`)
+        maybeExpiry = null;
+    } else {
+        maybeExpiry = lastUpdate.expirationDate;
+    }
+
+    return new Promise((resolve, reject) => {
+        chrome.cookies.set({
+            "name": c.name,
+            "domain": c.domain,
+            "path": c.path,
+            "httpOnly": lastUpdate.http_only,
+            "sameSite": lastUpdate.sameSite,
+            "secure": lastUpdate.secure,
+            "value": lastUpdate.value,
+            "expirationDate": maybeExpiry,
+            "url": "https://" + domainRemoveNoise(c.domain) + c.path,
+            "storeId": c.storeId
+        }, (result) => {
+            if (chrome.runtime.lastError){
+                console.error("Failed to restore cookie: " + chrome.runtime.lastError);
+                resolve(false);
+            } else {
+                resolve(result !== null);
+            }
+        });
+    });
+}
+
+
+const removeManyCookies = async function(cookies) {
+    for (let c of Object.values(cookies)) {
+        await removeSingleCookie(c);
+    }
+    refreshButtons();
+}
+
+
+const removeOrRestoreCookie = async function(c, button) {
+    let success;
+    if (await existsCookie(c)){
+        success = await removeSingleCookie(c);
+        if (success){
+            button.textContent = chrome.i18n.getMessage("configButtonRestore");
+        } else {
+            console.error(`Failed to remove cookie: ${c.name}`)
+        }
+    } else {
+        success = await restoreSingleCookie(c);
+        if (success){
+            button.textContent = chrome.i18n.getMessage("configButtonRemove");
+        } else {
+            console.error(`Failed to restore cookie: ${c.name}`)
+        }
+    }
+}
+
 
 const updateLabel = function(cookie, dropdownElement) {
     dropdownElement.style.color = "black";
@@ -64,13 +174,22 @@ const constructCookieListEntry = function(cookies) {
             option.textContent = chrome.i18n.getMessage(categories[i]);
             selection.add(option);
         }
-        selection.addEventListener("change", (event) => { updateLabel(c, event.target); });
+        selection.addEventListener("change", (ev) => { updateLabel(c, ev.target); });
         subListItem.appendChild(selection);
 
         let button = document.createElement("button");
         button.className = "item-button";
-        button.textContent = chrome.i18n.getMessage("configButtonRemove");;
         subListItem.appendChild(button);
+        (async () => {
+            if (await existsCookie(c)){
+                button.textContent = chrome.i18n.getMessage("configButtonRemove");
+            } else {
+                button.textContent = chrome.i18n.getMessage("configButtonRestore");
+            }
+        })();
+        button.addEventListener("click", (ev) => { removeOrRestoreCookie(c, button) });
+        buttonsArray.push({"c": c, "b": button});
+
 
         subList.appendChild(subListItem);
     }
@@ -90,15 +209,16 @@ const hideToggle = function(elem) {
 }
 
 const changeExceptionStatus = async function(domain, selectText) {
+    let sanitizedDomain = urlToUniformDomain(domain);
     let domainList = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
     if (selectText === "true") {
-        if (!domainList.includes(domain)){
-            domainList.push(domain);
+        if (!domainList.includes(sanitizedDomain)){
+            domainList.push(sanitizedDomain);
             setStorageValue(domainList, chrome.storage.sync, "cblk_exglobal");
         }
     } else if (selectText === "false") {
-        if (domainList.includes(domain)){
-            let index = domainList.indexOf(domain);
+        if (domainList.includes(sanitizedDomain)){
+            let index = domainList.indexOf(sanitizedDomain);
             domainList.splice(index, 1);
             setStorageValue(domainList, chrome.storage.sync, "cblk_exglobal");
         }
@@ -106,6 +226,7 @@ const changeExceptionStatus = async function(domain, selectText) {
         console.error(`Javascript is being stupid: ${selectText}`)
     }
 }
+
 
 const constructDomainListEntry = function(domain, path, cookies) {
 
@@ -141,12 +262,14 @@ const constructDomainListEntry = function(domain, path, cookies) {
     let button = document.createElement("button");
     button.className = "item-button";
     button.textContent = chrome.i18n.getMessage("configButtonRemoveAll");;
-    //button.addEventListener("click", () => { removeItemFromList(addDomain, node, storageID) });
+    button.addEventListener("click", async () => {
+        await removeManyCookies(cookies);
+        await refreshButtons();
+    });
 
     listEntry.appendChild(domainDiv);
     listEntry.appendChild(selection);
     listEntry.appendChild(button);
-
     domainListElem.appendChild(listEntry);
 
     let placeholder = document.createElement("li");
@@ -213,3 +336,7 @@ const setupConfigPage = function() {
 
 
 document.addEventListener("DOMContentLoaded", setupConfigPage);
+
+setInterval(function() {
+    refreshButtons();
+}, 1000);
