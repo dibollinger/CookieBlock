@@ -409,7 +409,7 @@
   },
 
   "cookieConfigDescPG1" : {
-    "message": "Auf dieser Seite können Sie den einzelnen Cookies benutzerdefinierte Kategorien zuweisen. Klicken Sie auf eine der aufgelisteten Domänen, um alle dazugehörigen Cookies anzuzeigen. Für jedes Cookie wird die zugewiesene Kategorie angezeigt. Graue Kategorien sind temporär und wurden von der künstlichen Intelligenz zugewiesen. Schwarze Kategorien sind permanent und wurden vom Benutzer zugewiesen. Wenn Sie 'Keine' auswählen, wird das Cookie bei erneutem Auftreten neu klassifiziert."
+    "message": "Auf dieser Seite können Sie den einzelnen Cookies benutzerdefinierte Kategorien zuweisen. Klicken Sie auf eine der aufgelisteten Domänen, um alle dazugehörigen Cookies anzuzeigen. Für jedes Cookie wird die zugewiesene Kategorie angezeigt. Graue Kategorien sind temporär und wurden von der künstlichen Intelligenz zugewiesen. Schwarze Kategorien sind permanent und wurden vom Benutzer zugewiesen."
   },
 
   "cookieConfigDescPG2" : {
@@ -421,7 +421,7 @@
   },
 
   "classOptionEmpty" : {
-    "message": "Keine"
+    "message": "Automatisch"
   },
 
   "classOption0" : {

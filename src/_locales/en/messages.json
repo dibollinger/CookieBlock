@@ -409,7 +409,7 @@
   },
 
   "cookieConfigDescPG1" : {
-    "message": "On this page you can define custom categories for each individual cookie, which will take precedence before the classifier. Click on the list entry to display the cookies that were created by that domain. Transparent labels are temporary and were assigned by the classifier. Opaque labels are permanent and were assigned by the user. By selecting 'None', a new class will be predicted the next time the cookie is observed."
+    "message": "On this page you can define custom categories for each individual cookie, which will take precedence before the classifier. Click on the list entry to display the cookies that were created by that domain. Transparent labels are temporary and were assigned by the classifier. Opaque labels are permanent and were assigned by the user. By selecting 'Reclassify', a new class will be predicted the next time the cookie is observed."
   },
 
   "cookieConfigDescPG2" : {
@@ -421,7 +421,7 @@
   },
 
   "classOptionEmpty" : {
-    "message": "None"
+    "message": "Reclassify"
   },
 
   "classOption0" : {

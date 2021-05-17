@@ -691,6 +691,17 @@ const handleInternalMessage = function(request, sender, sendResponse) {
     } else if (request.reset_defaults) {
         overrideDefaults();
         sendResponse({response: "Defaults overridden by BG."});
+    } else if (request.update_label) {
+        let updateContents = request.update_label;
+        let updateCookieProcess = async () => {
+            actualCookie = await retrieveCookieFromStorage(updateContents);
+            actualCookie.label_ts = updateContents.label_ts;
+            actualCookie.current_label = updateContents.current_label;
+            insertCookieIntoStorage(actualCookie);
+            sendResponse({response: `Cookie label updated for: ${actualCookie.name};${actualCookie.domain};${actualCookie.path}`});
+        }
+        updateCookieProcess();
+        return true;
     } else {
         sendResponse({response: undefined});
     }

@@ -411,7 +411,6 @@ const addExcClickListener = function (buttonID, inputID, storageID, listID, erro
                 sanitizedDomain = urlToUniformDomain(domainOrURL);
             }
 
-
             let domainList = await getStorageValue(chrome.storage.sync, storageID);
             if (!domainList.includes(sanitizedDomain)) {
                 domainList.push(domainOrURL);

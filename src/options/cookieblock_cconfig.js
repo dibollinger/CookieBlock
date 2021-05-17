@@ -10,8 +10,31 @@ Released under the MIT License, see included LICENSE file.
 
 
 const categories = ["classOptionEmpty", "classOption0", "classOption1", "classOption2", "classOption3"];
+var cookieHistory = undefined;
+const placeholderListItem = document.getElementById("li-placeholder");
 
-const constructCookieListEntry = function(cookies, listID) {
+const domainListElem = document.getElementById("domain-list");
+
+const sentinelTimestamp = 9999999999999;
+
+const updateLabel = function(cookie, dropdownElement) {
+    dropdownElement.style.color = "black";
+    dropdownElement.style.opacity = "100%";
+    cookie.current_label = dropdownElement.value;
+    cookie.label_ts = sentinelTimestamp;
+
+    chrome.runtime.sendMessage({"update_label": {
+        "name" : cookie.name,
+        "domain": cookie.domain,
+        "path": cookie.path,
+        "current_label": parseInt(dropdownElement.value),
+        "label_ts": sentinelTimestamp
+    }}, (msg) => {
+        console.info(msg.response);
+    });
+}
+
+const constructCookieListEntry = function(cookies) {
     let domainCompanionEntry = document.createElement("li");
     let subList = document.createElement("ul");
     for (let c of Object.values(cookies)) {
@@ -24,6 +47,13 @@ const constructCookieListEntry = function(cookies, listID) {
 
         let selection = document.createElement("select");
         selection.className = "cat-selector";
+        if (c.label_ts < sentinelTimestamp){
+            selection.style.color = "gray";
+            selection.style.opacity = "80%";
+        } else {
+            selection.style.color = "black";
+            selection.style.opacity = "100%";
+        }
 
         for (let i = 0; i < categories.length; i++){
             let option = document.createElement("option");
@@ -34,6 +64,7 @@ const constructCookieListEntry = function(cookies, listID) {
             option.textContent = chrome.i18n.getMessage(categories[i]);
             selection.add(option);
         }
+        selection.addEventListener("change", (event) => { updateLabel(c, event.target); });
         subListItem.appendChild(selection);
 
         let button = document.createElement("button");
@@ -44,8 +75,6 @@ const constructCookieListEntry = function(cookies, listID) {
         subList.appendChild(subListItem);
     }
     domainCompanionEntry.appendChild(subList);
-    document.getElementById(listID).appendChild(domainCompanionEntry);
-    domainCompanionEntry.style.display = "none";
 
     return domainCompanionEntry;
 }
@@ -60,14 +89,32 @@ const hideToggle = function(elem) {
     }
 }
 
-const constructDomainListEntry = function(domainPath, cookies, listID) {
+const changeExceptionStatus = async function(domain, selectText) {
+    let domainList = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
+    if (selectText === "true") {
+        if (!domainList.includes(domain)){
+            domainList.push(domain);
+            setStorageValue(domainList, chrome.storage.sync, "cblk_exglobal");
+        }
+    } else if (selectText === "false") {
+        if (domainList.includes(domain)){
+            let index = domainList.indexOf(domain);
+            domainList.splice(index, 1);
+            setStorageValue(domainList, chrome.storage.sync, "cblk_exglobal");
+        }
+    } else {
+        console.error(`Javascript is being stupid: ${selectText}`)
+    }
+}
+
+const constructDomainListEntry = function(domain, path, cookies) {
 
     // First construct the domain entry
     let listEntry = document.createElement("li");
     let domainDiv = document.createElement("div");
     domainDiv.className = "domain-entry";
     domainDiv.style.fontWeight = "bold";
-    domainDiv.textContent = domainPath;
+    domainDiv.textContent = domain + path;
 
     let optionFalse = document.createElement("option");
     optionFalse.value = false;
@@ -81,7 +128,15 @@ const constructDomainListEntry = function(domainPath, cookies, listID) {
     selection.className = "exception-selector";
     selection.add(optionFalse);
     selection.add(optionTrue);
-    //selection.addEventListener("click", () => { removeItemFromList(addDomain, node, storageID) });
+    selection.addEventListener("change", (event) => { changeExceptionStatus(domain, event.target.value) });
+    (async () => {
+        let domainList = await getStorageValue(chrome.storage.sync, "cblk_exglobal");
+        if (domainList.includes(domain)){
+            optionTrue.selected = true;
+        } else {
+            optionFalse.selected = true;
+        }
+    })();
 
     let button = document.createElement("button");
     button.className = "item-button";
@@ -91,15 +146,26 @@ const constructDomainListEntry = function(domainPath, cookies, listID) {
     listEntry.appendChild(domainDiv);
     listEntry.appendChild(selection);
     listEntry.appendChild(button);
-    document.getElementById(listID).appendChild(listEntry);
 
-    let companionEntry = constructCookieListEntry(cookies, listID);
-    domainDiv.addEventListener("click", () => { hideToggle(companionEntry) });
+    domainListElem.appendChild(listEntry);
+
+    let placeholder = document.createElement("li");
+    placeholder.style.display = "none";
+    domainListElem.appendChild(placeholder);
+
+    let objectCache = { "placeholder": placeholder, "listEntry": null };
+    domainDiv.addEventListener("click", () => {
+        if (!objectCache.listEntry) {
+            objectCache.listEntry = constructCookieListEntry(cookies);
+        }
+
+        if (domainListElem.contains(objectCache.listEntry)) {
+            objectCache.listEntry.replaceWith(objectCache.placeholder);
+        } else {
+            objectCache.placeholder.replaceWith(objectCache.listEntry);
+        }
+    });
 }
-
-var cookieHistory = undefined;
-
-const placeholderListItem = document.getElementById("li-placeholder");
 
 const setupConfigPage = function() {
     // Text
@@ -127,9 +193,9 @@ const setupConfigPage = function() {
                 placeholderListItem.style.display = "none";
                 let sortedDomains = Array.from(allDomains).sort();
                 for (let d of sortedDomains) {
-                    let sanitizedDomain = urlToUniformDomain(d);
+                    let sanitizedDomain = d;
                     for (let path of Object.keys(cookieHistory[d])){
-                        constructDomainListEntry(sanitizedDomain + path, cookieHistory[d][path], "domain-list");
+                        constructDomainListEntry(sanitizedDomain, path, cookieHistory[d][path]);
                     }
                 }
             } else {
