@@ -452,8 +452,12 @@
     "message": "Klicken Sie auf einen Eintrag, um dessen Inhalt zu erweitern."
   },
 
-  "configExportButton": {
+  "configButtonExport": {
     "message": "Benutzerdefinierte Kategorien als JSON exportieren"
+  },
+
+  "configButtonRefresh": {
+    "message": "Aktualisieren"
   },
 
   "configButtonRemove" : {

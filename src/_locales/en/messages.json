@@ -464,8 +464,12 @@
     "message": "Click on an entry to expand its contents."
   },
 
-  "configExportButton": {
+  "configButtonExport": {
     "message": "Export user-defined categories as JSON"
+  },
+
+  "configButtonRefresh": {
+    "message": "Refresh"
   },
 
   "configNoCookies": {

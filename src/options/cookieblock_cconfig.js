@@ -15,6 +15,9 @@ const placeholderListItem = document.getElementById("li-placeholder");
 const domainListElem = document.getElementById("domain-list");
 const sentinelTimestamp = 9999999999999;
 
+const refreshButton = document.getElementById("refresh-button");
+const exportButton = document.getElementById("export-button");
+
 const buttonsArray = [];
 
 const existsCookie = async function(cookie) {
@@ -291,6 +294,7 @@ const constructDomainListEntry = function(domain, path, cookies) {
 }
 
 const setupConfigPage = function() {
+
     // Text
     setStaticLocaleText("cconfig-title", "extensionName");
     setStaticLocaleText("cconfig-subtitle", "cookieConfigSubtitle");
@@ -299,7 +303,8 @@ const setupConfigPage = function() {
     setStaticLocaleText("cconfig-desc-pg2", "cookieConfigDescPG2");
     setStaticLocaleText("cconfig-list-title", "cookieConfigListTitle");
     setStaticLocaleText("cconfig-expand-desc", "configExpandDesc");
-    setStaticLocaleText("export-button", "configExportButton");
+    setStaticLocaleText("refresh-button", "configButtonRefresh");
+    setStaticLocaleText("export-button", "configButtonExport");
 
 
     // Request a snapshot of the entire cookie history
