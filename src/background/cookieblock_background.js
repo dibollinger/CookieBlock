@@ -624,7 +624,7 @@ const constructHistoryJSON = function(type) {
             var cursor = event.target.result;
             if (cursor) {
                 if (target_label === null || cursor.value.current_label === target_label) {
-                    let d = cursor.value.domain;
+                    let d = urlToUniformDomain(cursor.value.domain);
                     let p = cursor.value.path;
                     tempCookieJSON[d] = tempCookieJSON[d] || {};
                     tempCookieJSON[d][p] = tempCookieJSON[d][p] || {};
