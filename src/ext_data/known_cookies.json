@@ -1,14 +1,37 @@
 {
     "name_match": {
         "CookieConsent" : 0,
-        "OptanonConsent" : 0
+        "OptanonConsent" : 0,
+        "gdpr-last-interaction": 0
     },
     "domain_match": {
+        "authorstream.com": {
+            "Remember": 0,
+            "newUser": 0,
+            "userId": 0
+        },
         "bethesda.net": {
             "bnet-username": 0
         },
-        "outlook.live.com": {
-            "DefaultAnchorMailbox": 0
+        "idp.corel.com": {
+            "SERVER": 0,
+            "_omappvp": 0,
+            "_omappvs": 0
+        },
+        "dafont.com": {
+            "mtx": 0
+        },
+        "dropbox.com": {
+            "jar": 0,
+            "utag_main": 0,
+            "last_active_role": 0,
+            "bjar": 0,
+            "flash": 0,
+            "bang": 0
+        },
+        "eventbrite.co.uk": {
+            "mglts": 0,
+            "mgssl": 0
         },
         "fandom.com": {
             "access_token": 0
@@ -17,8 +40,27 @@
             "gog_lc": 0,
             "gog-al": 0
         },
+        "etsy.com": {
+            "uaid": 0,
+            "exp_hangover":0,
+            "user_prefs": 0,
+            "ua": 0
+        },
         "humblebundle.com": {
             "_simpleauth_sess": 0
+        },
+        "login.microsoftonline.com": {
+            "brcap": 0,
+            "stsservicecookie": 0
+        },
+        "linkedin.com":{
+            "li_at":0,
+            "liap": 0,
+            "JSESSIONID": 0,
+            "chp_token": 0,
+            "li_rm": 0,
+            "bcookie": 0,
+            "lidc": 0
         },
         "magix.com": {
             "mgxLoginCheck": 0,
@@ -32,21 +74,14 @@
             "user": 0,
             "justloggedin": 0
         },
-        "idp.corel.com": {
-            "SERVER": 0,
-            "_omappvp": 0,
-            "_omappvs": 0
+        "outlook.live.com": {
+            "DefaultAnchorMailbox": 0
+        },
+        "redhat.com": {
+            "rh_user": 0
         },
         "builtwith.com": {
             "BWSSON": 0
-        },
-        "dropbox.com": {
-            "jar": 0,
-            "utag_main": 0,
-            "last_active_role": 0,
-            "bjar": 0,
-            "flash": 0,
-            "bang": 0
         },
         "todoist.com": {
             "todoistd": 0
@@ -60,20 +95,18 @@
             "twid": 0,
             "kdt": 0
         },
-        "linkedin.com":{
-            "li_at":0,
-            "liap": 0,
-            "JSESSIONID": 0,
-            "chp_token": 0,
-            "li_rm": 0,
-            "bcookie": 0,
-            "lidc": 0
+        "walmart.com": {
+            "CID": 0,
+            "SPID": 0,
+            "cart-item-count": 0,
+            "hasCID": 0,
+            "type": 0
         },
-        "etsy.com": {
-            "uaid": 0,
-            "exp_hangover":0,
-            "user_prefs": 0,
-            "ua": 0
+        "forums.sherdog.com": {
+            "_awl": 0
+        },
+        "philips.co.uk": {
+            "notice_settings": 0
         }
     },
     "domain_regex": {
@@ -82,7 +115,8 @@
             "NID" : 0,
             "SID" : 0,
             "HSID" : 0,
-            "SSID" : 0
+            "SSID" : 0,
+            "_GRECAPTCHA": 0
         },
         "^youtube\\..*" : {
             "PREF": 1,
