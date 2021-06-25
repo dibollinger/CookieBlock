@@ -437,7 +437,7 @@
   },
 
   "classOption3" : {
-    "message": "Werbung/Tracking"
+    "message": "Werbung"
   },
 
   "configDropdownFalse" : {
@@ -453,7 +453,7 @@
   },
 
   "configButtonExport": {
-    "message": "Benutzerdefinierte Kategorien als JSON exportieren"
+    "message": "Als JSON exportieren"
   },
 
   "configButtonRefresh": {
@@ -465,7 +465,7 @@
   },
 
   "configButtonRestore" : {
-    "message": "Wiederherstellen"
+    "message": "Rückgängig"
   },
 
   "configButtonRemoveAll" : {

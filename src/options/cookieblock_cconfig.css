@@ -11,7 +11,7 @@ body {
     justify-content: space-between;
     align-items: top;
     background: radial-gradient(ellipse, rgb(12, 72, 129), rgb(2, 1, 42));
-    max-width: 50em;
+    max-width: 60em;
     border-style: groove;
     border-left: .125em solid black;
     border-right: .125em solid black;
@@ -102,7 +102,7 @@ fieldset {
 }
 
 .choice-list li {
-    display: flex;
+    display: flow-root;
     align-items: center;
     word-wrap: break-word;
     cursor: initial !important;
@@ -136,11 +136,12 @@ hr.thick {
 }
 
 .cconfig-desc {
+    display: inline;
     margin-top: 1.3em;
     margin-bottom: .7em;
     line-height: 1.4;
     font-size: large;
-    width:40em;
+    width:50em;
 }
 
 .exception-selector {
@@ -155,7 +156,7 @@ hr.thick {
 
 .cookie-name {
     float:left;
-    width:26em;
+    width:28em;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -171,7 +172,7 @@ hr.thick {
     align-items:center;
     float:left;
     height:4em;
-    width:26em;
+    width:30em;
     text-overflow: ellipsis;
     overflow: hidden; white-space: nowrap
 }

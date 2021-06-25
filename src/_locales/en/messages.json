@@ -465,7 +465,7 @@
   },
 
   "configButtonExport": {
-    "message": "Export user-defined categories as JSON"
+    "message": "Export as JSON"
   },
 
   "configButtonRefresh": {

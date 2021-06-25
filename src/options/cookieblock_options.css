@@ -17,7 +17,7 @@ body {
     justify-content: space-between;
     align-items: top;
     background: radial-gradient(ellipse, rgb(12, 72, 129), rgb(2, 1, 42));
-    max-width: 50em;
+    max-width: 60em;
     border-style: groove;
     border-left: .125em solid black;
     border-right: .125em solid black;
