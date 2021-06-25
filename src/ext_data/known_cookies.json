@@ -5,10 +5,14 @@
         "gdpr-last-interaction": 0
     },
     "domain_match": {
+
         "authorstream.com": {
             "Remember": 0,
             "newUser": 0,
             "userId": 0
+        },
+        "azure.com": {
+            "LPVID": 0
         },
         "bethesda.net": {
             "bnet-username": 0
@@ -24,6 +28,7 @@
         "dropbox.com": {
             "jar": 0,
             "utag_main": 0,
+            "__Host-js_csrf": 0,
             "last_active_role": 0,
             "bjar": 0,
             "flash": 0,
@@ -36,9 +41,17 @@
         "fandom.com": {
             "access_token": 0
         },
+        "ebay.ch": {
+            "__ssds": 0,
+            "__sstester": 0,
+            "dp1": 0
+        },
         "gog.com": {
             "gog_lc": 0,
             "gog-al": 0
+        },
+        "globus.ch": {
+            "globus-session": 0
         },
         "etsy.com": {
             "uaid": 0,
@@ -69,10 +82,23 @@
         "ap.magix.com": {
             "mgxcrslive_initial": 0
         },
+        "myalumni.ethz.ch": {
+            "login_membership": 0,
+            "password": 0,
+            "snik": 0,
+            "username": 0
+        },
         "mediafire.com": {
             "skey": 0,
             "user": 0,
             "justloggedin": 0
+        },
+        "netgear.com": {
+            "validDomain": 0
+        },
+        "netflix.com": {
+            "memclid": 0,
+            "nfvdid": 0
         },
         "outlook.live.com": {
             "DefaultAnchorMailbox": 0
@@ -107,6 +133,26 @@
         },
         "philips.co.uk": {
             "notice_settings": 0
+        },
+        "swisspass.ch": {
+            "atidvisitor": 0,
+            "atuserid": 0,
+            "AL_SESS-S": 0
+        },
+        "stackexchange.com": {
+            "acct": 0
+        },
+        "patreon.com": {
+            "_swb": 0
+        },
+        "facebook.com": {
+            "_js_datr": 0,
+            "_js_fr": 0,
+            "fr": 0,
+            "xs": 0,
+            "dbln": 0,
+            "datr": 0,
+            "c_user": 0
         }
     },
     "domain_regex": {
