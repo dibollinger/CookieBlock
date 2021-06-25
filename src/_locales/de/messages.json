@@ -61,7 +61,7 @@
   },
 
   "firstTimeDescPG2": {
-    "message": "Diese Erweiterung befindet sich noch in der Entwicklungsphase! Es kann vorkommen, dass Cookies entfernt werden, welche von der Webseite benötigt werden. Bitte melden Sie uns solche Vorfälle über den Feedback Fragebogen. Über das CookieBlock-Symbol in der Browserleiste kann eine Ausnahme für die Webseite hinzugefügt werden, welches das Problem umgeht. Alternativ kann die Entfernung von Cookies auch temporär pausiert werden.",
+    "message": "Es kann vorkommen, dass Cookies entfernt werden, welche von der Webseite benötigt werden. Bitte melden Sie uns solche Vorfälle über den Feedback Fragebogen. Über das CookieBlock-Symbol in der Browserleiste kann eine Ausnahme für die Webseite hinzugefügt werden. Alternativ kann die Entfernung von Cookies auch temporär pausiert werden.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
@@ -320,7 +320,7 @@
   },
 
   "defaultButton": {
-    "message": "Reset Defaults",
+    "message": "Standardeinstellungen wiederherstellen",
     "description": "Button text for resetting."
   },
 
@@ -478,6 +478,10 @@
 
   "configLoadError": {
     "message": "Cookie Verlauf konnte nicht geladen werden!"
+  },
+
+  "configExpandDesc": {
+    "message": "Klick auf ein Domain um die Cookies einzusehen."
   },
 
   "udTitle" : {
