@@ -171,7 +171,9 @@
             "SID" : 0,
             "HSID" : 0,
             "SSID" : 0,
-            "LOGIN_INFO": 0
+            "LOGIN_INFO": 0,
+            "YSC": 1,
+            "VISITOR_INFO1_LIVE":1
         },
         "^consent.youtube\\..*": {
             "TESTCOOKIESENABLED": 0,
