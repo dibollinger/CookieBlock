@@ -142,12 +142,15 @@ CookieBlock includes code from the following libraries and projects:
 ### Thesis
 
 This repository was created as part of the master thesis __"Analyzing Cookies Compliance with the GDPR"__,
-which can be found here:
+which can be found at:
 
 https://www.research-collection.ethz.ch/handle/20.500.11850/477333
 
+as well as the paper __"Automating Cookie Consent and GDPR Violation Detection"__, which can be found at:
 
-__Thesis Supervision and Assistance:__
+https://karelkubicek.github.io/post/cookieblock.html
+
+__Thesis Supervision and co-authors:__
 * Karel Kubicek
 * Dr. Carlos Cotrini
 * Prof. Dr. David Basin
