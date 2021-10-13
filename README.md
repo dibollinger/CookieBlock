@@ -90,7 +90,7 @@ By reporting broken websites, you can help us keep an updated list of cookie exc
 
 ## Repository Contents
 
-* `nodejs-feature-extractor/`:  Contains the NodeJS feature extractor. Used to extract features with the same JavaScript code as the extension.
+* `nodejs-feature-extractor/`:  Contains the Node feature extractor. Used to extract features with the same JavaScript code as the extension.
     - `/modules/`: Contains code used to perform the feature extraction and prediction.
     - `/outputs/`: Output directory for the feature extraction.
     - `/training_data/`: Path for cookie data in json format, used for extracting features.
