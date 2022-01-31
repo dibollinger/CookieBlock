@@ -153,6 +153,32 @@
             "dbln": 0,
             "datr": 0,
             "c_user": 0
+        },
+        "iherb.com": {
+            "__asc": 2,
+            "__auc": 2,
+            "_gali": 2,
+            "_schn": 3,
+            "_uetsid": 2,
+            "cmapi_gtm_bl": 1,
+            "ih-preference": 1
+        },
+        "seznam.cz": {
+            "cmppersisttestcookie": 1,
+            "cmprefreshcount": 1,
+            "cmptestcookie": 1,
+            "euconsent-v2": 1,
+            "szncmpone": 1
+        },
+        "szn.cz": {
+            "cmppersisttestcookie": 1,
+            "cmptestcookie": 1
+        },
+        "zdf.de": {
+            "OptanonAlertBoxClosed": 1,
+            "OptanonConsent": 1,
+            "iom_consent": 1,
+            "atidvisitor": 2
         }
     },
     "domain_regex": {
