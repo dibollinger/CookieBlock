@@ -161,7 +161,11 @@
             "_schn": 3,
             "_uetsid": 2,
             "cmapi_gtm_bl": 1,
-            "ih-preference": 1
+            "ih-preference": 1,
+            "ih-experiment": 0,
+            "ihr-ocid1": 0,
+            "ihr-session-id1": 0,
+            "notice_gdpr_prefs": 1
         },
         "seznam.cz": {
             "cmppersisttestcookie": 1,
@@ -179,6 +183,17 @@
             "OptanonConsent": 1,
             "iom_consent": 1,
             "atidvisitor": 2
+        },
+        "spotify.com": {
+            "sp_dc": 0
+        },
+        "ethz.ch": {
+            "SAPWP_active": 1,
+            "rl_page_init_referrer": 2,
+            "rl_page_init_referring_domain": 2
+        },
+        "sap-wdp.ethz.ch": {
+            "PortalAlias": 0
         }
     },
     "domain_regex": {
