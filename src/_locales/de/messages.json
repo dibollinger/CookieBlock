@@ -45,7 +45,7 @@
   },
 
   "firstTimeDescPG2": {
-    "message": "Um Ihre Privatsphäre zu schützen, können Sie unten die Arten von Cookies auswählen, welche sie erlauben möchten. Sollte eine Website dadurch nicht mehr funktionieren, dann beschreiben Sie uns das Problem, und wir werden es bestmöglich versuchen zu korrigieren.",
+    "message": "Um Ihre Privatsphäre zu schützen, können Sie unten die Arten von Cookies auswählen, welche sie erlauben möchten. Diese Einstellungen lassen sich zu beliebiger Zeit anpassen. Sollte eine Website dadurch nicht mehr funktionieren, dann beschreiben Sie uns das Problem, und wir werden es bestmöglich versuchen zu korrigieren.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
@@ -60,22 +60,22 @@
   },
 
   "catNecessaryTitle": {
-    "message": "Strikt-Notwendige Cookies",
+    "message": "Strikt-Notwendige Cookies werden akzeptiert",
     "description": "Text next to the 'Necessary' checkbox."
   },
 
   "catFunctionalityTitle": {
-    "message": "Funktionalitäts-Cookies",
+    "message": "Funktionalitäts-Cookies werden akzeptiert",
     "description": "Text next to the 'Functionality' checkbox."
   },
 
   "catAnalyticsTitle" : {
-    "message": "Analytische Cookies",
+    "message": "Analytische Cookies werden akzeptiert",
     "description": "Text next to the 'Analytics' checkbox."
   },
 
   "catAdvertisingTitle": {
-    "message": "Werbungs- und Tracking-Cookies",
+    "message": "Werbungs- und Tracking-Cookies werden akzeptiert",
     "description": "Text next to the 'Advertising' checkbox."
   },
 
@@ -120,7 +120,7 @@
   },
 
   "buttonExitSetup" : {
-    "message": "Gespeicherte Cookies Kategorisieren und Entfernen",
+    "message": "Gespeicherte Cookies kategorisieren und entfernen",
     "description": "Label for the close button on the first time setup"
   },
 
@@ -175,7 +175,7 @@
   },
 
   "currentCookieEnforceButton" : {
-    "message" : "Kategorisieren und Entfernen",
+    "message" : "Kategorisieren und entfernen",
     "description" : "Label on the button that performs the current cookie classification."
   },
 
@@ -504,7 +504,7 @@
   },
 
   "udButton": {
-    "message": "Cookie Konfiguration Öffnen",
+    "message": "Cookie Konfiguration öffnen",
     "description": "Button in the options page that opens the cookie config page"
   },
 

@@ -142,6 +142,11 @@ hr.thick {
     width: 25em;
 }
 
+.cconfig-title-element {
+    margin-top: 0.5em;
+    margin-bottom: 0.75em;
+}
+
 .cconfig-desc {
     display: inline;
     margin-top: 1.3em;
@@ -162,6 +167,8 @@ hr.thick {
 }
 
 .cookie-name {
+    display:flex;
+    align-items: center;
     float:left;
     width:28em;
     text-overflow: ellipsis;

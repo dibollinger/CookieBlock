@@ -155,7 +155,10 @@ const constructCookieListEntry = function(cookies) {
         let domainDiv = document.createElement("div");
         domainDiv.className = "cookie-name";
         domainDiv.textContent = c.name;
+        let buttonDiv = document.createElement("div");
+        buttonDiv.style = "display: flex; align-items:center;"
         subListItem.appendChild(domainDiv);
+        subListItem.appendChild(buttonDiv);
 
         let selection = document.createElement("select");
         selection.className = "cat-selector";
@@ -177,11 +180,11 @@ const constructCookieListEntry = function(cookies) {
             selection.add(option);
         }
         selection.addEventListener("change", (ev) => { updateLabel(c, ev.target); });
-        subListItem.appendChild(selection);
+        buttonDiv.appendChild(selection);
 
         let button = document.createElement("button");
         button.className = "item-button";
-        subListItem.appendChild(button);
+        buttonDiv.appendChild(button);
         (async () => {
             if (await existsCookie(c)){
                 button.textContent = chrome.i18n.getMessage("configButtonRemove");
@@ -238,13 +241,14 @@ const constructPlaceholderEntry = function() {
 }
 
 const constructDomainListEntry = function(domain, path, cookies) {
-
-    // First construct the domain entry
     let listEntry = document.createElement("li");
     let domainDiv = document.createElement("div");
     domainDiv.className = "domain-entry";
     domainDiv.style.fontWeight = "bold";
     domainDiv.textContent = domain + path;
+
+    let buttonDiv = document.createElement("div");
+    buttonDiv.style = "display: flex;align-items:center;height: 4em;";
 
     let optionFalse = document.createElement("option");
     optionFalse.value = false;
@@ -276,9 +280,12 @@ const constructDomainListEntry = function(domain, path, cookies) {
         await refreshButtons();
     });
 
+    buttonDiv.appendChild(selection);
+    buttonDiv.appendChild(button);
     listEntry.appendChild(domainDiv);
-    listEntry.appendChild(selection);
-    listEntry.appendChild(button);
+    listEntry.appendChild(buttonDiv);
+
+    listEntry.style="vertical-align: middle;";
     domainListElem.appendChild(listEntry);
 
     let placeholder = document.createElement("li");
@@ -286,7 +293,8 @@ const constructDomainListEntry = function(domain, path, cookies) {
     domainListElem.appendChild(placeholder);
 
     let objectCache = { "placeholder": placeholder, "listEntry": null };
-    domainDiv.addEventListener("click", () => {
+    let onclickDomainEntry = function()
+    {
         if (!objectCache.listEntry) {
             objectCache.listEntry = constructCookieListEntry(cookies);
         }
@@ -296,7 +304,8 @@ const constructDomainListEntry = function(domain, path, cookies) {
         } else {
             objectCache.placeholder.replaceWith(objectCache.listEntry);
         }
-    });
+    }
+    domainDiv.addEventListener("click", onclickDomainEntry);
 }
 
 

@@ -109,8 +109,6 @@ const setupLocalization = function () {
     setStaticLocaleText("settings_subtitle", "settingsSubtitle");
 
     // Description
-    setStaticLocaleText("options-desc1","firstTimeDescPG1");
-    setStaticLocaleText("options-desc2","firstTimeDescPG2");
     setStaticLocaleText("feedback-pg1","feedbackPG1");
     setStaticLocaleText("feedback-pg2","feedbackPG2");
 

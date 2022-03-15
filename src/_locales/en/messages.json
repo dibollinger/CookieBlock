@@ -30,7 +30,7 @@
   },
 
   "feedbackPG1": {
-    "message": "To report a broken website or give us feedback, you can use the following link:",
+    "message": "To report a broken website or give us feedback, use the following link:",
     "description": "Feedback text pointing towards the Google Forms survey."
   },
 
@@ -45,7 +45,7 @@
   },
 
   "firstTimeDescPG2": {
-    "message": "Select the types of cookies you want to permit below. Note that the extension may make mistakes and can occasionally break website functionality. If this occurs, please report the issue so we can resolve the problem.",
+    "message": "Select the types of cookies you want to permit below. All of these options can be changed later. Note that the extension may make mistakes and can occasionally break website functionality. If this occurs, please report the issue so we can resolve the problem.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
@@ -60,22 +60,22 @@
   },
 
   "catNecessaryTitle": {
-    "message": "Strictly-Necessary Cookies",
+    "message": "Allow Strictly-Necessary Cookies",
     "description": "Text next to the 'Necessary' checkbox."
   },
 
   "catFunctionalityTitle": {
-    "message": "Functionality Cookies",
+    "message": "Allow Functionality Cookies",
     "description": "Text next to the 'Functionality' checkbox."
   },
 
   "catAnalyticsTitle" : {
-    "message": "Analytics Cookies",
+    "message": "Allow Analytics Cookies",
     "description": "Text next to the 'Analytics' checkbox."
   },
 
   "catAdvertisingTitle": {
-    "message": "Advertising/Tracking Cookies",
+    "message": "Allow Advertising/Tracking Cookies",
     "description": "Text next to the 'Advertising' checkbox."
   },
 
@@ -414,7 +414,7 @@
   },
 
   "cookieConfigListTitle" : {
-    "message": "Current Cookies",
+    "message": "Known Cookies",
     "description": "Header for the cookie list."
   },
 
