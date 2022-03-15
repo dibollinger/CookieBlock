@@ -1,0 +1,37 @@
+# Required Changes to update to Manifest v3
+
+- Before starting work on this, try to assess whether the required changes still allow the extension to work properly.
+- Or whether the required changes are feasible in the first place.
+
+=== CHANGES NEEDED ===
+
+* [TODO] Update the `manifest.json` to v3, necessary to rename some properties.
+
+* [DONE] Replace usage of `chrome.extension.getURL()`
+
+* [TODO] Migrate background page to service worker.
+  - Replace background.page or background.scripts with background.service_worker in manifest.json.
+  - This is the most complicated task, mainly due to how the extension has been set up.
+  - Currently, the background script is specified as the html file:
+    `"background": { "page": "background/cookieblock_background.html" },`
+  - This html file includes all the necessary script modules, such that functions can be called in the background script.
+  - With Manifest v3, this is no longer supported. Instead, only a single service worker can be specified.
+  - As a result, we will need to come up with a solution so that the javascript code for classifying cookies can be executed.
+
+[TODO] Update background scripts to adapt to the service worker execution context.
+  - Some necessary changes are:
+    -> Remove all usages of global variables that do not contain constant values. Use `storage.local` or `storage.sync` instead (already partially implemented).
+    -> Ensure that all events are set up in the root context.
+    -> Replace chrome.cookies with the following: https://developers.google.com/web/updates/2018/09/asynchronous-access-to-http-cookies
+    -> May need to rework use of IndexedDB.
+    -> Check any other uses of `window.` context.
+    -> There may be more issues than what I listed.
+
+[TODO] Need to check that no CORS requests are performed in content scripts. If they are, these need to be moved to the background service worker.
+
+[TODO] Need to check if Firefox and Edge have compatibility with these changes. May need a separate branch.
+
+More info:
+* https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/
+* https://developer.chrome.com/docs/extensions/mv3/mv3-migration-checklist/
+* https://developer.chrome.com/docs/extensions/mv3/migrating_to_service_workers/
