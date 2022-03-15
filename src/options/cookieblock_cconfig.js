@@ -11,7 +11,6 @@ Released under the MIT License, see included LICENSE file.
 
 const categories = ["classOptionEmpty", "classOption0", "classOption1", "classOption2", "classOption3"];
 var cookieHistory = undefined;
-const placeholderListItem = document.getElementById("li-placeholder");
 const domainListElem = document.getElementById("domain-list");
 const sentinelTimestamp = 9999999999999;
 
@@ -230,6 +229,13 @@ const changeExceptionStatus = async function(domain, selectText) {
     }
 }
 
+const constructPlaceholderEntry = function() {
+    let listEntry = document.createElement("li");
+    listEntry.id = "li-placeholder";
+    listEntry.hidden = true;
+    domainListElem.appendChild(listEntry);
+    return listEntry;
+}
 
 const constructDomainListEntry = function(domain, path, cookies) {
 
@@ -334,7 +340,6 @@ const refreshCookieHistory = function() {
         if (cookieHistory !== undefined && cookieHistory.constructor === Object) {
             let allDomains = Object.keys(cookieHistory);
             if (allDomains.length > 0){
-                placeholderListItem.style.display = "none";
                 let sortedDomains = Array.from(allDomains).sort();
                 for (let d of sortedDomains) {
                     let sanitizedDomain = d;
@@ -343,10 +348,12 @@ const refreshCookieHistory = function() {
                     }
                 }
             } else {
+                let placeholderListItem = constructPlaceholderEntry();
                 placeholderListItem.style.display = "";
                 setStaticLocaleText("li-placeholder", "configNoCookies");
             }
         } else {
+            let placeholderListItem = constructPlaceholderEntry();
             placeholderListItem.style.display = "";
             setStaticLocaleText("li-placeholder", "configLoadError");
             placeholderListItem.style.color = "red";
