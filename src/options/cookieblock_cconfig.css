@@ -18,7 +18,6 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: top;
     background: radial-gradient(ellipse, rgb(12, 72, 129), rgb(2, 1, 42));
     max-width: 60em;
     border-style: groove;
@@ -121,7 +120,6 @@ fieldset {
     left: 2em;
     border: 0;
     cursor: pointer;
-    size: 1em;
 }
 .choice-list li button:hover {
     background: red;

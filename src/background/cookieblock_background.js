@@ -647,7 +647,7 @@ const constructHistoryJSON = function(type) {
  * @param {*} sendResponse response function
  */
 const handleInternalMessage = function(request, sender, sendResponse) {
-    console.debug("Background script received a message.")
+    //console.debug("Background script received a message.")
     if (request.classify_all) {
         chrome.cookies.getAll({}, async (allCookies) => {
             if (chrome.runtime.lastError) {
