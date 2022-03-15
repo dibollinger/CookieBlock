@@ -309,7 +309,7 @@ const getCurrentLabelCount = function() {
  * @param {Object} resp  Default configuration
  */
  const overrideDefaults = function() {
-    getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (dfConfig) => {
+    getExtensionFile(chrome.runtime.getURL("ext_data/default_config.json"), "json", (dfConfig) => {
         initDefaults(dfConfig, true);
     });
   }
@@ -764,12 +764,12 @@ chrome.runtime.onMessage.addListener(handleInternalMessage);
 chrome.storage.onChanged.addListener(updateStorageVars);
 
 // Load the default configuration
-getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (dConfig) => {
+getExtensionFile(chrome.runtime.getURL("ext_data/default_config.json"), "json", (dConfig) => {
     initDefaults(dConfig, false)
 });
 
 // Load the cookie exceptions
-getExtensionFile(chrome.extension.getURL("ext_data/known_cookies.json"), "json", (result) => {
+getExtensionFile(chrome.runtime.getURL("ext_data/known_cookies.json"), "json", (result) => {
     for (let k of Object.keys(result["domain_regex"])) {
         result["domain_regex"][k][regexKey] = new RegExp(k);
     }

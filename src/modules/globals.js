@@ -222,4 +222,4 @@ const setStaticLocaleText = (elemID, locID, args=[]) => {
 
 // default configuration
 var defaultConfig = undefined;
-getExtensionFile(chrome.extension.getURL("ext_data/default_config.json"), "json", (df)=> {defaultConfig = df});
+getExtensionFile(chrome.runtime.getURL("ext_data/default_config.json"), "json", (df)=> {defaultConfig = df});
