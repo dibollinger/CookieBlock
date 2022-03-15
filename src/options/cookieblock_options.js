@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------------
 /*
-Copyright (C) 2021 Dino Bollinger, ETH Zürich, Information Security Group
+Copyright (C) 2021-2022 Dino Bollinger, ETH Zürich, Information Security Group
 
 This file is part of CookieBlock.
 
@@ -109,14 +109,10 @@ const setupLocalization = function () {
     setStaticLocaleText("settings_subtitle", "settingsSubtitle");
 
     // Description
-    setStaticLocaleText("options-greet","optionsGreeting");
     setStaticLocaleText("options-desc1","firstTimeDescPG1");
     setStaticLocaleText("options-desc2","firstTimeDescPG2");
     setStaticLocaleText("feedback-pg1","feedbackPG1");
     setStaticLocaleText("feedback-pg2","feedbackPG2");
-    setStaticLocaleText("feedback-pg3","feedbackPG3");
-    setStaticLocaleText("feedback-survey","feedbackFormURL");
-    document.getElementById("feedback-survey").href = chrome.i18n.getMessage("feedbackFormURL");
 
     // Consent Preference Text
     setStaticLocaleText("cprefs_legend", "optionsHeaderConsent");

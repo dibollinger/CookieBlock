@@ -1,6 +1,6 @@
 //-------------------------------------------------------------------------------
 /*
-Copyright (C) 2021 Dino Bollinger, ETH Zürich, Information Security Group
+Copyright (C) 2021-2022 Dino Bollinger, ETH Zürich, Information Security Group
 
 This file is part of CookieBlock.
 
@@ -9,12 +9,10 @@ Released under the MIT License, see included LICENSE file.
 //-------------------------------------------------------------------------------
 
 const histCheckbox = document.getElementById("history-consent-checkbox");
-const pauseCheckbox = document.getElementById("pause_checkbox");
 const necessaryCheckbox = document.getElementById("nec_checkbox");
 const functionalityCheckbox = document.getElementById("func_checkbox");
 const analyticsCheckbox = document.getElementById("anal_checkbox");
 const advertisingCheckbox = document.getElementById("advert_checkbox");
-const pauseDiv = document.getElementById("pause-div");
 
 /**
  * Function that contains the localization text assignments.
@@ -22,9 +20,6 @@ const pauseDiv = document.getElementById("pause-div");
  const setupLocalization = function () {
     setStaticLocaleText("init_title", "extensionName");
     setStaticLocaleText("init_subtitle", "firstTimeSubtitle");
-
-    setStaticLocaleText("general-options-legend", "headerAdditionalOptions");
-    setStaticLocaleText("general-options-desc", "additionalOptionsDesc");
 
     setStaticLocaleText("history-consent-title", "historyConsentTitle");
     setStaticLocaleText("history-consent-desc", "historyConsentDesc");
@@ -34,7 +29,7 @@ const pauseDiv = document.getElementById("pause-div");
     setStaticLocaleText("setup_desc2","firstTimeDescPG2");
     setStaticLocaleText("setup_desc3","firstTimeDescPG3");
 
-    setStaticLocaleText("cprefs_legend", "optionsHeaderConsent");
+    setStaticLocaleText("cprefs_legend", "setupHeaderPreferences");
     setStaticLocaleText("cprefs_desc","consentDescription");
     setStaticLocaleText("nec_title","catNecessaryTitle");
     setStaticLocaleText("nec_desc","catNecessaryDesc");
@@ -44,9 +39,6 @@ const pauseDiv = document.getElementById("pause-div");
     setStaticLocaleText("anal_desc","catAnalyticsDesc");
     setStaticLocaleText("advert_title","catAdvertisingTitle");
     setStaticLocaleText("advert_desc","catAdvertisingDesc");
-
-    setStaticLocaleText("pause_title", "pauseCookieRemoval");
-    setStaticLocaleText("pause_desc", "pauseDescription");
 
     setStaticLocaleText("classify_title", "currentCookieEnforceTitle");
     setStaticLocaleText("classify_desc", "currentCookieEnforceDescriptionSetup");
@@ -65,9 +57,6 @@ const setupInitPage = async function() {
     analyticsCheckbox.checked = false;
     advertisingCheckbox.checked = false;
     histCheckbox.checked = false;
-
-    pauseDiv.hidden = !enableExtraOptions;
-    pauseCheckbox.checked = false;
 }
 
 document.addEventListener("DOMContentLoaded", setupInitPage);
@@ -93,11 +82,6 @@ const updateSelectionOnChange = function(changes, area) {
         // update the history consent toggle
         if (changedItems.includes("cblk_hconsent")) {
             histCheckbox.checked = changes["cblk_hconsent"].newValue;
-        }
-    } else if (area === "local") {
-        // update the pause button
-        if (changedItems.includes("cblk_pause")){
-            pauseCheckbox.checked = changes["cblk_pause"].newValue;
         }
     }
 }
@@ -133,11 +117,6 @@ document.getElementById("set_policy").addEventListener("click", (ev) => {
             chrome.tabs.remove(tab.id, () => {});
         })
     });
-});
-
-// pause checkbox
-pauseCheckbox.addEventListener("click", (ev) => {
-    setStorageValue(pauseCheckbox.checked, chrome.storage.local, "cblk_pause");
 });
 
 // consent checkbox

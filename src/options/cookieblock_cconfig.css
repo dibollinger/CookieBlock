@@ -1,3 +1,12 @@
+/*
+This CSS is based on the Consent-O-Matic addon by, released under the MIT License.
+Copyright (c) 2019 Janus Bager Kristensen, Rolf Bagge, CAVI
+
+Adapted and updated by Dino Bollinger, 2021-2022
+
+Released under the MIT License, see included LICENSE file.
+*/
+
 body, html {
     margin: 0;
     padding: 0;
@@ -40,7 +49,7 @@ body {
     justify-content: center;
 }
 .header h1 {
-    margin-top:0;
+    margin-top: 0.5em;
     margin-bottom: 0;
     line-height: 1.2em;
     margin-left: 1em;

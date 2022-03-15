@@ -1,11 +1,11 @@
 {
   "extensionName": {
     "message": "CookieBlock",
-    "description": "Name of the extension."
+    "description": "Display name of the extension."
   },
 
   "manifestDescription": {
-    "message": "Automatically enforces user consent preferences for browser cookies.",
+    "message": "Automatically enforces cookie consent preferences to protect your privacy.",
     "description": "Description of the extension in the manifest."
   },
 
@@ -24,58 +24,43 @@
     "description": "Greeting message on the first time setup."
   },
 
-  "optionsGreeting": {
-    "message": "Welcome to CookieBlock!",
-    "description": "Greeting message on the options page."
-  },
-
   "feedbackTitle": {
     "message": "Feedback",
     "description": "Title for feedback submission section."
   },
 
   "feedbackPG1": {
-    "message": "Do you want to report a broken website or give us feedback? Then please use the following form: ",
+    "message": "To report a broken website or give us feedback, you can use the following link:",
     "description": "Feedback text pointing towards the Google Forms survey."
   },
 
   "feedbackPG2": {
-    "message": "Or alternatively, send us a mail to the following address:",
-    "description": "Feedback text pointing towards the email."
-  },
-
-  "feedbackPG3": {
-    "message": "We would greatly appreciate your feedback on the extension!",
-    "description": "Description paragraph 3 seen on the options page."
-  },
-
-  "feedbackFormURL" : {
-    "message": "https://forms.gle/tL21ruvPZq2q218P8",
-    "description": "Localized Forms Link"
+    "message": "You can also report issues on our Github page:",
+    "description": "Feedback text pointing towards the Github."
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock allows you to automatically remove cookies that are used for purposes you do not consent to. It uses artificial intelligence to assign cookies to a predefined set of categories, which you can choose from below.",
+    "message": "CookieBlock allows you to automatically remove cookies that collect sensitive data and track you. It uses machine learning to automatically predict the purpose that each cookie is used for.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 
   "firstTimeDescPG2": {
-    "message": "The classifier is not perfectly accurate, and may occasionally break website functions. If this occurs, please report it to us so that we can fix it. To bypass the problem, you can add an exception for the website over the browser-bar icon, or change the category of the cookie manually. You can also pause the removal of cookies temporarily.",
+    "message": "Select the types of cookies you want to permit below. Note that the extension may make mistakes and can occasionally break website functionality. If this occurs, please report the issue so we can resolve the problem.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
   "firstTimeDescPG3": {
-    "message": "We would greatly appreciate your feedback on the extension!",
+    "message": "We appreciate your feedback and suggestions on how to improve the extension!",
     "description": "Description paragraph 3 seen on the first time setup page."
   },
 
   "consentDescription" : {
-    "message" : "Select the categories of cookies that you consent towards:",
+    "message" : "Choose the types of cookies you want to allow in your browser:",
     "description" : "Description of the consent choices."
   },
 
   "catNecessaryTitle": {
-    "message": "Strictly Necessary Cookies",
+    "message": "Strictly-Necessary Cookies",
     "description": "Text next to the 'Necessary' checkbox."
   },
 
@@ -95,22 +80,22 @@
   },
 
   "catNecessaryDesc": {
-    "message": "Strictly necessary cookies are required for essential services of the website to operate. Examples for this are login tokens which remember that a user is logged in, or cookies that keep track of the contents of a shopping cart. These cookies cannot be rejected, as doing so would cause websites to stop working correctly.",
+    "message": "Required to enable essential functions of the website, such as registration or shopping carts. They are always enabled to allow for a smooth and problem-free browsing experience.",
     "description": "Description of the 'Necessary' category."
   },
 
   "catFunctionalityDesc": {
-    "message": "Functionality cookies serve to remember optional user preferences, such as the style of the website. They are typically not required for essential services to function. However, we recommend enabling them to improve the user experience.",
+    "message": "Enable non-essential convenience or usability features of a website, such as saving style preferences between visits. However, this may also include a minor number of tracking cookies. We recommend enabling these cookies to improve the user experience.",
     "description": "Description of the 'Functionality' category."
   },
 
   "catAnalyticsDesc" : {
-    "message": "Analytics cookies are used to collect statistical information about how visitors use a website. These cookies serve to measure and improve the site performance. These cookies typically do not collect personally identifiable information, but some websites may violate this practice.",
+    "message": "Used to collect statistical information about how visitors use a website. This information is often used to measure the performance and guide the development of a website, but can include sensitive data and allow user tracking. Disable these if you are concerned over potential trackers from analytics services.",
     "description": "Description of the 'Analytics' category."
   },
 
   "catAdvertisingDesc" : {
-    "message": "Advertising cookies collect sensitive user data and track visitor actions across the web to display personalized advertisements. The data collected in this way may also be sold to third-parties. To protect your privacy, we recommend rejecting these types of cookies.",
+    "message": "Used to tailor advertisements to the viewer, help track the user and collect sensitive data of the user's browsing behavior, usually across multiple websites. Said data is then also often sold to third parties. We recommend rejecting these types of cookies to protect your privacy.",
     "description": "Description of the 'Advertising' category."
   },
 
@@ -120,7 +105,7 @@
   },
 
   "additionalOptionsDesc" : {
-    "message": "Settings that adjust the general extension behavior:",
+    "message": "These settings affect the overall extension behavior:",
     "description": "Additional options description."
   },
 
@@ -130,27 +115,27 @@
   },
 
   "pauseDescription" : {
-    "message": "When enabled, stops the removal of cookies temporarily, but still outputs the classification into the browser console. Useful for debugging or stopping cookie removal in case a website breaks.",
+    "message": "While enabled, prevents the removal of cookies by the extension. Cookies are however still classified in the background. Useful for debugging or stopping cookie removal temporarily in case a website breaks.",
     "description": "Description for the 'pause removal' button."
   },
 
   "buttonExitSetup" : {
-    "message": "Classify current cookies and close",
+    "message": "Classify and Remove Stored Cookies",
     "description": "Label for the close button on the first time setup"
   },
 
   "popupText" : {
-    "message": "Trust cookies of this website?",
+    "message": "Trust cookies from this domain?",
     "description": "Text present on the popup."
   },
 
   "popupButtonAdd" : {
-    "message": "Add this site as an exception",
+    "message": "Add Domain Exception",
     "description": "Button text for adding exceptions"
   },
 
   "popupButtonRemove" : {
-    "message": "Remove this site from exceptions",
+    "message": "Remove Domain Exception",
     "description": "Button text for removing exceptions"
   },
 
@@ -164,28 +149,33 @@
     "description": "Button for opening the options page"
   },
 
+  "setupHeaderPreferences" : {
+    "message": "Setup Preferences",
+    "description": "Header for the setup options"
+  },
+
   "optionsHeaderConsent" : {
     "message": "Consent Preferences",
     "description": "Header for the consent category options"
   },
 
   "currentCookieEnforceTitle" : {
-    "message": "Enforce policy on current cookies",
+    "message": "Categorize and Remove Stored Cookies",
     "description": "Header for the policy enforcement button."
   },
 
   "currentCookieEnforceDescription" : {
-    "message" : "Run the policy enforcement on all cookies currently stored by the browser. This will remove all cookies that are assigned to categories you do not consent towards.",
+    "message" : "This button will categorize all cookies currently stored in the browser and remove those rejected by the user policy.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
   "currentCookieEnforceDescriptionSetup" : {
-    "message" : "This button will categorize and enforce the policy you selected on all cookies currently stored by the browser. If a cookie belongs to a category that has been rejected, it will be removed. Afterwards, the setup window will be closed.",
+    "message" : "Run the extension on all currently stored cookies, and close the initial setup tab.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
   "currentCookieEnforceButton" : {
-    "message" : "Apply Policy",
+    "message" : "Categorize and Delete",
     "description" : "Label on the button that performs the current cookie classification."
   },
 
@@ -195,7 +185,7 @@
   },
 
   "currentCookieEnforceMsg" : {
-    "message" : "User policy was enforced!",
+    "message" : "User consent policy enforced, bad cookies removed.",
     "description" : "Message that appears after classifier was applied."
   },
 
@@ -256,12 +246,12 @@
   },
 
   "categoryStatisticsDesc" : {
-    "message" : "Number of unique cookies currently stored in the history, separated by category. Click on any of the items to receive a snapshot of the current cookie history for that label in JSON format.",
+    "message" : "Number of unique cookies currently stored in the history, separated by category. Click on any of the labels to receive a snapshot of the current cookie history.",
     "description" : "Description of the statistics."
   },
 
   "statsNecessary": {
-    "message": "$COUNT$ Necessary Cookies",
+    "message": "$COUNT$ categorized as Necessary Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -269,7 +259,7 @@
     }
   },
   "statsFunctional": {
-    "message": "$COUNT$ Functionality Cookies",
+    "message": "$COUNT$ categorized as Functionality Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -277,7 +267,7 @@
     }
   },
   "statsAnalytics": {
-    "message": "$COUNT$ Analytics Cookies",
+    "message": "$COUNT$ categorized as Analytics Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -285,7 +275,7 @@
     }
   },
   "statsAdvertising": {
-    "message": "$COUNT$ Advertising Cookies",
+    "message": "$COUNT$ categorized as Advertising Cookies",
     "placeholders": {
       "count" : {
         "content" : "$1"
@@ -354,7 +344,7 @@
   },
 
   "sliderDescription": {
-    "message": "This slider adjusts how commonly CookieBlock will assign cookies to the 'Strictly Necessary' class.  Increasing this can reduce the frequency at which website functionality breaks, but it comes at the cost of classification accuracy and potential privacy gain.",
+    "message": "Advanced users only. This slider adjusts the likelihood with which CookieBlock will assign cookies to the 'Strictly Necessary' class. Higher values will increase the likelihood. Increasing this can reduce the frequency at which website functionality breaks, but it comes at the cost of accuracy and potential privacy gain.",
     "description": "Explanation of the slider"
   },
 
@@ -369,7 +359,7 @@
   },
 
   "historyConsentDesc" :  {
-    "message": "By enabling this option, you consent to collection of a separate history of cookies, which can contain potentially sensitive information, such as the URLs you visited. This history is stored locally and will never leave the extension storage. Enabling this option allows the cookie classifier to make more informed decisions and remember previously categorized cookies, thus improving the performance of the extension.",
+    "message": "By enabling this option, you agree to the collection of a local history of cookies, which is inaccessible to websites, and is used to improve the classifier accuracy. This history is entirely local, and is never accessed outside of Cookieblock.",
     "description": "Description for the cookie history consent checkbox."
   },
 
@@ -384,19 +374,23 @@
   },
 
   "predefTitle": {
-    "message": "Predefined Cookie Labels"
+    "message": "Predefined Cookie Categories",
+    "description": "Header for cookie json section"
   },
 
   "predefDesc" : {
-    "message": "Here you can add paths to JSON files containing categories for known cookies. This can be used to correct classification errors manually."
+    "message": "Here you can add paths to JSON files containing predefined categories for known cookies. This can be used to correct classification errors manually.",
+    "description": "Description for cookie json section"
   },
 
   "predefPlaceholder" : {
-    "message": "Path to Cookies JSON"
+    "message": "Path to Cookies JSON",
+    "description": "Placeholder text inside the entry box"
   },
 
   "predefIntegratedText" : {
-    "message": "Use integrated cookie labels"
+    "message": "Use integrated cookie categories",
+    "description": "Button that makes the extension use the integrated labels as fallback, if no JSON is found."
   },
 
   "cookieConfigSubtitle" : {
@@ -405,91 +399,113 @@
   },
 
   "cookieConfigDescTitle" : {
-    "message": "Instructions"
+    "message": "Instructions",
+    "description": "Header for the cookie config page"
   },
 
   "cookieConfigDescPG1" : {
-    "message": "On this page you can define custom categories for each individual cookie, which will take precedence before the classifier. Click on the list entry to display the cookies that were created by that domain. Transparent labels are temporary and were assigned by the classifier. Opaque labels are permanent and were assigned by the user. By selecting 'Reclassify', a new class will be predicted the next time the cookie is observed."
+    "message": "On this page you can define custom categories for each individual cookie, which will take precedence before the classifier. Click on the list entry to display the cookies that were created by that domain. Transparent labels are temporary and were assigned by the classifier. Opaque labels are permanent and were assigned by the user. By selecting 'Reclassify', a new class will be predicted the next time the cookie is observed.",
+    "description": "First paragraph of the cookie config page instructions."
   },
 
   "cookieConfigDescPG2" : {
-    "message": "You can also define exceptions for specific domains in this menu, and delete or restore individual cookies from the browser by pressing the respective buttons in the list."
+    "message": "You can also define exceptions for specific domains in this menu, and delete or restore individual cookies from the browser by pressing the respective buttons in the list.",
+    "description": "Second paragraph of the cookie config page instructions."
   },
 
   "cookieConfigListTitle" : {
-    "message": "Current Cookies"
+    "message": "Current Cookies",
+    "description": "Header for the cookie list."
   },
 
   "classOptionEmpty" : {
-    "message": "Reclassify"
+    "message": "Reclassify",
+    "description": "Button to repeat the classification for the cookie."
   },
 
   "classOption0" : {
-    "message": "Necessary"
+    "message": "Necessary",
+    "description": "Necessary label in the cookie config page."
   },
 
   "classOption1" : {
-    "message": "Functionality"
+    "message": "Functionality",
+    "description": "Functionality label in the cookie config page."
   },
 
   "classOption2" : {
-    "message": "Analytics"
+    "message": "Analytics",
+    "description": "Analytics label in the cookie config page."
   },
 
   "classOption3" : {
-    "message": "Advertising"
+    "message": "Advertising",
+    "description": "Advertising label in the cookie config page."
   },
 
   "configDropdownFalse" : {
-    "message": "-"
+    "message": "-",
+    "description": "Shown if no exemption is given for a domain."
   },
 
   "configDropdownTrue" : {
-    "message": "Exempted"
+    "message": "Exempted",
+    "description": "Shown when the cookie domain is exempted from categorization."
   },
 
   "configButtonRemove" : {
-    "message": "Remove"
+    "message": "Remove",
+    "description": "Button to remove a specific cookie."
   },
 
   "configButtonRestore" : {
-    "message": "Restore"
+    "message": "Restore",
+    "description": "Button to restore a previously removed cookie."
   },
 
   "configButtonRemoveAll" : {
-    "message": "Remove All"
+    "message": "Remove All",
+    "description": "Button to remove all cookies of a domain."
   },
 
   "configExpandDesc": {
-    "message": "Click on an entry to expand its contents."
+    "message": "Click on an entry to expand its contents.",
+    "description": "Instruction on the config page."
   },
 
   "configButtonExport": {
-    "message": "Export as JSON"
+    "message": "Export as JSON",
+    "description": "Button to export the cookie configuration as a known_cookies.json"
   },
 
   "configButtonRefresh": {
-    "message": "Refresh"
+    "message": "Refresh",
+    "description": "Button to refresh the cookie history."
   },
 
   "configNoCookies": {
-    "message": "No cookies recorded in the history!"
+    "message": "No cookies recorded in the history!",
+    "description": "Error message if no cookies have been seen since the extension was installed."
   },
 
   "configLoadError": {
-    "message": "Failed to load cookie history!"
+    "message": "Failed to load cookie history!",
+    "description": "Error message if the cookie history failed to load."
   },
 
   "udTitle" : {
-    "message": "User-defined Cookie Categories"
+    "message": "User-defined Cookie Categories",
+    "description": "Title for the button in the options page that opens the cookie config page"
   },
 
   "udDescription": {
-    "message":"The button below will open the cookie configuration page. There you will be able to change the label for individual cookies in the history. You can also manually delete or restore individual cookies from the browser."
+    "message":"The button below will open the cookie configuration page. There you will be able to change the label for individual cookies in the history. You can also manually delete or restore individual cookies from the browser.",
+    "description": "Description for the button in the options page that opens the cookie config page"
   },
 
   "udButton": {
-    "message": "Open Cookie Configuration Page"
+    "message": "Open Cookie Configuration Page",
+    "description": "Button in the options page that opens the cookie config page"
   },
 
   "inputErrorInvalid": {
@@ -503,7 +519,7 @@
   },
 
   "inputErrorNoResolve": {
-    "message": "Given json path is invalid or could not be resolved!",
+    "message": "Given JSON URL is invalid or could not be resolved!",
     "description": "Message that appears if json path is invalid or cannot be resolved."
   },
 
