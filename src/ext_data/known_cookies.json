@@ -194,6 +194,9 @@
         },
         "sap-wdp.ethz.ch": {
             "PortalAlias": 0
+        },
+        "reddit.com": {
+            "over18": 0
         }
     },
     "domain_regex": {
