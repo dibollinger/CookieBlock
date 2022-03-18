@@ -235,7 +235,8 @@
         "^amazon\\..*": {
             "session-id": 0,
             "csm-hit": 0,
-            "session-id-time": 0
+            "session-id-time": 0,
+            "ubid-acbde": 0
         },
         "^facebook\\..*": {
             "datr": 0,
