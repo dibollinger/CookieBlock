@@ -197,6 +197,11 @@
         },
         "reddit.com": {
             "over18": 0
+        },
+        "twitch.tv": {
+            "auth-token": 0,
+            "login": 0,
+            "name": 0
         }
     },
     "domain_regex": {
