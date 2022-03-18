@@ -202,6 +202,9 @@
             "auth-token": 0,
             "login": 0,
             "name": 0
+        },
+        "bing.com": {
+            "BCP": 1
         }
     },
     "domain_regex": {
