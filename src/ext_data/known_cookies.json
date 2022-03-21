@@ -201,7 +201,10 @@
         "twitch.tv": {
             "auth-token": 0,
             "login": 0,
-            "name": 0
+            "name": 0,
+            "twilight-login-state": 0,
+            "twilight-user": 0,
+            "unique_id": 0
         },
         "bing.com": {
             "BCP": 1
