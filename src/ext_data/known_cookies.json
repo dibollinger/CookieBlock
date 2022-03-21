@@ -205,6 +205,9 @@
         },
         "bing.com": {
             "BCP": 1
+        },
+        "notion.so": {
+            "token_v2": 0
         }
     },
     "domain_regex": {
