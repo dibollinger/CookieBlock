@@ -54,7 +54,7 @@ Alternatively, you can also install __npm__ and use the [web-ext](https://github
 The model files are constructed in the following process:
 1. Scrape so-called Consent Management Platforms for cookie labels, using a [web crawler](https://github.com/dibollinger/CookieBlock-Consent-Crawler).
 2. Extract from the resulting database the training cookies into a JSON format (a script for this is included in the above link).
-3. Use the (feature extractor)[nodejs-feature-extractor/cli.js] to transform the cookies JSON into a sparse LibSVM matrix representation.
+3. Use the [feature extractor](nodejs-feature-extractor/cli.js) to transform the cookies JSON into a sparse LibSVM matrix representation.
 4. Provide this LibSVM with the associated class weights as input to the  XGBoost classifier implementation found in [this repository](https://github.com/dibollinger/CookieBlock-Consent-Classifier).
 5. Execute a secondary script to transform the XGBoost model into a minified JSON tree structure. This script produces the four model files `forest_class0.json` to `forest_class3.json`.
 
