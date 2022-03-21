@@ -208,6 +208,9 @@
         },
         "notion.so": {
             "token_v2": 0
+        },
+        "doodle.com": {
+            "KEYCLOAK_SESSION_LEGACY": 0
         }
     },
     "domain_regex": {
