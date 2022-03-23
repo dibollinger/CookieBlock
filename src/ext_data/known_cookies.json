@@ -11,6 +11,12 @@
             "newUser": 0,
             "userId": 0
         },
+        "amazon.com": {
+            "aws-userInfo": 0
+        },
+        "aws.amazon.com": {
+            "aws-account-data": 0
+        },
         "azure.com": {
             "LPVID": 0
         },
