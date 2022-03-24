@@ -223,6 +223,10 @@
         },
         "tweakers.net": {
             "__Secure-TnetID": 0
+        },
+        "web.de": {
+            "consentLevel": 0,
+            "uiconsent": 0
         }
     },
     "domain_regex": {
