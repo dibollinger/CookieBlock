@@ -227,6 +227,9 @@
         "web.de": {
             "consentLevel": 0,
             "uiconsent": 0
+        },
+        "ethz.ch": {
+            "IAMUserTokenPRD_authnSession": 0
         }
     },
     "domain_regex": {
