@@ -220,6 +220,9 @@
         },
         "doodle.com": {
             "KEYCLOAK_SESSION_LEGACY": 0
+        },
+        "tweakers.net": {
+            "__Secure-TnetID": 0
         }
     },
     "domain_regex": {
