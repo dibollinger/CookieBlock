@@ -37,6 +37,7 @@ CookieBlock is compatible with both Firefox and Chromium-based browsers, and it 
  * [Chrome Extension](https://chrome.google.com/webstore/detail/cookieblock/fbhiolckidkciamgcobkokpelckgnnol)
  * [Edge Extension](https://microsoftedge.microsoft.com/addons/detail/cookieblock/mnfolmjlccppcgdeinhidialajfiopcc)
  * [Opera Extension](https://addons.opera.com/en/extensions/details/cookieblock/)
+ * Safari does not support cookie processing, so we cannot port CookieBlock to Safari. More info [here](https://github.com/dibollinger/CookieBlock/issues/4).
 
 ## Feedback
 
