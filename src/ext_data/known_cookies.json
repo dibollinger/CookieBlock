@@ -2,7 +2,14 @@
     "name_match": {
         "CookieConsent" : 0,
         "OptanonConsent" : 0,
-        "gdpr-last-interaction": 0
+        "gdpr-last-interaction": 0,
+        "__cflb": 0,
+        "__cf_bm": 0,
+        "cf_ob_info": 0,
+        "cf_use_ob": 0,
+        "__cfwaitingroom": 0,
+        "__cfruid": 0,
+        "cf_clearance": 0
     },
     "domain_match": {
 
