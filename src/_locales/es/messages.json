@@ -1,0 +1,531 @@
+{
+  "extensionName": {
+    "message": "CookieBlock",
+    "description": "Display name of the extension."
+  },
+
+  "manifestDescription": {
+    "message": "Refuerza automáticamente las preferencias de consentimiento de cookies para proteger su privacidad.",
+    "description": "Description of the extension in the manifest."
+  },
+
+  "firstTimeSubtitle": {
+    "message": "Configuración Inicial",
+    "description": "Subtitle of the first time setup page."
+  },
+
+  "settingsSubtitle": {
+    "message": "Ajustes y Preferencias",
+    "description": "Subtitle of the settings page."
+  },
+
+  "firstTimeGreeting": {
+    "message": "¡Gracias por instalar CookieBlock!",
+    "description": "Greeting message on the first time setup."
+  },
+
+  "feedbackTitle": {
+    "message": "Comentarios",
+    "description": "Title for feedback submission section."
+  },
+
+  "feedbackPG1": {
+    "message": "Para informar de un sitio web defectuoso o darnos su opinión, utilice el siguiente enlace:",
+    "description": "Feedback text pointing towards the Google Forms survey."
+  },
+
+  "feedbackPG2": {
+    "message": "También puedes reportar problemas en nuestra página de Github:",
+    "description": "Feedback text pointing towards the Github."
+  },
+
+  "firstTimeDescPG1": {
+    "message": "CookieBlock le permite eliminar automáticamente las cookies que recogen datos sensibles y le rastrean. Utiliza el aprendizaje automático para predecir la finalidad de cada cookie.",
+    "description": "Description paragraph 1 seen on the first time setup page."
+  },
+
+  "firstTimeDescPG2": {
+    "message": "Seleccione los tipos de cookies que desea permitir a continuación. Todas estas opciones pueden cambiarse posteriormente. Tenga en cuenta que, la extensión puede cometer errores y ocasionalmente puede romper la funcionalidad del sitio web. Si esto ocurre, por favor informe del problema para que podamos resolverlo.",
+    "description": "Description paragraph 2 seen on the first time setup page."
+  },
+
+  "firstTimeDescPG3": {
+    "message": "¡Agradecemos sus comentarios y sugerencias para mejorar la extensión!",
+    "description": "Description paragraph 3 seen on the first time setup page."
+  },
+
+  "consentDescription" : {
+    "message" : "Elija los tipos de cookies que desea permitir en su navegador:",
+    "description" : "Description of the consent choices."
+  },
+
+  "catNecessaryTitle": {
+    "message": "Permitir Cookies Estrictamente Necesarias",
+    "description": "Text next to the 'Necessary' checkbox."
+  },
+
+  "catFunctionalityTitle": {
+    "message": "Permitir Cookies de Funcionalidad",
+    "description": "Text next to the 'Functionality' checkbox."
+  },
+
+  "catAnalyticsTitle" : {
+    "message": "Permitir Cokies de Análisis",
+    "description": "Text next to the 'Analytics' checkbox."
+  },
+
+  "catAdvertisingTitle": {
+    "message": "Permitir Cookies de Publicidad/Rastreo",
+    "description": "Text next to the 'Advertising' checkbox."
+  },
+
+  "catNecessaryDesc": {
+    "message": "Son necesarias para habilitar funciones esenciales del sitio web, como al registrarse o al comprar. Siempre están habilitadas para permitir una experiencia de navegación fluida y sin problemas.",
+    "description": "Description of the 'Necessary' category."
+  },
+
+  "catFunctionalityDesc": {
+    "message": "Son características no esenciales de usabilidad de un sitio web, como guardar las preferencias de estilo entre visitas. Sin embargo, esto también puede incluir un número menor de cookies de seguimiento. Recomendamos habilitar estas cookies para mejorar la experiencia del usuario.",
+    "description": "Description of the 'Functionality' category."
+  },
+
+  "catAnalyticsDesc" : {
+    "message": "Se utiliza para recopilar información estadística sobre cómo los usuarios utilizan un sitio web. Esta información suele utilizarse para medir el rendimiento y orientar el desarrollo de un sitio web, pero puede incluir datos sensibles y permitir el seguimiento del usuario. Desactive esta opción si le preocupan los posibles rastreadores de los servicios de análisis.",
+    "description": "Description of the 'Analytics' category."
+  },
+
+  "catAdvertisingDesc" : {
+    "message": "Se utiliza para adaptar los anuncios al usuario, ayudar a rastrear y recopilar datos sensibles del comportamiento de navegación del usuario, normalmente en varios sitios web. Dichos datos también suelen venderse a terceros. Recomendamos rechazar este tipo de cookies para proteger su privacidad.",
+    "description": "Description of the 'Advertising' category."
+  },
+
+  "headerAdditionalOptions" : {
+    "message": "Configuración General",
+    "description": "Additional options header text."
+  },
+
+  "additionalOptionsDesc" : {
+    "message": "Estos ajustes afectan al comportamiento general de la extensión:",
+    "description": "Additional options description."
+  },
+
+  "pauseCookieRemoval" : {
+    "message": "Pausar Eliminación Cookies",
+    "description": "Text for the cookie removal pause button."
+  },
+
+  "pauseDescription" : {
+    "message": "Mientras esté activada, impide la eliminación de cookies por parte de la extensión. Sin embargo, las cookies se siguen clasificando en segundo plano. Útil para depurar o detener la eliminación de cookies temporalmente en caso de que un sitio web se rompa.",
+    "description": "Description for the 'pause removal' button."
+  },
+
+  "buttonExitSetup" : {
+    "message": "Clasificar y Eliminar Cookies Almacenadas",
+    "description": "Label for the close button on the first time setup"
+  },
+
+  "popupText" : {
+    "message": "¿Confiar cookies de este dominio?",
+    "description": "Text present on the popup."
+  },
+
+  "popupButtonAdd" : {
+    "message": "Añadir Excepción Dominio",
+    "description": "Button text for adding exceptions"
+  },
+
+  "popupButtonRemove" : {
+    "message": "Eliminar Excepción Dominio",
+    "description": "Button text for removing exceptions"
+  },
+
+  "popupButtonConfig" : {
+    "message": "Abrir Configuración Cookies",
+    "description": "Button for opening the cookie config page"
+  },
+
+  "popupButtonOptions" : {
+    "message": "Abrir Configuración General",
+    "description": "Button for opening the options page"
+  },
+
+  "setupHeaderPreferences" : {
+    "message": "Configuración Preferencias",
+    "description": "Header for the setup options"
+  },
+
+  "optionsHeaderConsent" : {
+    "message": "Preferencias Consentimiento",
+    "description": "Header for the consent category options"
+  },
+
+  "currentCookieEnforceTitle" : {
+    "message": "Clasificar y Eliminar Cookies Almacenadas",
+    "description": "Header for the policy enforcement button."
+  },
+
+  "currentCookieEnforceDescription" : {
+    "message" : "Este botón clasificará todas las cookies almacenadas actualmente en el navegador y eliminará las rechazadas por la política del usuario.",
+    "description" : "Description of the policy enforcement on current cookies."
+  },
+
+  "currentCookieEnforceDescriptionSetup" : {
+    "message" : "Ejecutar extensión en todas las cookies almacenadas actualmente y cerrar la pestaña de configuración inicial.",
+    "description" : "Description of the policy enforcement on current cookies."
+  },
+
+  "currentCookieEnforceButton" : {
+    "message" : "Clasificar y Eliminar",
+    "description" : "Label on the button that performs the current cookie classification."
+  },
+
+  "currentCookieProgressMsg" : {
+    "message" : "Aplicación de la política en curso...",
+    "description" : "Message that appears after classifier was applied."
+  },
+
+  "currentCookieEnforceMsg" : {
+    "message" : "Aplicada la política de consentimiento del usuarios, y eliminadas las malas cookies.",
+    "description" : "Message that appears after classifier was applied."
+  },
+
+  "globalExceptionsHeader" : {
+    "message" : "Excepciones de Dominio",
+    "description" : "Header for the global extensions listing."
+  },
+
+  "globalExceptionsDescription" : {
+    "message" : "Las cookies que se originan en los dominios de esta lista siempre se permitirán, independientemente de la política de consentimiento vigente. Utilícelo para añadir excepciones a los dominios en los que confía, o si la funcionalidad del sitio web se rompe.",
+    "description" : "Decription for the global website exceptions."
+  },
+
+  "exceptionPlaceholderText" : {
+    "message" : "Añadir Excepción",
+    "description": "Text for the exception domain entry fields."
+  },
+
+  "functionalExceptionsHeader" : {
+    "message" : "Excepciones de Dominio para la Categoría Funcional",
+    "description" : "exception header title"
+  },
+
+  "functionalExceptionsDescription" : {
+    "message" : "No rechazar las Cookies de Funcionalidad que provienen de los siguientes dominios:",
+    "description" : "exception description"
+  },
+
+  "analyticsExceptionsHeader" : {
+    "message" : "Excepciones de Dominio para la Categoría de Análisis",
+    "description" : "exception header title"
+  },
+
+  "analyticsExceptionsDescription" : {
+    "message" : "No rechazar cookies de análisis que provienen de los siguientes dominios:",
+    "description" : "exception description"
+  },
+
+  "advertExceptionsHeader" : {
+    "message" : "Excepción de Dominio para la Categoría de Publicidad",
+    "description" : "exception header title"
+
+  },
+
+  "advertExceptionsDescription" : {
+    "message" : "No rechazar Cookies publicitarias que provienen de los siguientes dominios:",
+    "description" : "exception description"
+  },
+
+  "addButton" : {
+    "message" : "Añadir",
+    "description" : "Text on button for adding list items"
+  },
+
+  "categoryStatisticsHeader" : {
+    "message" : "Categoría Estadísticas",
+    "description": "Header for the category statistics"
+  },
+
+  "categoryStatisticsDesc" : {
+    "message" : "Número de cookies únicas almacenadas actualmente en el historial, separadas por categoría. Pulsar en cualquiera de las etiquetas para recibir una instantánea del historial de cookies actual.",
+    "description" : "Description of the statistics."
+  },
+
+  "statsNecessary": {
+    "message": "$COUNT$ clasificadas como Cookies Necesarias",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsFunctional": {
+    "message": "$COUNT$ clasificadas como Cookies de Funcionalidad",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsAnalytics": {
+    "message": "$COUNT$ clasificadas como Cookies de Análisis",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsAdvertising": {
+    "message": "$COUNT$ clasificadas como Cookies de Publicidad",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+
+  "popupErrorTextGeneric": {
+    "message": "¡Se ha producido un error desconocido!",
+    "description": "Generic error message."
+  },
+
+  "popupErrorTextRemove": {
+    "message": "¡Error al eliminar la excepción!",
+    "description": "Error message when trying to remove exception."
+  },
+
+  "popupErrorTextAdd": {
+    "message": "¡Error al añadir la excepción!",
+    "description": "Error message when trying to add exception."
+  },
+
+  "defaultTitle": {
+    "message": "Restablecer Valores Predeterminados",
+    "description": "Restore defaults title"
+  },
+
+  "defaultDescription": {
+    "message": "Este botón restablece la configuración por defecto de la extensión.",
+    "description": "Description for the restore defaults button."
+  },
+
+  "defaultButton": {
+    "message": "Restablecer Valores",
+    "description": "Button text for resetting."
+  },
+
+  "defaultApplyText": {
+    "message": "¡Restablecidos valores predeterminados!",
+    "description": "Defaults restored message that appears after clicking the button."
+  },
+
+  "clearDataTitle": {
+    "message": "Borrar Historial de Cookies",
+    "description": "Title for the 'clear cookie data' button."
+  },
+
+  "clearDataDescription": {
+    "message": "¡Este botón elimina el historial de cookies actual. No elimina las cookies del propio navegador!",
+    "description": "Description for the 'clear cookie data' button."
+  },
+
+  "clearDataButton": {
+    "message": "Borrar Historial",
+    "description": "Clear data button label."
+  },
+
+  "clearDataText": {
+    "message": "¡Borrado Historial!",
+    "description": "Message that appears after hitting the clear data button."
+  },
+
+  "sliderTitle": {
+    "message": "Predisposición de Cookies Necesarias",
+    "description": "Title for the slider."
+  },
+
+  "sliderDescription": {
+    "message": "Sólo para usuarios avanzados. Este control deslizante ajusta la probabilidad de que CookieBlock asigne las cookies a la clase \"Estrictamente Necesaria\". Los valores más altos aumentarán la probabilidad. Aumentar esto puede reducir la frecuencia con la que la funcionalidad del sitio web se rompe, pero costa de la precisión y la ganancia de privacidad.",
+    "description": "Explanation of the slider"
+  },
+
+  "applyErrorText" : {
+    "message": "¡Error en el proceso!",
+    "description": "Error message if something goes wrong with the buttons."
+  },
+
+  "historyConsentTitle" :  {
+    "message": "Seguimiento del Historial de Cookies",
+    "description": "Description for the cookie history consent toggle."
+  },
+
+  "historyConsentDesc" :  {
+    "message": "Al habilitar esta opción, usted acepta la recolección de un historial local de cookies, que es inaccesible para los sitios web, y se utiliza para mejorar la precisión del clasificador. Este historial es totalmente local, y nunca se accede a él fuera de Cookieblock.",
+    "description": "Description for the cookie history consent checkbox."
+  },
+
+  "closeButtonText" : {
+    "message": "Cerrar Pestaña",
+    "description": "Label for the close button."
+  },
+
+  "cookieHistoryButtonLabel" : {
+    "message": "Ver Historial Completo de Cookies JSON",
+    "description": "Label for the button to view the entire cookie history."
+  },
+
+  "predefTitle": {
+    "message": "Categorías de Cookies Predefinidas",
+    "description": "Header for cookie json section"
+  },
+
+  "predefDesc" : {
+    "message": "Aquí puede añadir rutas a archivos JSON que contienen categorías predefinidas para las cookies conocidas. Esto puede utilizarse para corregir manualmente los errores de clasificación.",
+    "description": "Description for cookie json section"
+  },
+
+  "predefPlaceholder" : {
+    "message": "Ruta de Acceso a Cookies JSON",
+    "description": "Placeholder text inside the entry box"
+  },
+
+  "predefIntegratedText" : {
+    "message": "Usar categorías de cookies integradas",
+    "description": "Button that makes the extension use the integrated labels as fallback, if no JSON is found."
+  },
+
+  "cookieConfigSubtitle" : {
+    "message": "Configuración de Cookies",
+    "description": "Subtitle for the cookie config page."
+  },
+
+  "cookieConfigDescTitle" : {
+    "message": "Instrucciones",
+    "description": "Header for the cookie config page"
+  },
+
+  "cookieConfigDescPG1" : {
+    "message": "En esta página puede definir categorías personalizadas para cada cookie individual, que tendrán prioridad sobre el clasificador. Pulse en la entrada de la lista para mostrar las cookies que fueron creadas por ese dominio. Las etiquetas transparentes son temporales y fueron asignadas por el clasificador. Las etiquetas opacas son permanentes y fueron asignadas por el usuario. Al seleccionar \"Reclasificar\", se predice una nueva clase la próxima vez que se observe la cookie.",
+    "description": "First paragraph of the cookie config page instructions."
+  },
+
+  "cookieConfigDescPG2" : {
+    "message": "También puede definir excepciones para dominios específicos en este menú, y eliminar o restaurar cookies individuales del navegador pulsando los respectivos botones de la lista.",
+    "description": "Second paragraph of the cookie config page instructions."
+  },
+
+  "cookieConfigListTitle" : {
+    "message": "Cookies Conocidas",
+    "description": "Header for the cookie list."
+  },
+
+  "classOptionEmpty" : {
+    "message": "Reclasificar",
+    "description": "Button to repeat the classification for the cookie."
+  },
+
+  "classOption0" : {
+    "message": "Necesario",
+    "description": "Necessary label in the cookie config page."
+  },
+
+  "classOption1" : {
+    "message": "Funcionalidad",
+    "description": "Functionality label in the cookie config page."
+  },
+
+  "classOption2" : {
+    "message": "Análisis",
+    "description": "Analytics label in the cookie config page."
+  },
+
+  "classOption3" : {
+    "message": "Publicidad",
+    "description": "Advertising label in the cookie config page."
+  },
+
+  "configDropdownFalse" : {
+    "message": "-",
+    "description": "Shown if no exemption is given for a domain."
+  },
+
+  "configDropdownTrue" : {
+    "message": "Exento",
+    "description": "Shown when the cookie domain is exempted from categorization."
+  },
+
+  "configButtonRemove" : {
+    "message": "Eliminar",
+    "description": "Button to remove a specific cookie."
+  },
+
+  "configButtonRestore" : {
+    "message": "Restaurar",
+    "description": "Button to restore a previously removed cookie."
+  },
+
+  "configButtonRemoveAll" : {
+    "message": "Eliminar Todo",
+    "description": "Button to remove all cookies of a domain."
+  },
+
+  "configExpandDesc": {
+    "message": "Pulsar en una entrada para ampliar su contenido.",
+    "description": "Instruction on the config page."
+  },
+
+  "configButtonExport": {
+    "message": "Exportar como JSON",
+    "description": "Button to export the cookie configuration as a known_cookies.json"
+  },
+
+  "configButtonRefresh": {
+    "message": "Refrescar",
+    "description": "Button to refresh the cookie history."
+  },
+
+  "configNoCookies": {
+    "message": "¡No se registran cookies en el historial!",
+    "description": "Error message if no cookies have been seen since the extension was installed."
+  },
+
+  "configLoadError": {
+    "message": "¡Error al cargar el historial de cookies!",
+    "description": "Error message if the cookie history failed to load."
+  },
+
+  "udTitle" : {
+    "message": "Categorías definidas de cookies por el usuario",
+    "description": "Title for the button in the options page that opens the cookie config page"
+  },
+
+  "udDescription": {
+    "message":"El botón de abajo abrirá la página de configuración de las cookies. Allí podrá cambiar la etiqueta de las cookies individuales en el historial. También puede eliminar o restaurar manualmente las cookies individuales del navegador.",
+    "description": "Description for the button in the options page that opens the cookie config page"
+  },
+
+  "udButton": {
+    "message": "Abrir Página de Configuración de Cookies",
+    "description": "Button in the options page that opens the cookie config page"
+  },
+
+  "inputErrorInvalid": {
+    "message": "¡La entrada no es un nombre de dominio válido!",
+    "description": "Message that appears if the domain input had invalid characters or format."
+  },
+
+  "inputErrorDuplicate": {
+    "message": "¡La entrada ya está presente en la lista!",
+    "description": "Message that appears if the input is a duplicate."
+  },
+
+  "inputErrorNoResolve": {
+    "message": "¡La URL del JSON no es válida o no ha podido ser resuelta!",
+    "description": "Message that appears if json path is invalid or cannot be resolved."
+  },
+
+  "inputErrorNoJSON": {
+    "message": "La ruta no es un archivo JSON válido, o no tiene el formato esperado!",
+    "description": "Message that appears if the resulting object is invalid.."
+  }
+
+}
