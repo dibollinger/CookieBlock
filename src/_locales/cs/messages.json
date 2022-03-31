@@ -1,0 +1,531 @@
+{
+  "extensionName": {
+    "message": "CookieBlock",
+    "description": "Display name of the extension."
+  },
+
+  "manifestDescription": {
+    "message": "Ochrana soukromí pomocí automatického vynucení souhlasu s cookies.",
+    "description": "Description of the extension in the manifest."
+  },
+
+  "firstTimeSubtitle": {
+    "message": "Počáteční nastavení",
+    "description": "Subtitle of the first time setup page."
+  },
+
+  "settingsSubtitle": {
+    "message": "Nastavení a volby",
+    "description": "Subtitle of the settings page."
+  },
+
+  "firstTimeGreeting": {
+    "message": "Děkujeme za vaší instalaci rozšíření CookieBlock!",
+    "description": "Greeting message on the first time setup."
+  },
+
+  "feedbackTitle": {
+    "message": "Zpětná vazba",
+    "description": "Title for feedback submission section."
+  },
+
+  "feedbackPG1": {
+    "message": "K nahlášení rozbité stránky použijte tento odkaz:",
+    "description": "Feedback text pointing towards the Google Forms survey."
+  },
+
+  "feedbackPG2": {
+    "message": "Můžete také nahlásit potíže na GitHub stránce projektu:",
+    "description": "Feedback text pointing towards the Github."
+  },
+
+  "firstTimeDescPG1": {
+    "message": "CookieBlock vám umožňuje automaticky smazat cookies které o vás sbírají citlivé osobní údaje a sledují vás. K tomu používá strojové učení, pomocí jehož umí automatický předpovědět účel ke kterému daná cookie slouží.",
+    "description": "Description paragraph 1 seen on the first time setup page."
+  },
+
+  "firstTimeDescPG2": {
+    "message": "Zvolte typ cookie, které chcete zachovat. Všechny volby mohou být později změněny. Berte na vědomí, že toto rozšíření může dělat chyby a občas rozbít funkcionalitu webové stránky. Pokud to nastane, prosím nahlaste tuto stránku, abychom ji mohli opravit.",
+    "description": "Description paragraph 2 seen on the first time setup page."
+  },
+
+  "firstTimeDescPG3": {
+    "message": "Budeme rádi za vaši zpětnou vazbu a připomínky jak zlepšit toto rozšíření!",
+    "description": "Description paragraph 3 seen on the first time setup page."
+  },
+
+  "consentDescription" : {
+    "message" : "Zvolte typ cookie, které chcete zachovat ve vašem prohlížeči:",
+    "description" : "Description of the consent choices."
+  },
+
+  "catNecessaryTitle": {
+    "message": "Souhlas s nezbytnými cookies",
+    "description": "Text next to the 'Necessary' checkbox."
+  },
+
+  "catFunctionalityTitle": {
+    "message": "Souhlas s pomocnými cookies",
+    "description": "Text next to the 'Functionality' checkbox."
+  },
+
+  "catAnalyticsTitle" : {
+    "message": "Souhlas s analytickými cookies",
+    "description": "Text next to the 'Analytics' checkbox."
+  },
+
+  "catAdvertisingTitle": {
+    "message": "Souhlas s reklamními/sledovacími cookies",
+    "description": "Text next to the 'Advertising' checkbox."
+  },
+
+  "catNecessaryDesc": {
+    "message": "Tyto cookies jsou striktně nezbytné k provozu dané webové stránky. Slouží například k registraci nebo implementaci nákupního košíku. Tyto cookies jsou vždy povoleny pro bezstarostné použití prohlížeče.",
+    "description": "Description of the 'Necessary' category."
+  },
+
+  "catFunctionalityDesc": {
+    "message": "Tyto cookies jsou zbytné, ale užitečné pro uživatele. Slouží například k změně nastavení stránky (lokalizace či vzhled). Doporučujeme povolit tyto cookies pro lepší uživatelskou přívětivost.",
+    "description": "Description of the 'Functionality' category."
+  },
+
+  "catAnalyticsDesc" : {
+    "message": "Tyto cookies sbírají statistické informace o tom, jak návštěvníci používají stránky. Tyto informace jsou často použity operátory webové stránky k zlepšení výkonu či poskytnutí obsahu cíleného na obecné publikum. Informace sbírané těmito cookies mohou obsahovat citlivá data a umožnují sledování uřivatele. Zakažte tyto cookies pokud máte starost se sledováním a analýzou vašich dat.",
+    "description": "Description of the 'Analytics' category."
+  },
+
+  "catAdvertisingDesc" : {
+    "message": "Tyto cookies jsou určeny k cílené reklamě na jedince. Sbírají citlivé data o vašem chování, často přes různé stránky. Tyto data jsou mohou být prodány třetím stranám. Doporučujeme zamítnout tyto cookies k ochraně vašeho soukromí.",
+    "description": "Description of the 'Advertising' category."
+  },
+
+  "headerAdditionalOptions" : {
+    "message": "Obecné nastavení",
+    "description": "Additional options header text."
+  },
+
+  "additionalOptionsDesc" : {
+    "message": "Tato nastavení ovlivní všeobecnou funkcionality rozšíření:",
+    "description": "Additional options description."
+  },
+
+  "pauseCookieRemoval" : {
+    "message": "Pozastavit odstranění cookies",
+    "description": "Text for the cookie removal pause button."
+  },
+
+  "pauseDescription" : {
+    "message": "Když je tato volba povolena, rozšíření nemaže žádné cookies, ačkoliv jejich klasifikace stále probíhá na pozadí. Tato funkce je užitečná k dočasnému zastavení odstranění cookies, hlavně v případě rozbité stránky a jejímu odladění.",
+    "description": "Description for the 'pause removal' button."
+  },
+
+  "buttonExitSetup" : {
+    "message": "Klasifikovat a odebrat uložené cookies",
+    "description": "Label for the close button on the first time setup"
+  },
+
+  "popupText" : {
+    "message": "Důvěřovat cookies na této stránce?",
+    "description": "Text present on the popup."
+  },
+
+  "popupButtonAdd" : {
+    "message": "Dát výjimku této stránce",
+    "description": "Button text for adding exceptions"
+  },
+
+  "popupButtonRemove" : {
+    "message": "Odebrat výjimku této stránce",
+    "description": "Button text for removing exceptions"
+  },
+
+  "popupButtonConfig" : {
+    "message": "Otevřít seznam cookies",
+    "description": "Button for opening the cookie config page"
+  },
+
+  "popupButtonOptions" : {
+    "message": "Otevřít obecné nastavení",
+    "description": "Button for opening the options page"
+  },
+
+  "setupHeaderPreferences" : {
+    "message": "Nastavení voleb",
+    "description": "Header for the setup options"
+  },
+
+  "optionsHeaderConsent" : {
+    "message": "Volby o souhlasu",
+    "description": "Header for the consent category options"
+  },
+
+  "currentCookieEnforceTitle" : {
+    "message": "Klasifikovat a odebrat uložené cookies",
+    "description": "Header for the policy enforcement button."
+  },
+
+  "currentCookieEnforceDescription" : {
+    "message" : "Toto tlačítko klasifikuje všechny cookies přítomné v prohlížeči a odebere ty, ktere jsou zakázané uživatelem.",
+    "description" : "Description of the policy enforcement on current cookies."
+  },
+
+  "currentCookieEnforceDescriptionSetup" : {
+    "message" : "Provést klasifikaci všech přítomných cookies a zavřít toto okno s počátečním nastavením.",
+    "description" : "Description of the policy enforcement on current cookies."
+  },
+
+  "currentCookieEnforceButton" : {
+    "message" : "Klasifikovat a odebrat",
+    "description" : "Label on the button that performs the current cookie classification."
+  },
+
+  "currentCookieProgressMsg" : {
+    "message" : "Vynucení uživatelských předvoleb probíhá...",
+    "description" : "Message that appears after classifier was applied."
+  },
+
+  "currentCookieEnforceMsg" : {
+    "message" : "Uživatelské předvolby vynuceny, špatné cookies odebrány.",
+    "description" : "Message that appears after classifier was applied."
+  },
+
+  "globalExceptionsHeader" : {
+    "message" : "Domény stránek s výjimkou",
+    "description" : "Header for the global extensions listing."
+  },
+
+  "globalExceptionsDescription" : {
+    "message" : "Cookies, které pochází z těchto domén jsou vždy povoleny, nehledě na uživatelské předvolby. Dejte výjimku stránkám, kterým důvěřujete nebo které jsou rozbité.",
+    "description" : "Decription for the global website exceptions."
+  },
+
+  "exceptionPlaceholderText" : {
+    "message" : "Udělit výjimku",
+    "description": "Text for the exception domain entry fields."
+  },
+
+  "functionalExceptionsHeader" : {
+    "message" : "Domény s výjimkou pro pomocné cookies",
+    "description" : "exception header title"
+  },
+
+  "functionalExceptionsDescription" : {
+    "message" : "Neodstraňovat pomocné cookies pocházející z těchto domén:",
+    "description" : "exception description"
+  },
+
+  "analyticsExceptionsHeader" : {
+    "message" : "Domény s výjimkou pro analytické cookies",
+    "description" : "exception header title"
+  },
+
+  "analyticsExceptionsDescription" : {
+    "message" : "Neodstraňovat analytické cookies pocházející z těchto domén:",
+    "description" : "exception description"
+  },
+
+  "advertExceptionsHeader" : {
+    "message" : "Domény s výjimkou pro reklamní cookies",
+    "description" : "exception header title"
+
+  },
+
+  "advertExceptionsDescription" : {
+    "message" : "Neodstraňovat reklamní cookies pocházející z těchto domén:",
+    "description" : "exception description"
+  },
+
+  "addButton" : {
+    "message" : "Přidat",
+    "description" : "Text on button for adding list items"
+  },
+
+  "categoryStatisticsHeader" : {
+    "message" : "Kategorie statistických cookies",
+    "description": "Header for the category statistics"
+  },
+
+  "categoryStatisticsDesc" : {
+    "message" : "Počet unikátních cookies v aktuální historii, seřazeny podle kategorie. Klikněte na jakýkoliv nápis a získejte přehled o historii aktuálních cookies.",
+    "description" : "Description of the statistics."
+  },
+
+  "statsNecessary": {
+    "message": "$COUNT$ klasifikováno jako nezbytné cookies.",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsFunctional": {
+    "message": "$COUNT$ klasifikováno jako pomocné cookies.",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsAnalytics": {
+    "message": "$COUNT$ klasifikováno jako analytické cookies.",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsAdvertising": {
+    "message": "$COUNT$ klasifikováno jako reklamní cookies.",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+
+  "popupErrorTextGeneric": {
+    "message": "Vyskytla se neznámá chyba!",
+    "description": "Generic error message."
+  },
+
+  "popupErrorTextRemove": {
+    "message": "Odstranění výjimky selhalo!",
+    "description": "Error message when trying to remove exception."
+  },
+
+  "popupErrorTextAdd": {
+    "message": "Přidání výjimky selhalo!",
+    "description": "Error message when trying to add exception."
+  },
+
+  "defaultTitle": {
+    "message": "Obnovit výchozí nastavení",
+    "description": "Restore defaults title"
+  },
+
+  "defaultDescription": {
+    "message": "Toto tlačítko obnoví výchozí nastavení thoto rozšíření.",
+    "description": "Description for the restore defaults button."
+  },
+
+  "defaultButton": {
+    "message": "Obnovit nastavení",
+    "description": "Button text for resetting."
+  },
+
+  "defaultApplyText": {
+    "message": "Nastavení obnoveno!",
+    "description": "Defaults restored message that appears after clicking the button."
+  },
+
+  "clearDataTitle": {
+    "message": "Odstranit historii cookies",
+    "description": "Title for the 'clear cookie data' button."
+  },
+
+  "clearDataDescription": {
+    "message": "Toto tlačítko odstraní historii cookies v rozšíření. Tato volba neodstraní cookies z prohlížeče samotného!",
+    "description": "Description for the 'clear cookie data' button."
+  },
+
+  "clearDataButton": {
+    "message": "Odstranit historii",
+    "description": "Clear data button label."
+  },
+
+  "clearDataText": {
+    "message": "Historie odstraněna!",
+    "description": "Message that appears after hitting the clear data button."
+  },
+
+  "sliderTitle": {
+    "message": "Tendence klasifikace nezbytných cookies",
+    "description": "Title for the slider."
+  },
+
+  "sliderDescription": {
+    "message": "Pouze pro pokročilé uživatele. Tento posuvník umožňuje změnit pravděpodobnost (likelihood), se kterou model v tomto rozšíření klasifikuje cookies jako nezbytné. Vyšší hodnota zvýší tuto pravděpodobnost, což může snížit počet rozbitých stránek za cenu přesnosti modelu a potenciálně větší ztrátě soukromí.",
+    "description": "Explanation of the slider"
+  },
+
+  "applyErrorText" : {
+    "message": "Akce neuspěla!",
+    "description": "Error message if something goes wrong with the buttons."
+  },
+
+  "historyConsentTitle" :  {
+    "message": "Udržovat historii cookies.",
+    "description": "Description for the cookie history consent toggle."
+  },
+
+  "historyConsentDesc" :  {
+    "message": "Potvrzením následující volby souhlasíte se lokálním sběrem historie cookies pro zlepšení přesnosti a rychlosti klasifikace. Tato historie není viditelná pro stránky ani pro vývojáře tohoto rozšíření.",
+    "description": "Description for the cookie history consent checkbox."
+  },
+
+  "closeButtonText" : {
+    "message": "Zavřít okno.",
+    "description": "Label for the close button."
+  },
+
+  "cookieHistoryButtonLabel" : {
+    "message": "Zobrazit historii cookies ve formátu JSON",
+    "description": "Label for the button to view the entire cookie history."
+  },
+
+  "predefTitle": {
+    "message": "Předdefinované známé cookies.",
+    "description": "Header for cookie json section"
+  },
+
+  "predefDesc" : {
+    "message": "Zde můžete přidat odkaz na JSON soubor s předdefinovanou klasifikací cookies. Tento soubor slouží k udělení výjimek pro špatně klasifikované cookies.",
+    "description": "Description for cookie json section"
+  },
+
+  "predefPlaceholder" : {
+    "message": "Cesta k JSON s cookies",
+    "description": "Placeholder text inside the entry box"
+  },
+
+  "predefIntegratedText" : {
+    "message": "Použít předdefinované známé cookies",
+    "description": "Button that makes the extension use the integrated labels as fallback, if no JSON is found."
+  },
+
+  "cookieConfigSubtitle" : {
+    "message": "Cookie konfigurace",
+    "description": "Subtitle for the cookie config page."
+  },
+
+  "cookieConfigDescTitle" : {
+    "message": "Instrukce",
+    "description": "Header for the cookie config page"
+  },
+
+  "cookieConfigDescPG1" : {
+    "message": "Na této stránce můžete nastavit vlastní kategorie k individuálním cookies, které nahradí klasifikaci modelem. Klikněte na doménu k zobrazení všech odpovídajících cookies. Průhledné popisky jsou automaticky přiřazené modelem, zatímco plné popisky jsou nastaveny uživatelem. Volba 'Překlasifikovat' znamená, že cookie bude znovu klasifikována když se znovu objeví.",
+    "description": "First paragraph of the cookie config page instructions."
+  },
+
+  "cookieConfigDescPG2" : {
+    "message": "Můžete též nastavit výjimky pro specifické domény v tomto nastavení, odebrat či obnovit konkrétní cookies pomocí tlačítek vedle kategorie.",
+    "description": "Second paragraph of the cookie config page instructions."
+  },
+
+  "cookieConfigListTitle" : {
+    "message": "Známé cookies",
+    "description": "Header for the cookie list."
+  },
+
+  "classOptionEmpty" : {
+    "message": "Překlasifikovat",
+    "description": "Button to repeat the classification for the cookie."
+  },
+
+  "classOption0" : {
+    "message": "Nezbytné",
+    "description": "Necessary label in the cookie config page."
+  },
+
+  "classOption1" : {
+    "message": "Pomocné",
+    "description": "Functionality label in the cookie config page."
+  },
+
+  "classOption2" : {
+    "message": "Analytické",
+    "description": "Analytics label in the cookie config page."
+  },
+
+  "classOption3" : {
+    "message": "Reklamní",
+    "description": "Advertising label in the cookie config page."
+  },
+
+  "configDropdownFalse" : {
+    "message": "-",
+    "description": "Shown if no exemption is given for a domain."
+  },
+
+  "configDropdownTrue" : {
+    "message": "Výjimka",
+    "description": "Shown when the cookie domain is exempted from categorization."
+  },
+
+  "configButtonRemove" : {
+    "message": "Odstranit",
+    "description": "Button to remove a specific cookie."
+  },
+
+  "configButtonRestore" : {
+    "message": "Obnovit",
+    "description": "Button to restore a previously removed cookie."
+  },
+
+  "configButtonRemoveAll" : {
+    "message": "Odstranit vše",
+    "description": "Button to remove all cookies of a domain."
+  },
+
+  "configExpandDesc": {
+    "message": "Klikněte na doménu na zobrazení obsahu.",
+    "description": "Instruction on the config page."
+  },
+
+  "configButtonExport": {
+    "message": "Exportovat jako JSON",
+    "description": "Button to export the cookie configuration as a known_cookies.json"
+  },
+
+  "configButtonRefresh": {
+    "message": "Obnovit",
+    "description": "Button to refresh the cookie history."
+  },
+
+  "configNoCookies": {
+    "message": "Žádné cookies ve vaší historii!",
+    "description": "Error message if no cookies have been seen since the extension was installed."
+  },
+
+  "configLoadError": {
+    "message": "Chyba při načtení historie cookies!",
+    "description": "Error message if the cookie history failed to load."
+  },
+
+  "udTitle" : {
+    "message": "Uživatelem přiřazené kategorie cookies",
+    "description": "Title for the button in the options page that opens the cookie config page"
+  },
+
+  "udDescription": {
+    "message":"Toto tlačítko otevře stránku s konfigurací cookies. Můžete tam změnit klasifikaci jednotlivých cookies z historie, či manuálně odebrat či obnovit cookies v tomto prohlížeči.",
+    "description": "Description for the button in the options page that opens the cookie config page"
+  },
+
+  "udButton": {
+    "message": "Otevřít stránku s nastavením cookies",
+    "description": "Button in the options page that opens the cookie config page"
+  },
+
+  "inputErrorInvalid": {
+    "message": "Vámi zadaný text není validní doména!",
+    "description": "Message that appears if the domain input had invalid characters or format."
+  },
+
+  "inputErrorDuplicate": {
+    "message": "Vámi zadaný text je již obsažen v seznamu!",
+    "description": "Message that appears if the input is a duplicate."
+  },
+
+  "inputErrorNoResolve": {
+    "message": "Zadaná URL adresa souboru JSON je špatně nebo soubor nemohl být stažen!",
+    "description": "Message that appears if json path is invalid or cannot be resolved."
+  },
+
+  "inputErrorNoJSON": {
+    "message": "Zadaný soubor JSON nemá validní formát!",
+    "description": "Message that appears if the resulting object is invalid.."
+  }
+
+}
