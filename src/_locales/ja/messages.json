@@ -1,0 +1,530 @@
+{
+  "extensionName": {
+    "message": "CookieBlock",
+    "description": "Display name of the extension."
+  },
+
+  "manifestDescription": {
+    "message": "あなたのプライバシーを保護するために、クッキーの同意設定を自動的に実行します。",
+    "description": "Description of the extension in the manifest."
+  },
+
+  "firstTimeSubtitle": {
+    "message": "初期設定",
+    "description": "Subtitle of the first time setup page."
+  },
+
+  "settingsSubtitle": {
+    "message": "設定と環境設定",
+    "description": "Subtitle of the settings page."
+  },
+
+  "firstTimeGreeting": {
+    "message": "CookieBlock をインストールしていただき、ありがとうございます！",
+    "description": "Greeting message on the first time setup."
+  },
+
+  "feedbackTitle": {
+    "message": "フィードバック",
+    "description": "Title for feedback submission section."
+  },
+
+  "feedbackPG1": {
+    "message": "壊れたウェブサイトの報告やフィードバックは、以下のリンクからお願いします:",
+    "description": "Feedback text pointing towards the Google Forms survey."
+  },
+
+  "feedbackPG2": {
+    "message": "また、Github のページで問題を報告することもできます:",
+    "description": "Feedback text pointing towards the Github."
+  },
+
+  "firstTimeDescPG1": {
+    "message": "CookieBlock は、機密データを収集したり、あなたを追跡したりするクッキーを自動的に削除することができます。機械学習により、各クッキーが使用される目的を自動的に予測します。",
+    "description": "Description paragraph 1 seen on the first time setup page."
+  },
+
+  "firstTimeDescPG2": {
+    "message": "許可するクッキーの種類を以下から選択してください。これらのオプションはすべて、あとで変更することができます。この拡張機能は間違いを犯す可能性があり、時折ウェブサイトの機能を破壊することがあることに注意してください。そのような場合は、問題を解決するために、問題を報告してください。",
+    "description": "Description paragraph 2 seen on the first time setup page."
+  },
+
+  "firstTimeDescPG3": {
+    "message": "拡張機能の改善に関するご意見、ご感想をお待ちしております！",
+    "description": "Description paragraph 3 seen on the first time setup page."
+  },
+
+  "consentDescription" : {
+    "message" : "ブラウザで許可するクッキーの種類を選択します:",
+    "description" : "Description of the consent choices."
+  },
+
+  "catNecessaryTitle": {
+    "message": "必要性クッキーを許可する",
+    "description": "Text next to the 'Necessary' checkbox."
+  },
+
+  "catFunctionalityTitle": {
+    "message": "機能性クッキーを許可する",
+    "description": "Text next to the 'Functionality' checkbox."
+  },
+
+  "catAnalyticsTitle" : {
+    "message": "アクセス解析クッキーを許可する",
+    "description": "Text next to the 'Analytics' checkbox."
+  },
+
+  "catAdvertisingTitle": {
+    "message": "広告/トラッキングクッキーを許可する",
+    "description": "Text next to the 'Advertising' checkbox."
+  },
+
+  "catNecessaryDesc": {
+    "message": "アカウント登録やショッピングカートなど、ウェブサイトの必須機能を有効にするために必要です。スムーズで問題のないブラウジングを可能にするために、常に有効化されています。",
+    "description": "Description of the 'Necessary' category."
+  },
+
+  "catFunctionalityDesc": {
+    "message": "例えば、訪問のたびにスタイルの好みを保存するなどウェブサイトのユーザビリティ機能や本質的でないユーザーエクスペリエンスを向上させるためには、これらのクッキーを有効化する必要が生じます。ただし、これには若干のトラッキングクッキーが含まれることがあります。",
+    "description": "Description of the 'Functionality' category."
+  },
+
+  "catAnalyticsDesc" : {
+    "message": "ウェブサイトを訪問者がどのように利用しているかについての統計情報を収集するために使用します。この情報は、ウェブサイトのパフォーマンスを測定し、開発の指針とするために使用されますが、機密データを含めることができ、ユーザーの追跡を可能にします。分析サービスからの潜在的なリスクを懸念する場合は、これらを無効にしてください。",
+    "description": "Description of the 'Analytics' category."
+  },
+
+  "catAdvertisingDesc" : {
+    "message": "広告を閲覧者に合わせて調整するため、そしてユーザーを追跡するため、さらには複数のウェブサイトにわたるユーザーの閲覧行動に関する機密データを収集するために使用されます。これらのデータは、しばしば第三者に販売されます。あなたのプライバシーを守るためには、このようなクッキーは拒否されることをお勧めします。",
+    "description": "Description of the 'Advertising' category."
+  },
+
+  "headerAdditionalOptions" : {
+    "message": "一般的な設定",
+    "description": "Additional options header text."
+  },
+
+  "additionalOptionsDesc" : {
+    "message": "これらの設定は、拡張機能の全体的な動作に影響します:",
+    "description": "Additional options description."
+  },
+
+  "pauseCookieRemoval" : {
+    "message": "クッキーの削除を一時停止する",
+    "description": "Text for the cookie removal pause button."
+  },
+
+  "pauseDescription" : {
+    "message": "有効にすると、拡張機能によるクッキーの削除を防止します。しかし、クッキーはバックグラウンドで分類されます。デバッグや、ウェブサイトが壊れた場合に一時的にクッキーの削除を停止するのに便利です。",
+    "description": "Description for the 'pause removal' button."
+  },
+
+  "buttonExitSetup" : {
+    "message": "保存されたクッキーの分類と削除",
+    "description": "Label for the close button on the first time setup"
+  },
+
+  "popupText" : {
+    "message": "このドメインからのクッキーを信頼しますか？",
+    "description": "Text present on the popup."
+  },
+
+  "popupButtonAdd" : {
+    "message": "ドメインの例外を追加する",
+    "description": "Button text for adding exceptions"
+  },
+
+  "popupButtonRemove" : {
+    "message": "ドメインの例外を解除する",
+    "description": "Button text for removing exceptions"
+  },
+
+  "popupButtonConfig" : {
+    "message": "クッキーの設定を開く",
+    "description": "Button for opening the cookie config page"
+  },
+
+  "popupButtonOptions" : {
+    "message": "一般的な設定を開く",
+    "description": "Button for opening the options page"
+  },
+
+  "setupHeaderPreferences" : {
+    "message": "環境設定を設定する",
+    "description": "Header for the setup options"
+  },
+
+  "optionsHeaderConsent" : {
+    "message": "同意事項の設定",
+    "description": "Header for the consent category options"
+  },
+
+  "currentCookieEnforceTitle" : {
+    "message": "保存されたクッキーを分類化し、削除する",
+    "description": "Header for the policy enforcement button."
+  },
+
+  "currentCookieEnforceDescription" : {
+    "message" : "このボタンを押すと、現在ブラウザに保存されているすべてのクッキーを分類化し、ユーザーポリシーで拒否されたクッキーを削除します。",
+    "description" : "Description of the policy enforcement on current cookies."
+  },
+
+  "currentCookieEnforceDescriptionSetup" : {
+    "message" : "現在保存されているすべてのクッキーに対して拡張機能を実行し、初期設定タブを閉じます。",
+    "description" : "Description of the policy enforcement on current cookies."
+  },
+
+  "currentCookieEnforceButton" : {
+    "message" : "分類化と削除",
+    "description" : "Label on the button that performs the current cookie classification."
+  },
+
+  "currentCookieProgressMsg" : {
+    "message" : "ポリシーの実施中...",
+    "description" : "Message that appears after classifier was applied."
+  },
+
+  "currentCookieEnforceMsg" : {
+    "message" : "ユーザー同意ポリシーを実施し、不正なクッキーを削除する。",
+    "description" : "Message that appears after classifier was applied."
+  },
+
+  "globalExceptionsHeader" : {
+    "message" : "ドメインの例外",
+    "description" : "Header for the global extensions listing."
+  },
+
+  "globalExceptionsDescription" : {
+    "message" : "このリストにあるドメインから発信されるクッキーは、現在の同意ポリシーにかかわらず、常に許可されます。信頼するドメインに例外を追加する場合や、ウェブサイトの機能が壊れた場合に使用してください。",
+    "description" : "Decription for the global website exceptions."
+  },
+
+  "exceptionPlaceholderText" : {
+    "message" : "例外を追加する",
+    "description": "Text for the exception domain entry fields."
+  },
+
+  "functionalExceptionsHeader" : {
+    "message" : "機能性分類のドメイン例外",
+    "description" : "exception header title"
+  },
+
+  "functionalExceptionsDescription" : {
+    "message" : "次のドメインに由来する機能性クッキーを拒否しないでください:",
+    "description" : "exception description"
+  },
+
+  "analyticsExceptionsHeader" : {
+    "message" : "アクセス解析性分類のドメイン例外",
+    "description" : "exception header title"
+  },
+
+  "analyticsExceptionsDescription" : {
+    "message" : "次のドメインに由来するアクセス解析性クッキーを拒否しないでください:",
+    "description" : "exception description"
+  },
+
+  "advertExceptionsHeader" : {
+    "message" : "広告性分類のドメイン例外",
+    "description" : "exception header title"
+
+  },
+
+  "advertExceptionsDescription" : {
+    "message" : "次のドメインに由来する広告性クッキーを拒否しないでください:",
+    "description" : "exception description"
+  },
+
+  "addButton" : {
+    "message" : "追加する",
+    "description" : "Text on button for adding list items"
+  },
+
+  "categoryStatisticsHeader" : {
+    "message" : "分類別の統計情報",
+    "description": "Header for the category statistics"
+  },
+
+  "categoryStatisticsDesc" : {
+    "message" : "現在、履歴に保存されているユニークなクッキーの数を分類別に表示します。ラベルのいずれかをクリックすると、現在のクッキー履歴のスナップショットが表示されます。",
+    "description" : "Description of the statistics."
+  },
+
+  "statsNecessary": {
+    "message": "$COUNT$ 必要性クッキーに分類されます。",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsFunctional": {
+    "message": "$COUNT$ 機能性クッキーに分類されます。",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsAnalytics": {
+    "message": "$COUNT$ アクセス解析性クッキーに分類されます。",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+  "statsAdvertising": {
+    "message": "$COUNT$ 広告性クッキーに分類されます。",
+    "placeholders": {
+      "count" : {
+        "content" : "$1"
+      }
+    }
+  },
+
+  "popupErrorTextGeneric": {
+    "message": "不明なエラーが発生しました！",
+    "description": "Generic error message."
+  },
+
+  "popupErrorTextRemove": {
+    "message": "例外の解除に失敗しました！",
+    "description": "Error message when trying to remove exception."
+  },
+
+  "popupErrorTextAdd": {
+    "message": "例外の追加に失敗しました！",
+    "description": "Error message when trying to add exception."
+  },
+
+  "defaultTitle": {
+    "message": "デフォルトの設定に戻す",
+    "description": "Restore defaults title"
+  },
+
+  "defaultDescription": {
+    "message": "このボタンは、拡張機能のデフォルト設定に戻します。",
+    "description": "Description for the restore defaults button."
+  },
+
+  "defaultButton": {
+    "message": "デフォルト設定に戻す",
+    "description": "Button text for resetting."
+  },
+
+  "defaultApplyText": {
+    "message": "デフォルトに戻しました！",
+    "description": "Defaults restored message that appears after clicking the button."
+  },
+
+  "clearDataTitle": {
+    "message": "クッキー履歴を消去する",
+    "description": "Title for the 'clear cookie data' button."
+  },
+
+  "clearDataDescription": {
+    "message": "このボタンは、現在のクッキー履歴を削除します。ブラウザ自体からクッキーを削除するわけではありません！",
+    "description": "Description for the 'clear cookie data' button."
+  },
+
+  "clearDataButton": {
+    "message": "履歴を消去する",
+    "description": "Clear data button label."
+  },
+
+  "clearDataText": {
+    "message": "履歴が一掃されました！",
+    "description": "Message that appears after hitting the clear data button."
+  },
+
+  "sliderTitle": {
+    "message": "必要性クッキーのバイアス",
+    "description": "Title for the slider."
+  },
+
+  "sliderDescription": {
+    "message": "上級者に限定。このスライダーは、CookieBlock がクッキーを「必要不可欠」クラスに割り当てる可能性を調整します。値を大きくすると、可能性が高くなります。この値を上げると、ウェブサイトの機能が壊れる頻度を減らすことができますが、正確さと潜在的なプライバシーの利益が犠牲になっています。",
+    "description": "Explanation of the slider"
+  },
+
+  "applyErrorText" : {
+    "message": "処理に失敗しました！",
+    "description": "Error message if something goes wrong with the buttons."
+  },
+
+  "historyConsentTitle" :  {
+    "message": "クッキーの履歴を記録する",
+    "description": "Description for the cookie history consent toggle."
+  },
+
+  "historyConsentDesc" :  {
+    "message": "このオプションを有効にすると、ウェブサイトからアクセスできないクッキーのローカル履歴を収集し、分類器の精度を向上させるために使用することに同意することになります。この履歴は完全にローカルなものであり、Cookieblock の外部からアクセスされることはありません。",
+    "description": "Description for the cookie history consent checkbox."
+  },
+
+  "closeButtonText" : {
+    "message": "タブを閉じる",
+    "description": "Label for the close button."
+  },
+
+  "cookieHistoryButtonLabel" : {
+    "message": "クッキー履歴 JSON をすべて表示する",
+    "description": "Label for the button to view the entire cookie history."
+  },
+
+  "predefTitle": {
+    "message": "あらかじめ定義されたクッキーの分類",
+    "description": "Header for cookie json section"
+  },
+
+  "predefDesc" : {
+    "message": "ここでは、既知の定義済みクッキーの分類を含む JSON ファイルへのパスを追加することができます。これは、分類エラーを手動で修正するために使用することができます。",
+    "description": "Description for cookie json section"
+  },
+
+  "predefPlaceholder" : {
+    "message": "クッキー JSON へのパス",
+    "description": "Placeholder text inside the entry box"
+  },
+
+  "predefIntegratedText" : {
+    "message": "統合されたクッキー分類を使用する",
+    "description": "Button that makes the extension use the integrated labels as fallback, if no JSON is found."
+  },
+
+  "cookieConfigSubtitle" : {
+    "message": "クッキーの設定",
+    "description": "Subtitle for the cookie config page."
+  },
+
+  "cookieConfigDescTitle" : {
+    "message": "取扱説明書",
+    "description": "Header for the cookie config page"
+  },
+
+  "cookieConfigDescPG1" : {
+    "message": "このページでは、個々のクッキーに対してカスタムカテゴリーを定義することができ、それは分類子の前に優先されます。リストのエントリをクリックすると、そのドメインによって作成されたクッキーが表示されます。透明なラベルは一時的なもので、分類子によって割り当てられたものです。不透明なラベルは永久的なもので、ユーザーによって割り当てられたものです。「再分類する」を選択すると、次にクッキーが観察されたときに新しいクラスが予測されます。",
+    "description": "First paragraph of the cookie config page instructions."
+  },
+
+  "cookieConfigDescPG2" : {
+    "message": "また、このメニューでは、特定のドメインに対する例外を定義したり、リスト内のそれぞれのボタンを押すことでブラウザから個々のクッキーを削除したり復元したりすることができます。",
+    "description": "Second paragraph of the cookie config page instructions."
+  },
+
+  "cookieConfigListTitle" : {
+    "message": "既知のクッキー",
+    "description": "Header for the cookie list."
+  },
+
+  "classOptionEmpty" : {
+    "message": "再分類する",
+    "description": "Button to repeat the classification for the cookie."
+  },
+
+  "classOption0" : {
+    "message": "必要性",
+    "description": "Necessary label in the cookie config page."
+  },
+
+  "classOption1" : {
+    "message": "機能性",
+    "description": "Functionality label in the cookie config page."
+  },
+
+  "classOption2" : {
+    "message": "アクセス解析性",
+    "description": "Analytics label in the cookie config page."
+  },
+
+  "classOption3" : {
+    "message": "広告性",
+    "description": "Advertising label in the cookie config page."
+  },
+
+  "configDropdownFalse" : {
+    "message": "-",
+    "description": "Shown if no exemption is given for a domain."
+  },
+
+  "configDropdownTrue" : {
+    "message": "免除する",
+    "description": "Shown when the cookie domain is exempted from categorization."
+  },
+
+  "configButtonRemove" : {
+    "message": "削除する",
+    "description": "Button to remove a specific cookie."
+  },
+
+  "configButtonRestore" : {
+    "message": "元に戻す",
+    "description": "Button to restore a previously removed cookie."
+  },
+
+  "configButtonRemoveAll" : {
+    "message": "全て削除する",
+    "description": "Button to remove all cookies of a domain."
+  },
+
+  "configExpandDesc": {
+    "message": "項目をクリックすると、その内容が表示されます。",
+    "description": "Instruction on the config page."
+  },
+
+  "configButtonExport": {
+    "message": "JSON でエクスポートする",
+    "description": "Button to export the cookie configuration as a known_cookies.json"
+  },
+
+  "configButtonRefresh": {
+    "message": "更新する",
+    "description": "Button to refresh the cookie history."
+  },
+
+  "configNoCookies": {
+    "message": "履歴にクッキーは記録されていません！",
+    "description": "Error message if no cookies have been seen since the extension was installed."
+  },
+
+  "configLoadError": {
+    "message": "クッキーの履歴を読み込めませんでした！",
+    "description": "Error message if the cookie history failed to load."
+  },
+
+  "udTitle" : {
+    "message": "ユーザー定義のクッキー分類",
+    "description": "Title for the button in the options page that opens the cookie config page"
+  },
+
+  "udDescription": {
+    "message":"下のボタンを押すと、クッキーの設定画面が表示されます。そこでは、履歴の中の個々のクッキーのラベルを変更することができます。また、ブラウザから手動で個々のクッキーを削除したり、復元したりすることもできます。",
+    "description": "Description for the button in the options page that opens the cookie config page"
+  },
+
+  "udButton": {
+    "message": "クッキーの設定ページを開く",
+    "description": "Button in the options page that opens the cookie config page"
+  },
+
+  "inputErrorInvalid": {
+    "message": "入力されたのは有効なドメイン名ではありません！",
+    "description": "Message that appears if the domain input had invalid characters or format."
+  },
+
+  "inputErrorDuplicate": {
+    "message": "重複入力。すでにリストに存在しています！",
+    "description": "Message that appears if the input is a duplicate."
+  },
+
+  "inputErrorNoResolve": {
+    "message": "指定された JSON URL が無効であるか、解決できませんでした！",
+    "description": "Message that appears if json path is invalid or cannot be resolved."
+  },
+
+  "inputErrorNoJSON": {
+    "message": "指定されたパスが有効な JSON ファイルではないか、期待された形式ではありません！"
+  }
+
+}
