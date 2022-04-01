@@ -90,7 +90,10 @@
             "li_rm": 0,
             "bcookie": 0,
             "lidc": 0,
-            "visit": 0
+            "visit": 0,
+            "bscookie": 0,
+            "li_theme": 1,
+            "li_theme_set": 1
         },
         "magix.com": {
             "mgxLoginCheck": 0,
@@ -156,7 +159,34 @@
             "atuserid": 0,
             "AL_SESS-S": 0
         },
+        "askubuntu.com": {
+            "acct": 0
+        },
+        "mathoverflow.com": {
+            "acct": 0
+        },
+        "blogoverflow.com": {
+            "acct": 0
+        },
+        "serverfault.com": {
+            "acct": 0
+        },
+        "stackoverflow.com": {
+            "acct": 0
+        },
         "stackexchange.com": {
+            "acct": 0
+        },
+        "stackapps.com": {
+            "acct": 0
+        },
+        "superuser.com": {
+            "acct": 0
+        },
+        "tex-talk.com": {
+            "acct": 0
+        },
+        "stackauth.com": {
             "acct": 0
         },
         "patreon.com": {
