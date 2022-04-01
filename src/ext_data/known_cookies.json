@@ -9,7 +9,10 @@
         "cf_use_ob": 0,
         "__cfwaitingroom": 0,
         "__cfruid": 0,
-        "cf_clearance": 0
+        "cf_clearance": 0,
+        "__cmpAcceptedPurposes": 0,
+        "pubconsent-v2": 0,
+        "consentUUID": 0
     },
     "domain_match": {
 
@@ -79,14 +82,15 @@
             "brcap": 0,
             "stsservicecookie": 0
         },
-        "linkedin.com":{
+        "linkedin.com": {
             "li_at":0,
             "liap": 0,
             "JSESSIONID": 0,
             "chp_token": 0,
             "li_rm": 0,
             "bcookie": 0,
-            "lidc": 0
+            "lidc": 0,
+            "visit": 0
         },
         "magix.com": {
             "mgxLoginCheck": 0,
@@ -193,7 +197,6 @@
         },
         "zdf.de": {
             "OptanonAlertBoxClosed": 1,
-            "OptanonConsent": 1,
             "iom_consent": 1,
             "atidvisitor": 2
         },
@@ -237,6 +240,32 @@
         },
         "ethz.ch": {
             "IAMUserTokenPRD_authnSession": 0
+        },
+        "corriere.it": {
+            "__ABTcorriere_ct": 0,
+            "__CPcorriere_ct": 0,
+            "__GDPRcorriere_ct": 0
+        },
+        "ryanair.com": {
+            "RY_COOKIE_CONSENT": 0
+        },
+        "swisscom.ch": {
+            "CONSENTMGR": 0
+        },
+        "pipedrive.com": {
+            "__tld__": 0
+        },
+        "instagram.com": {
+            "ds_user_id": 0,
+            "sessionid": 0
+        },
+        "gommadiretto.it": {
+            "__cmpcccu25422": 0,
+            "__cmpconsent25422": 0
+        },
+        "consentmanager.net": {
+            "__cmpcccu25422": 0,
+            "__cmpconsent25422": 0
         }
     },
     "domain_regex": {
