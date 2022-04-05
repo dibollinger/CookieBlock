@@ -163,7 +163,7 @@ See also the following repositories for other components that were developed as 
 * [Cookie Consent Classifier](https://github.com/dibollinger/CookieBlock-Consent-Classifier)
 * [Violation Detection](https://github.com/dibollinger/CookieBlock-Other-Scripts)
 * [Prototype Consent Crawler](https://github.com/dibollinger/CookieBlock-Crawler-Prototype)
-* [Collected Data](https://drive.google.com/drive/folders/1P2ikGlnb3Kbb-FhxrGYUPvGpvHeHy5ao)
+* [Collected Data](https://zenodo.org/record/5633670)
 
 
 ## License
