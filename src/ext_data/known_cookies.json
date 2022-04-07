@@ -296,6 +296,12 @@
         "consentmanager.net": {
             "__cmpcccu25422": 0,
             "__cmpconsent25422": 0
+        },
+        "airbnb.com": {
+            "_user_attributes": 0
+        },
+        "parlament.ch": {
+            "PdInternet_UserLanguage": 0
         }
     },
     "domain_regex": {
