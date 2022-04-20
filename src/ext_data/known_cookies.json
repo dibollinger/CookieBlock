@@ -201,6 +201,11 @@
             "datr": 0,
             "c_user": 0
         },
+        "messenger.com": {
+            "_js_datr": 0,
+            "c_user": 0,
+            "xs": 0
+        },
         "iherb.com": {
             "__asc": 2,
             "__auc": 2,
