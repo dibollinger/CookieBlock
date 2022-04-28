@@ -273,9 +273,15 @@
             "consentLevel": 0,
             "uiconsent": 0
         },
-        "ethz.ch": {
+        "lehrbetrieb.ethz.ch ": {
             "IAMUserTokenPRD": 0,
-            "IAMUserTokenPRD_authnSession": 0,
+            "IAMUserTokenPRD_authnSession": 0
+        },
+        "bi.id.ethz.ch ": {
+            "IAMUserTokenPRD": 0,
+            "IAMUserTokenPRD_authnSession": 0
+        },
+        "aai-bitest.ethz.ch": {
             "IAMUserTokenQSS": 0,
             "IAMUserTokenQSS_authnSession": 0,
             "IAMUserTokenTST": 0,
