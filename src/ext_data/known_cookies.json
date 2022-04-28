@@ -274,7 +274,14 @@
             "uiconsent": 0
         },
         "ethz.ch": {
-            "IAMUserTokenPRD_authnSession": 0
+            "IAMUserTokenPRD": 0,
+            "IAMUserTokenPRD_authnSession": 0,
+            "IAMUserTokenQSS": 0,
+            "IAMUserTokenQSS_authnSession": 0,
+            "IAMUserTokenTST": 0,
+            "IAMUserTokenTST_authnSession": 0,
+            "IAMUserTokenDEV": 0,
+            "IAMUserTokenDEV_authnSession": 0
         },
         "corriere.it": {
             "__ABTcorriere_ct": 0,
