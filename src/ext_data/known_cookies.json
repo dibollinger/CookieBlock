@@ -320,6 +320,9 @@
         },
         "parlament.ch": {
             "PdInternet_UserLanguage": 0
+        },
+        "digitec.ch": {
+            ".plistsc": 0
         }
     },
     "domain_regex": {
