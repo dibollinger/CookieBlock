@@ -323,6 +323,9 @@
         },
         "digitec.ch": {
             ".plistsc": 0
+        },
+        "hotcrp.com": {
+            "hotcrpsession": 0
         }
     },
     "domain_regex": {
