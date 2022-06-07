@@ -10,12 +10,12 @@
   "description": "__MSG_manifestDescription__",
 
   "icons": {
-    "16": "icons/cookieblock-16.png",
-    "32": "icons/cookieblock-32.png",
-    "48": "icons/cookieblock-48.png",
-    "64": "icons/cookieblock-64.png",
-    "96": "icons/cookieblock-96.png",
-    "128": "icons/cookieblock-128.png"
+    "16": "/icons/cookieblock-16.png",
+    "32": "/icons/cookieblock-32.png",
+    "48": "/icons/cookieblock-48.png",
+    "64": "/icons/cookieblock-64.png",
+    "96": "/icons/cookieblock-96.png",
+    "128": "/icons/cookieblock-128.png"
   },
 
   "permissions": [
@@ -27,12 +27,12 @@
   ],
 
   "background": {
-    "page": "background/cookieblock_background.html"
+    "page": "/background/cookieblock_background.html"
   },
 
   "options_ui": {
     "browser_style": true,
-    "page": "options/cookieblock_options.html",
+    "page": "/options/cookieblock_options.html",
     "open_in_tab": true
   },
 
@@ -47,7 +47,7 @@
       "128": "/icons/cookieblock-128.png"
     },
     "default_title": "CookieBlock",
-    "default_popup": "popup/cookieblock_popup.html"
+    "default_popup": "/popup/cookieblock_popup.html"
   },
 
   "browser_specific_settings": {

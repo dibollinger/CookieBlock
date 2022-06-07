@@ -284,7 +284,7 @@ const setupFeatureResourcesCallback = function(fconfig) {
 };
 
 // retrieve the configuration
-getExtensionFile(chrome.runtime.getURL("ext_data/features.json"), "json", setupFeatureResourcesCallback);
+getExtensionFile(chrome.runtime.getURL("/ext_data/features.json"), "json", setupFeatureResourcesCallback);
 
 
 // Features extracted for each unique cookie

@@ -8,7 +8,7 @@
       "desc" : "One-hot vector where the K-th entry indicates whether the cookie name matches the K-th name. The name ranking is sourced from an external csv file.",
       "function": "feature_top_names",
       "setup": "setup_top_names",
-      "source": "ext_data/resources/top_names.txt",
+      "source": "/ext_data/resources/top_names.txt",
       "enabled": true,
       "vector_size": 500,
       "args": {}
@@ -18,7 +18,7 @@
       "desc": "One-hot vector where the K-th entry indicates whether the cookie domain matches the K-th domain. The domain ranking is sourced from an external csv file",
       "function": "feature_top_domains",
       "setup" : "setup_top_domains",
-      "source": "ext_data/resources/top_domains.txt",
+      "source": "/ext_data/resources/top_domains.txt",
       "enabled": true,
       "vector_size": 500,
       "args": {}
@@ -28,7 +28,7 @@
       "desc": "One-hot vector where the K-th entry indicates whether the cookie name matches the K-th pattern.\n Pattern cookies are hereby families of cookies originating from the same source which have the same content structure, but have a unique or randomized identifier in their names. \n These identifiers are matched by the regular expression patterns which are sourced from an external csv file.",
       "function": "feature_pattern_names",
       "setup": "setup_pattern_names",
-      "source": "ext_data/resources/cookie_name_patterns.txt",
+      "source": "/ext_data/resources/cookie_name_patterns.txt",
       "enabled": true,
       "vector_size": 50,
       "args": {}
@@ -38,7 +38,7 @@
       "desc": "Binary encoding where the k-th entry indicates whether the kth token appears in the cookie name. \n The terms are hereby selected from the most common english terms observed in cookie names over a separate dataset. This data is sourced from an external text file.",
       "function": "feature_name_tokens",
       "setup": "setup_name_features",
-      "source": "ext_data/resources/name_features_filtered.txt",
+      "source": "/ext_data/resources/name_features_filtered.txt",
       "enabled": true,
       "vector_size": 500,
       "args": {}
@@ -48,7 +48,7 @@
       "desc": "Binary indicator of whether the cookie's domain is part of the IABEurope vendor list. (date: 23.12.20)\n These vendors are third-parties registered with IABEurope's TCF, which may perform data collection on the visitor.",
       "function": "feature_iab_vendor",
       "setup": "setup_iabeurope_vendors",
-      "source": "ext_data/resources/iabeurope_vendors.txt",
+      "source": "/ext_data/resources/iabeurope_vendors.txt",
       "enabled": true,
       "vector_size": 1,
       "args": {}
@@ -294,7 +294,7 @@
       "desc": "Binary Vector. K-th entry is set to 1 if the k-th term has been found in the cookie value. The terms are sourced from an external file, which has been collected from a set of random cookies.",
       "function": "feature_english_terms_in_content",
       "setup": "setup_content_terms",
-      "source": "ext_data/resources/content_terms_filtered.txt",
+      "source": "/ext_data/resources/content_terms_filtered.txt",
       "enabled": true,
       "vector_size": 500,
       "args": {}
