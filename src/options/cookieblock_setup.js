@@ -53,7 +53,7 @@ const setupInitPage = async function() {
     setupLocalization();
 
     necessaryCheckbox.checked = true;
-    functionalityCheckbox.checked = false;
+    functionalityCheckbox.checked = true;
     analyticsCheckbox.checked = false;
     advertisingCheckbox.checked = false;
     histCheckbox.checked = false;
