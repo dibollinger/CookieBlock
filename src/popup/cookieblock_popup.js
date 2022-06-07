@@ -11,6 +11,7 @@ Released under the MIT License, see included LICENSE file.
 const pauseCheckbox = document.getElementById("pause-check");
 const configButton = document.getElementById("config");
 const exceptionButton = document.getElementById("add-exception");
+const popupLogo = document.getElementById("popup-logo")
 
 const addText = chrome.i18n.getMessage("popupButtonAdd");
 const removeText = chrome.i18n.getMessage("popupButtonRemove");
@@ -58,6 +59,7 @@ const popupSetup = async function() {
     }
 
     pauseCheckbox.checked = await getStorageValue(chrome.storage.local, "cblk_pause");
+    popupLogo.src = pauseCheckbox.checked ? "/icons/gs-cookieblock-96.png" : "/icons/cookieblock-96.png";
 
     chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
         let currentURL = tabs[0].url;
@@ -137,6 +139,8 @@ chrome.storage.onChanged.addListener(updateSelectionOnChange);
 pauseCheckbox.addEventListener("click", async () => {
     let pauseStatus = pauseCheckbox.checked;
     setStorageValue(pauseStatus, chrome.storage.local, "cblk_pause");
+    chrome.browserAction.setIcon(pauseStatus ? grayScaleIcon : defaultIcon);
+    popupLogo.src = pauseStatus ? "/icons/gs-cookieblock-96.png" : "/icons/cookieblock-96.png";
 });
 
 // On click, get the current tab URL and add it to the global exceptions

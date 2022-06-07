@@ -462,6 +462,7 @@ histCheckbox.addEventListener("click", (ev) => {
 // pause checkbox
 pauseCheckbox.addEventListener("click", (ev) => {
     setStorageValue( pauseCheckbox.checked, chrome.storage.local, "cblk_pause");
+    chrome.browserAction.setIcon(pauseCheckbox.checked ? grayScaleIcon : defaultIcon);
 });
 
 const message_openJSON = (inMSG) => {

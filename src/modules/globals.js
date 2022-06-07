@@ -9,6 +9,34 @@ Released under the MIT License, see included LICENSE file.
 //-------------------------------------------------------------------------------
 
 
+// CookieBlock icon in color, default
+const defaultIcon =
+{
+    "path":
+    {
+        "16": "/icons/cookieblock-16.png",
+        "32": "/icons/cookieblock-32.png",
+        "48": "/icons/cookieblock-48.png",
+        "64": "/icons/cookieblock-64.png",
+        "96": "/icons/cookieblock-96.png",
+        "128": "/icons/cookieblock-128.png"
+    }
+};
+
+// CookieBlock icon in grayscale, when deactivated
+const grayScaleIcon =
+{
+    "path":
+    {
+        "16": "/icons/gs-cookieblock-16.png",
+        "32": "/icons/gs-cookieblock-32.png",
+        "48": "/icons/gs-cookieblock-48.png",
+        "64": "/icons/gs-cookieblock-64.png",
+        "96": "/icons/gs-cookieblock-96.png",
+        "128": "/icons/gs-cookieblock-128.png"
+    }
+};
+
 const enableExtraOptions = false;
 
 /**
