@@ -1,9 +1,9 @@
 .idea/
 .vscode/
 web-ext-artifacts
-nodejs-feature-extractor/training_data/*.json
-nodejs-feature-extractor/node_modules/*
-nodejs-feature-extractor/outputs/class_weights.txt
-nodejs-feature-extractor/outputs/prediction_stats.log
-nodejs-feature-extractor/outputs/processed.libsvm
-nodejs-feature-extractor/outputs/feature_map.txt
+node-feature-extractor/training_data/*.json
+node-feature-extractor/node_modules/*
+node-feature-extractor/outputs/class_weights.txt
+node-feature-extractor/outputs/prediction_stats.log
+node-feature-extractor/outputs/processed.libsvm
+node-feature-extractor/outputs/feature_map.txt
