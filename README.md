@@ -118,9 +118,11 @@ By reporting broken websites, you can help us keep an updated list of cookie exc
 
 ## Credits
 
-### Logo Design
-
-Many thanks go to Charmaine Coates for designing the awesome CookieBlock logo!
+* CookieBlock logo designed by Charmaine Coates.
+* Czech translation provided by Karel Kubicek.
+* Japanese translation provided by Shitennouji.
+* Spanish translation provided by @6ig6oy.
+* Machine-provided localization performed using DeepL.
 
 ### Libraries
 
@@ -163,7 +165,7 @@ See also the following repositories for other components that were developed as 
 * [Cookie Consent Classifier](https://github.com/dibollinger/CookieBlock-Consent-Classifier)
 * [Violation Detection](https://github.com/dibollinger/CookieBlock-Other-Scripts)
 * [Prototype Consent Crawler](https://github.com/dibollinger/CookieBlock-Crawler-Prototype)
-* [Collected Data](https://zenodo.org/record/5838646)
+* [Collected Data](https://doi.org/10.5281/zenodo.5838646)
 
 
 ## License

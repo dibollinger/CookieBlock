@@ -1,0 +1,5 @@
+Um eine möglichst genaue Cookie-Kategorisierung zu ermöglichen, kann der Benutzer wählen, einen Verlauf der Cookies aufzuzeichnen. Dieser ist von der browserinternen Cookie-Speicherung getrennt und dient dazu, der Erweiterung zu ermöglichen, sich an frühere Kategorisierungen zu erinnern.
+
+Dieser Cookie-Verlauf wird vollständig lokal gespeichert und verlässt niemals die Browser-Erweiterung. Externe Websites haben keinen Zugriff auf diesen Cookie-Verlauf. Außerdem kann die Erfassung dieser Daten jederzeit deaktiviert werden. Wenn diese Option deaktiviert ist, versucht die Erweiterung stattdessen, jedes Cookie nur auf der Grundlage der aktuellen Aktualisierung für dieses Cookie zu klassifizieren, und es wird kein Verlauf gespeichert.
+
+Schließlich speichert CookieBlock auch die Anzahl der zugewiesenen Cookie Kategorien. Dies speichert keine sensiblen Informationen und dient nur dazu, den Benutzer zu informieren.

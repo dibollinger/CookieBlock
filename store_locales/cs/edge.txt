@@ -1,0 +1,15 @@
+CookieBlock je rozšíření prohlížeče, které umožňuje automaticky odstraňovat soubory cookie, které nerespektují vaše soukromí. Pomocí pokročilé technologie strojového učení kategorizuje soubory cookie do čtyř různých účelů. Jsou to "Nezbytné", "Funkční", "Analytické" a "Reklamní", které pak uživatel může jednotlivě povolit nebo odmítnout.
+
+Na rozdíl od otravných bannerů se soubory cookie, které přerušují prohlížení webu, vyžaduje CookieBlock pouze jedno definování zásad a zaručuje, že typy souborů cookie, které odmítnete, budou z prohlížeče skutečně odstraněny. CookieBlock navíc funguje na jakýchkoli webových stránkách, které navštívíte, a nespoléhá se na poctivost hostitele webových stránek.
+
+Díky tomu CookieBlock dokonale doplňuje rozšíření, která se snaží odstranit otravné bannery se soubory cookie z vašeho prohlížení, a zároveň vám umožňuje zachovat si soukromí.
+
+Tento doplněk byl vytvořen členy skupiny pro informační bezpečnost katedry informatiky na ETH Zürich a byl vyvinut v rámci diplomové práce: "Analýza souladu souborů cookie s GDPR" (https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/477333/Bollinger_Dino.pdf).
+
+Je také představen na 31. sympoziu USENIX Security Symposium: https://www.usenix.org/conference/usenixsecurity22/presentation/bollinger.
+
+* Domovská stránka: https://karelkubicek.github.io/post/cookieblock
+
+* Formulář pro zpětnou vazbu: https://forms.gle/tL21ruvPZq2q218P8
+
+* Zdrojový kód: https://github.com/dibollinger/CookieBlock

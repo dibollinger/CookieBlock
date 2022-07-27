@@ -1,0 +1,13 @@
+CookieBlock es una extensión del navegador que le permite eliminar automáticamente las cookies que no respetan su privacidad. Mediante el uso de tecnología avanzada de aprendizaje automático, clasifica las cookies en cuatro propósitos distintos. Estas son: "Necesarias", "Funcionales", "Analíticas" y "Publicitarias", que el usuario puede permitir o rechazar individualmente.
+
+A diferencia de los molestos banners de cookies que interrumpen su experiencia de navegación, CookieBlock sólo requiere que usted defina su política una vez, y además garantiza que los tipos de cookies que usted rechaza son realmente eliminados de su navegador. Además, CookieBlock funciona en cualquier sitio web que visite, y no depende de la honestidad del anfitrión del sitio web.
+
+Como resultado, CookieBlock complementa perfectamente las extensiones que buscan eliminar los molestos banners de cookies de su experiencia de navegación, permitiéndole preservar su privacidad al mismo tiempo.
+
+Este complemento ha sido construido por miembros del Grupo de Seguridad de la Información del Departamento de Informática de la ETH Zürich, y fue desarrollado como parte de la tesis de máster "Análisis del cumplimiento de las cookies con el GDPR".
+
+También aparece en el 31º Simposio de Seguridad de USENIX: https://www.usenix.org/conference/usenixsecurity22/presentation/bollinger
+
+* Página web: https://karelkubicek.github.io/post/cookieblock
+
+* Código fuente: https://github.com/dibollinger/CookieBlock

@@ -1,0 +1,38 @@
+------------------------------------------------------------------------------------------------------------------
+Name:
+CookieBlock
+
+------------------------------------------------------------------------------------------------------------------
+Summary:
+
+Aplica automáticamente las preferencias de consentimiento de cookies para proteger su privacidad en cualquier sitio web que visite.
+
+------------------------------------------------------------------------------------------------------------------
+Description:
+
+CookieBlock es una extensión del navegador que te permite eliminar automáticamente las cookies que no respetan tu privacidad. Mediante el uso de tecnología avanzada de aprendizaje automático, clasifica las cookies en cuatro propósitos distintos. Estas son: "Necesarias", "Funcionales", "Analíticas" y "Publicitarias", que el usuario puede permitir o rechazar individualmente.
+
+A diferencia de los molestos banners de cookies que interrumpen su experiencia de navegación, CookieBlock sólo requiere que usted defina su política una vez, y garantiza que los tipos de cookies que usted rechaza son realmente eliminados de su navegador. Además, CookieBlock funciona en cualquier sitio web que visite, y no depende de la honestidad del anfitrión del sitio web.
+
+Como resultado, CookieBlock complementa perfectamente las extensiones que buscan eliminar los molestos banners de cookies de su experiencia de navegación, permitiéndole preservar su privacidad al mismo tiempo.
+
+Este complemento ha sido construido por miembros del Grupo de Seguridad de la Información del Departamento de Ciencias Informáticas de la ETH Zürich, y fue desarrollado como parte de la tesis de máster "Analyzing Cookies Compliance with the GDPR" .
+
+También se presenta en el 31º Simposio de Seguridad de USENIX: https://www.usenix.org/conference/usenixsecurity22/presentation/bollinger
+
+    Página web: https://karelkubicek.github.io/post/cookieblock
+    Formulario de comentarios: https://forms.gle/tL21ruvPZq2q218P8
+    Código fuente: https://github.com/dibollinger/CookieBlock
+
+------------------------------------------------------------------------------------------------------------------
+Email:
+cookie.block.extension@gmail.com
+
+------------------------------------------------------------------------------------------------------------------
+Website:
+https://karelkubicek.github.io/post/cookieblock
+
+------------------------------------------------------------------------------------------------------------------
+Developer Comments:
+
+Tenga en cuenta que la clasificación puede no ser siempre perfectamente precisa, y algunos sitios web pueden romper con la eliminación de algunas cookies. Si esto ocurre, por favor informe del problema. Mientras tanto, puedes intentar añadir una excepción para el dominio que intentas utilizar, o pausar temporalmente la eliminación de cookies. Intentaremos mejorar el rendimiento y la precisión de CookieBlock a medida que el desarrollo continúe.

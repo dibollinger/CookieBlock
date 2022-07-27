@@ -1,0 +1,6 @@
+
+* English and German versions of the store page text were done manually.
+
+* Czech, Spanish and Japanese versions of the store page translation were done using automatic translation.
+
+Please point out any error you may find.

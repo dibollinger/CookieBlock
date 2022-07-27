@@ -1,0 +1,17 @@
+================================
+Chrome Store Page
+================================
+
+CookieBlock is a browser extension that allows you to automatically remove cookies that do not respect your privacy. Through the use of advanced machine-learning technology, it categorizes cookies into four distinct purposes. These are "Necessary", "Functionality", "Analytics" and "Advertising", which the user then has the power to permit or reject individually.
+
+Unlike nagging cookie banners that interrupt your browsing experience, CookieBlock only requires that you define your policy once, and furthermore guarantees that the types of cookies you reject are actually removed from your browser. Moreover, CookieBlock works on any website you visit, and does not rely on the honesty of the website host.
+
+As a result, CookieBlock perfectly complements extensions that seek to remove annoying cookie banners from your browsing experience, allowing you to preserve your privacy at the same time.
+
+This add-on has been built by members of the Information Security Group of the Computer Science Department at ETH Zürich, and was developed as part of the master thesis "Analyzing Cookies Compliance with the GDPR".
+
+It is also featured at the 31st USENIX Security Symposium: https://www.usenix.org/conference/usenixsecurity22/presentation/bollinger
+
+* Homepage: https://karelkubicek.github.io/post/cookieblock
+
+* Source Code: https://github.com/dibollinger/CookieBlock

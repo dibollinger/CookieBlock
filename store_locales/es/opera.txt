@@ -1,0 +1,33 @@
+------------------------------------------------------------------------
+Summary:
+
+Aplica automáticamente las preferencias de consentimiento de cookies para proteger su privacidad en cualquier sitio web que visite.
+
+------------------------------------------------------------------------
+Description:
+
+CookieBlock es una extensión del navegador que te permite eliminar automáticamente las cookies que no respetan tu privacidad. Mediante el uso de tecnología avanzada de aprendizaje automático, clasifica las cookies en cuatro propósitos distintos. Estas son: "Necesarias", "Funcionales", "Analíticas" y "Publicitarias", que el usuario puede permitir o rechazar individualmente.
+
+A diferencia de los molestos banners de cookies que interrumpen su experiencia de navegación, CookieBlock sólo requiere que usted defina su política una vez, y garantiza que los tipos de cookies que usted rechaza son realmente eliminados de su navegador. Además, CookieBlock funciona en cualquier sitio web que visite, y no depende de la honestidad del anfitrión del sitio web.
+
+Como resultado, CookieBlock complementa perfectamente las extensiones que buscan eliminar los molestos banners de cookies de su experiencia de navegación, permitiéndole preservar su privacidad al mismo tiempo.
+
+Este complemento ha sido construido por miembros del Grupo de Seguridad de la Información del Departamento de Ciencias Informáticas de la ETH Zürich, y fue desarrollado como parte de la tesis de máster "Analyzing Cookies Compliance with the GDPR" .
+
+También se presenta en el 31º Simposio de Seguridad de USENIX: https://www.usenix.org/conference/usenixsecurity22/presentation/bollinger
+
+- Página web: https://karelkubicek.github.io/post/cookieblock
+- Formulario de comentarios: https://forms.gle/tL21ruvPZq2q218P8
+
+------------------------------------------------------------------------
+Changelog:
+
+Actualización de la extensión a 1.0.0
+
+Cambios:
+- Arreglar varios problemas con sitios web rotos
+- Reescribir las descripciones de la página de opciones, configuración de cookies y configuración por primera vez.
+- Se ha hecho el diseño de dichas páginas más conciso y se han corregido algunos problemas con ellas.
+- Reemplazar las llamadas obsoletas de `extension.getURL()`.
+- Arreglar la entrada de la lista de marcadores de posición en la configuración de las cookies, y otros problemas menores.
+

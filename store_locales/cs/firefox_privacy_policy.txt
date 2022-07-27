@@ -1,0 +1,5 @@
+Za účelem zajištění přesnějších možností kategorizace souborů cookie lze CookieBlock nakonfigurovat tak, aby zaznamenával historii všech souborů cookie, se kterými se uživatel setkal při procházení webu. Tato historie je oddělena od interního úložiště souborů cookie prohlížeče a slouží k tomu, aby si rozšíření pamatovalo předchozí kategorizace a sledovalo aktualizace souborů cookie.
+
+Tato historie souborů cookie se ukládá výhradně lokálně a nikdy neopustí rozšíření prohlížeče. Externí webové stránky nemají k této historii souborů cookie přístup. Shromažďování těchto údajů lze navíc kdykoli zakázat. Pokud je zakázáno, rozšíření se místo toho pokusí klasifikovat každý soubor cookie pouze na základě aktuální aktualizace daného souboru cookie a žádná historie se neuchovává.
+
+A konečně, CookieBlock také sleduje počet přiřazených štítků souborů cookie. Neukládá žádné citlivé informace a slouží pouze k informování uživatele.

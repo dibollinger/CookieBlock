@@ -1,0 +1,9 @@
+================================
+Firefox Privacy Policy
+================================
+
+In order to provide more accurate cookie categorization capabilities, CookieBlock can be configured to record a history of all cookies encountered by the user while browsing the web. This history is separate from the browser-internal cookie storage, and serves to allow the extension to remember previous categorizations, and to keep track of cookie updates.
+
+This cookie history is stored entirely locally, and will never leave the browser extension. External websites do not have access to this cookie history. Moreover, the collection of this data can be disabled at any time. If disabled, the extension will instead try to classify each cookie based only on the current update for that cookie, and no history is kept.
+
+Finally, CookieBlock also keeps track of the number of assigned cookie labels. This does not store any sensitive information, and only serves to inform the user.

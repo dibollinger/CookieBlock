@@ -1,0 +1,5 @@
+Con el fin de proporcionar capacidades de categorización de cookies más precisas, CookieBlock puede ser configurado para registrar un historial de todas las cookies encontradas por el usuario mientras navega por la web. Este historial es independiente del almacenamiento interno de cookies del navegador, y sirve para que la extensión recuerde las categorizaciones anteriores y haga un seguimiento de las actualizaciones de las cookies.
+
+Este historial de cookies se almacena enteramente a nivel local, y nunca saldrá de la extensión del navegador. Los sitios web externos no tienen acceso a este historial de cookies. Además, la recopilación de estos datos puede desactivarse en cualquier momento. Si se desactiva, la extensión intentará clasificar cada cookie basándose únicamente en la actualización actual de esa cookie, y no se guardará ningún historial.
+
+Por último, CookieBlock también hace un seguimiento del número de etiquetas de cookies asignadas. Esto no almacena ninguna información sensible, y sólo sirve para informar al usuario.
