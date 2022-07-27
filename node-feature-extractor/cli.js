@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 //-------------------------------------------------------------------------------
 /*
-Copyright (C) 2021 Dino Bollinger, ETH Zürich, Information Security Group
+Copyright (C) 2021-2022 Dino Bollinger, ETH Zürich, Information Security Group
 
 This file is part of CookieBlock.
 

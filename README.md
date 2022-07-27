@@ -1,9 +1,8 @@
 # CookieBlock Browser Extension
 
-CookieBlock is a browser extension that automatically enforces your GDPR consent preferences for cookies. It classifies cookies on-the-fly into four distinct categories, and deletes those that the user did not consent to.
+CookieBlock is a browser extension that automatically enforces your GDPR consent preferences for browser cookies. It classifies cookies on-the-fly into four distinct categories, and deletes those that the user did not consent to.
 
-This can help enforce user privacy without having to rely on the website hosting the cookies.
-
+This helps enforce user privacy without having to rely on the website hosting the cookies.
 
 ## Table of Contents
 
@@ -46,25 +45,32 @@ If you would like to submit feedback, or report websites that break because of t
 
 ## Build Instructions
 
-No requirements outside of what is contained in this repository is needed to build CookieBlock. Simply pack the contents of the subfolder `src` into a zip file, and you can install it into your browser.
+No requirements outside of what is contained in this repository is needed to build CookieBlock. Simply pack the contents of the subfolder `src` into a zip file, and you can install it into your browser. More information [here](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/).
 
 Alternatively, you can also install __npm__ and use the [web-ext](https://github.com/mozilla/web-ext) command-line tool, with the command `web-ext build`.
 
 ### Reproducing the Model Files
 
 The model files are constructed in the following process:
-1. Scrape so-called Consent Management Platforms for cookie labels, using a [web crawler](https://github.com/dibollinger/CookieBlock-Consent-Crawler).
-2. Extract from the resulting database the training cookies into a JSON format (a script for this is included in the above link).
-3. Use the [feature extractor](nodejs-feature-extractor/cli.js) to transform the cookies JSON into a sparse LibSVM matrix representation.
-4. Provide this LibSVM with the associated class weights as input to the  XGBoost classifier implementation found in [this repository](https://github.com/dibollinger/CookieBlock-Consent-Classifier).
-5. Execute a secondary script to transform the XGBoost model into a minified JSON tree structure. This script produces the four model files `forest_class0.json` to `forest_class3.json`.
+1. Run a webcrawler to collect browser cookies and categories from Consent Management Providers. The relevant code is found [here](https://github.com/dibollinger/CookieBlock-Consent-Crawler/tree/main/crawler).
+2. Extract from the resulting database the training cookies, in JSON format. The script for this is found [here](https://github.com/dibollinger/CookieBlock-Consent-Crawler/tree/main/database_processing).
+3. Use the [feature extractor in this repository](nodejs-feature-extractor/cli.js) to transform the cookies JSON into a sparse LibSVM matrix representation.
+4. Provide this LibSVM with the associated class weights as input to the XGBoost classifier implementation (`xgb_train.py`) found in [this repository](https://github.com/dibollinger/CookieBlock-Consent-Classifier/tree/main/classifiers).
+5. Execute a secondary Python script (`xgboost_small_dump.py`) to transform the XGBoost model into a minified JSON tree structure. This script produces the four model files `forest_class0.json` to `forest_class3.json`.
+6. Copy these files into the folder:
+```
+./src/ext_data/model/
+```
+And replace the existing forest class files. Make sure to preserve their names as is.
+
 
 ## How It Works
 
-The policy enforcement process is a background script that executes every time a cookie event is raised in the browser. If this event indicates that a cookie was added or updates, the extension will proceed to store the cookie in a local history
+The policy enforcement process is a background script that executes every time a cookie event is raised in the browser. If this event indicates that a cookie was added or updated, the extension will store the cookie in a local history
 of cookie updates, and then perform a classification for that cookie.
 
-The category for each cookie is predicted using a forest of decision trees model trained via the XGBoost classifier, and a set of feature extraction steps. First, the cookie is turned into a numerical vector, which is then provided as an input to the forest of trees. This produces a score for each class, and the best score is the class that gets assigned to the cookie.
+The category for each cookie is predicted using a forest of decision trees model trained via the XGBoost classifier, and a set of feature extraction steps.
+First, the cookie is turned into a numerical vector, which is then provided as an input to the forest of trees. This produces a score for each class, and the best score is the class that gets assigned to the cookie.
 
 Available cookie categories are:
 * __Strictly Necessary__
@@ -74,9 +80,9 @@ Available cookie categories are:
 
 Granularity is intentionally kept low to make the decision as simple as possible for the user. Note that "strictly necessary" cookies cannot be rejected, as this is the class of cookies that is required to make the website work. Without them, essential services such as logins would stop working.
 
-An offline variant of the feature extractor can be found in the subfolder `nodejs-feature-extractor/`. This feature extractor was used to extract the features for the training data set.
+The feature extractor can be found in the subfolder `nodejs-feature-extractor/`. This is used to extract the features for the training data set.
 
-For the classifier implementation, see:
+For the classifier training, see:
 
 https://github.com/dibollinger/CookieBlock-Consent-Classifier
 
@@ -91,22 +97,23 @@ By reporting broken websites, you can help us keep an updated list of cookie exc
 
 ## Repository Contents
 
-* `nodejs-feature-extractor/`:  Contains the NodeJS feature extractor. Used to extract features with the same JavaScript code as the extension.
+* `node-feature-extractor/`:  Contains the feature extractor implemented using npm. Used to extract features with the same JavaScript code as the extension.
     - `/modules/`: Contains code used to perform the feature extraction and prediction.
     - `/outputs/`: Output directory for the feature extraction.
     - `/training_data/`: Path for cookie data in json format, used for extracting features.
-    - `/validation_data/`: Path for cookie features in libsvm format, used for prediction and verifying model accuracy.
+    - `/validation_data/`: Path for cookie features, extracted in libsvm format, used for prediction and verifying model accuracy.
     - `/cli.js`: Command-line script used to run the feature extraction.
 * `logo/`: Contains the original CookieBlock logo files.
+* `promotional/`: Contains store page text, localizations and promo images used for those stores.
 * `src/`: Source code for the CookieBlock extension.
-    - `_locales/`: JSON files with locale strings, for translation.
-    - `background/`: JavaScript code and HTML for the extension background process.
+    - `_locales/`: Contains all human-readable strings displayed on the extension interface, with translations to different languages.
+    - `background/`: JavaScript code and HTML for the extension background process. Currently only Manifest v2 compatible.
     - `ext_data/`: All external data required to perform the feature extraction and class label prediction.
         - `model/`: Extracted CART prediction tree forests, one for each class of cookies.
         - `resources/`: Resources used with the feature extraction.
         - `default_config.json`: Defines default storage values used in the extension.
         - `features.json`: Defines how the feature extraction operates, and which individual feature are enabled.
-        - `known_cookies.json`: Defines default categorizations for some known cookies.
+        - `known_cookies.json`: Defines default categorizations for some known cookies. Used to grant exceptions to potential website breakages.
     - `icons/`: Browser extension icons.
     - `modules/`: Contains scripts that handle certain aspects of the feature extraction and prediction.
         - `third_party/`: Third party code libraries.
@@ -122,7 +129,8 @@ By reporting broken websites, you can help us keep an updated list of cookie exc
 * Czech translation provided by Karel Kubicek.
 * Japanese translation provided by Shitennouji.
 * Spanish translation provided by @6ig6oy.
-* Machine-provided localization performed using DeepL.
+
+* Automated localization in store pages performed using DeepL.
 
 ### Libraries
 
@@ -170,6 +178,6 @@ See also the following repositories for other components that were developed as 
 
 ## License
 
-__Copyright © 2021 Dino Bollinger, Department of Computer Science at ETH Zürich, Information Security Group__
+__Copyright © 2021-2022 Dino Bollinger, Department of Computer Science at ETH Zürich, Information Security Group__
 
 MIT License, see included LICENSE file

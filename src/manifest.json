@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "author": "Information Security Group, ETH Zurich",
+  "author": "CookieBlock Team",
   "homepage_url": "https://karelkubicek.github.io/post/cookieblock",
-  "version": "1.0.0",
+  "version": "1.1.0-indev",
   "incognito": "spanning",
   "default_locale": "en",
 

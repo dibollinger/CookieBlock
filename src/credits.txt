@@ -1,5 +1,6 @@
+--------------------------------------------------------------
 
-1. Difflib source taken from: https://github.com/qiao/difflib.js/
+Difflib source taken from: https://github.com/qiao/difflib.js/
 
 > Link to file: https://github.com/qiao/difflib.js/blob/e11553ba3e303e2db206d04c95f8e51c5692ca28/dist/difflib-browser.js
 
@@ -19,7 +20,7 @@ PSF LICENSE AGREEMENT FOR PYTHON 2.7.2
 
 -----------------------------------------------------------
 
-2. Levenshtein script taken from: https://github.com/gf3/Levenshtein
+Levenshtein script taken from: https://github.com/gf3/Levenshtein
 
 > Link to file: https://github.com/gf3/Levenshtein/blob/4884046bb7c85f868de0e1524abe4f26d2cf6e7d/lib/levenshtein.js
 
@@ -29,7 +30,9 @@ The Levenshtein script is unlicensed: https://unlicense.org/
 
 -----------------------------------------------------------
 
-3. LZ-String, taken from: https://github.com/pieroxy/lz-string/
+--------------------------------------------------------------
+
+LZ-String, taken from: https://github.com/pieroxy/lz-string/
 
 > Link to file: https://github.com/pieroxy/lz-string/blob/b2e0b270a9f3cf330b778b777385fcba384a1a02/libs/lz-string.js
 
@@ -54,3 +57,30 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+--------------------------------------------------------------
+
+Consent-O-Matic: https://github.com/cavi-au/Consent-O-Matic
+
+Used as a basis for the HTML code.
+
+MIT License.
+
+--------------------------------------------------------------
+
+CookieBlock Logo Design: Charmaine Coates
+
+Commissioned for the Extension.
+
+MIT License.
+
+--------------------------------------------------------------
+
+Translations provided by the following users:
+
+* German: Dino Bollinger
+* Czech: Karel Kubicek
+* Spanish: @6ig6oy
+* Japanese: Shitennouji
+
+--------------------------------------------------------------
