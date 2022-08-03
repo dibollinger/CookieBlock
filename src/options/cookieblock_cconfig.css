@@ -10,7 +10,7 @@ Released under the MIT License, see included LICENSE file.
 body, html {
     margin: 0;
     padding: 0;
-    user-select: none;
+    user-select: text;
     min-height: 100vh;
 }
 

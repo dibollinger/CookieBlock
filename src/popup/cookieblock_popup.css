@@ -8,6 +8,7 @@ Released under the MIT License, see included LICENSE file.
 */
 body, html {
   padding: 0;
+  user-select: text;
   margin: 0;
 
 }
