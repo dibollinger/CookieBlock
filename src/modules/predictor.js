@@ -11,11 +11,34 @@ Released under the MIT License, see included LICENSE file.
 
 // initialize the forests
 var forests = [undefined, undefined, undefined, undefined];
-getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class0.json"), "json", (f) => forests[0] = f);
-getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class1.json"), "json", (f) => forests[1] = f);
-getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class2.json"), "json", (f) => forests[2] = f);
-getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class3.json"), "json", (f) => forests[3] = f);
 
+// Necessary Cookies Model
+getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class0_part1.json"), "json", (f1) => {
+    getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class0_part2.json"), "json", (f2) => {
+        forests[0] = f1.concat(f2);
+    });
+});
+
+// Functionality Cookies Model
+getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class1_part1.json"), "json", (f1) => {
+    getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class1_part2.json"), "json", (f2) => {
+        forests[1] = f1.concat(f2);
+    });
+});
+
+// Analytics Cookies Model
+getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class2_part1.json"), "json", (f1) => {
+    getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class2_part2.json"), "json", (f2) => {
+        forests[2] = f1.concat(f2);
+    });
+});
+
+// Advertising Cookies Model
+getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class3_part1.json"), "json", (f1) => {
+    getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class3_part2.json"), "json", (f2) => {
+        forests[3] = f1.concat(f2);
+    });
+});
 
 /**
  * Given a tree node and corresponding features, retrieve the weight from the decision tree.
