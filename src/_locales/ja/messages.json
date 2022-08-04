@@ -149,6 +149,21 @@
     "description": "Button for opening the options page"
   },
 
+  "popupButtonClassify" : {
+    "message": "現在のCookieを分類する",
+    "description": "Button for running the classifier on current cookies"
+  },
+
+  "popupButtonClassify_OK" : {
+    "message": "Cookieの分類に成功しました。",
+    "description": "OK state for classify button"
+  },
+
+  "popupButtonClassify_ERROR" : {
+    "message": "Cookieのカテゴリ分けに失敗しました。",
+    "description": "Error state for classify button"
+  },
+
   "setupHeaderPreferences" : {
     "message": "環境設定を設定する",
     "description": "Header for the setup options"

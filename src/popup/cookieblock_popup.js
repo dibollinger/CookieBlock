@@ -11,7 +11,9 @@ Released under the MIT License, see included LICENSE file.
 const pauseCheckbox = document.getElementById("pause-check");
 const configButton = document.getElementById("config");
 const exceptionButton = document.getElementById("add-exception");
-const popupLogo = document.getElementById("popup-logo")
+const popupLogo = document.getElementById("popup-logo");
+
+const classifyButton = document.getElementById("classify");
 
 const addText = chrome.i18n.getMessage("popupButtonAdd");
 const removeText = chrome.i18n.getMessage("popupButtonRemove");
@@ -52,6 +54,7 @@ const popupSetup = async function() {
     setStaticLocaleText("desc-box", "popupText");
     setStaticLocaleText("config", "popupButtonConfig");
     setStaticLocaleText("options", "popupButtonOptions");
+    setStaticLocaleText("classify", "popupButtonClassify")
 
     if (!await getStorageValue(chrome.storage.sync, "cblk_hconsent")){
         configButton.disabled = true;
@@ -160,3 +163,20 @@ document.querySelector("#options").addEventListener("click", () => {
 
 // setup when popup is opened
 document.addEventListener("DOMContentLoaded", popupSetup);
+
+
+// classify all cookies button
+classifyButton.addEventListener("click", async () => {
+    chrome.runtime.sendMessage({"classify_all": true}, (msg) => {
+        if (chrome.runtime.lastError){
+            console.error(chrome.runtime.lastError);
+            setStaticLocaleText("error-box", "popupButtonClassify_ERROR")
+            document.getElementById("error-box").hidden = false;
+            document.getElementById("desc-box").hidden = true;
+        } else{
+            console.debug(msg.response);
+            setStaticLocaleText("desc-box", "popupButtonClassify_OK")
+        }
+        classifyButton.disabled = true;
+    });
+});

@@ -115,12 +115,12 @@
   },
 
   "pauseDescription" : {
-    "message": "While enabled, prevents the removal of cookies by the extension. Cookies are however still classified in the background. Useful for debugging or stopping cookie removal temporarily in case a website breaks.",
+    "message": "While enabled, prevents the removal of cookies by the extension. Cookies are however still categorized in the background. Useful for debugging or stopping cookie removal temporarily in case a website breaks.",
     "description": "Description for the 'pause removal' button."
   },
 
   "buttonExitSetup" : {
-    "message": "Classify and Remove Stored Cookies",
+    "message": "Categorize and Remove Stored Cookies",
     "description": "Label for the close button on the first time setup"
   },
 
@@ -147,6 +147,21 @@
   "popupButtonOptions" : {
     "message": "Open General Settings",
     "description": "Button for opening the options page"
+  },
+
+  "popupButtonClassify" : {
+    "message": "Categorize Current Cookies",
+    "description": "Button for running the classifier on current cookies"
+  },
+
+  "popupButtonClassify_OK" : {
+    "message": "Successfully categorized cookies.",
+    "description": "OK state for classify button"
+  },
+
+  "popupButtonClassify_ERROR" : {
+    "message": "Failed to categorize cookies.",
+    "description": "Error state for classify button"
   },
 
   "setupHeaderPreferences" : {
@@ -379,7 +394,7 @@
   },
 
   "predefDesc" : {
-    "message": "Here you can add paths to JSON files containing predefined categories for known cookies. This can be used to correct classification errors manually.",
+    "message": "Here you can add paths to JSON files containing predefined categories for known cookies. This can be used to correct categorization errors manually.",
     "description": "Description for cookie json section"
   },
 
@@ -404,7 +419,7 @@
   },
 
   "cookieConfigDescPG1" : {
-    "message": "On this page you can define custom categories for each individual cookie, which will take precedence before the classifier. Click on the list entry to display the cookies that were created by that domain. Transparent labels are temporary and were assigned by the classifier. Opaque labels are permanent and were assigned by the user. By selecting 'Reclassify', a new class will be predicted the next time the cookie is observed.",
+    "message": "On this page you can define custom categories for each individual cookie, which will take precedence before the classifier. Click on the list entry to display the cookies that were created by that domain. Transparent labels are temporary and were assigned by the classifier. Opaque labels are permanent and were assigned by the user. By selecting 'Recategorize', a new class will be predicted the next time the cookie is observed.",
     "description": "First paragraph of the cookie config page instructions."
   },
 
@@ -419,7 +434,7 @@
   },
 
   "classOptionEmpty" : {
-    "message": "Reclassify",
+    "message": "Recategorize",
     "description": "Button to repeat the classification for the cookie."
   },
 

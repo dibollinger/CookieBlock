@@ -149,6 +149,21 @@
     "description": "Button for opening the options page"
   },
 
+  "popupButtonClassify" : {
+    "message": "Bestehende Cookies kategorisieren?",
+    "description": "Button for running the classifier on current cookies"
+  },
+
+  "popupButtonClassify_OK" : {
+    "message": "Kategorisierung erfolgreich.",
+    "description": "OK state for classify button"
+  },
+
+  "popupButtonClassify_ERROR" : {
+    "message": "Kategorisierung fehlgeschlagen!",
+    "description": "Error state for classify button"
+  },
+
   "setupHeaderPreferences" : {
     "message": "CookieBlock einrichten",
     "description": "Header for the setup options"
@@ -160,7 +175,7 @@
   },
 
   "currentCookieEnforceTitle" : {
-    "message": "Bestehende Cookies klassifizieren und entfernen",
+    "message": "Bestehende Cookies kategorisieren und entfernen",
     "description": "Header for the policy enforcement button."
   },
 
@@ -344,7 +359,7 @@
   },
 
   "sliderDescription": {
-    "message": "Nur für fortgeschrittene User. Diese Option regelt, wie stark CookieBlock darauf tendiert, Cookies als 'Streng Notwendig' zu klassifizieren. Bei höheren Werten wird die Wahrscheinlichkeit erhöht. Dadurch wird die Anzahl defekter Websites reduziert, jedoch wird dadurch auch die Kategorisierung weniger präzise.",
+    "message": "Nur für fortgeschrittene User. Diese Option regelt, wie stark CookieBlock darauf tendiert, Cookies als 'Streng Notwendig' zu kategorisieren. Bei höheren Werten wird die Wahrscheinlichkeit erhöht. Dadurch wird die Anzahl defekter Websites reduziert, jedoch wird dadurch auch die Kategorisierung weniger präzise.",
     "description": "Explanation of the slider"
   },
 
