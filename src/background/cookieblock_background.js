@@ -492,7 +492,7 @@ const makePolicyDecision = async function(cookieDat, label) {
     }
 
     if (skipRejection) {
-        console.debug(`Cookie found on whitelist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
+        console.debug(`Cookie found on allowlist for category '${cName}': '${cookieDat.name}';'${cookieDat.domain}';'${cookieDat.path}'`);
     } else if (!cblk_userpolicy[label]) {
         // First try to remove the cookie, using https as the protocol
         chrome.cookies.remove({
@@ -559,10 +559,10 @@ const makePolicyDecision = async function(cookieDat, label) {
     recordDebugTimings(window.performance.now() - startTime, 0);
     console.assert(serializedCookie !== undefined, "Cookie object was still undefined!");
 
-    // Check if the domain is contained in the whitelist
+    // Check if the domain is contained in the allowlist
     let ckDomain = cleanDomain(serializedCookie.domain);
     if (cblk_exglobal.includes(ckDomain)) {
-        console.debug(`Cookie found in domain whitelist: (${constructKeyFromCookie(newCookie)})`);
+        console.debug(`Cookie found in domain allowlist: (${constructKeyFromCookie(newCookie)})`);
     } else {
         // If cookie recently classified, use previous label.
         let elapsed = Date.now() - serializedCookie["label_ts"];
