@@ -3,7 +3,7 @@
   "name": "__MSG_extensionName__",
   "author": "CookieBlock Team",
   "homepage_url": "https://karelkubicek.github.io/post/cookieblock",
-  "version": "1.1.0-indev",
+  "version": "1.1.0",
   "incognito": "spanning",
   "default_locale": "en",
 
