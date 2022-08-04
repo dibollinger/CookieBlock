@@ -113,9 +113,9 @@ document.getElementById("set_policy").addEventListener("click", (ev) => {
         console.log(`Process completed with message: ${msg}.`);
 
         // close once done
-        chrome.tabs.getCurrent(function(tab) {
-            chrome.tabs.remove(tab.id, () => {});
-        })
+        //chrome.tabs.getCurrent(function(tab) {
+        //    chrome.tabs.remove(tab.id, () => {});
+        //})
     });
 });
 
