@@ -60,12 +60,12 @@
   },
 
   "catNecessaryTitle": {
-    "message": "必要性クッキーを許可する",
+    "message": "必要なクッキー(常に有効)",
     "description": "Text next to the 'Necessary' checkbox."
   },
 
   "catFunctionalityTitle": {
-    "message": "機能性クッキーを許可する",
+    "message": "機能性クッキーを許可する （推奨）",
     "description": "Text next to the 'Functionality' checkbox."
   },
 

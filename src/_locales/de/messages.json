@@ -60,12 +60,12 @@
   },
 
   "catNecessaryTitle": {
-    "message": "Strikt-Notwendige Cookies werden akzeptiert",
+    "message": "Strikt-Notwendige Cookies (immer aktiv)",
     "description": "Text next to the 'Necessary' checkbox."
   },
 
   "catFunctionalityTitle": {
-    "message": "Funktionalitäts-Cookies werden akzeptiert",
+    "message": "Funktionalitäts-Cookies werden akzeptiert (empfohlen)",
     "description": "Text next to the 'Functionality' checkbox."
   },
 

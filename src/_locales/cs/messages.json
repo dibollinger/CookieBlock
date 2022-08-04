@@ -60,12 +60,12 @@
   },
 
   "catNecessaryTitle": {
-    "message": "Souhlas s nezbytnými cookies",
+    "message": "Nezbytnými cookies (vždy aktivní)",
     "description": "Text next to the 'Necessary' checkbox."
   },
 
   "catFunctionalityTitle": {
-    "message": "Souhlas s pomocnými cookies",
+    "message": "Souhlas s pomocnými cookies (doporučené)",
     "description": "Text next to the 'Functionality' checkbox."
   },
 
