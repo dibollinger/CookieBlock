@@ -261,7 +261,8 @@
             "BCP": 1
         },
         "notion.so": {
-            "token_v2": 0
+            "token_v2": 0,
+            "notion_locale": 0
         },
         "doodle.com": {
             "KEYCLOAK_SESSION_LEGACY": 0
