@@ -23,6 +23,8 @@ const advertisingCheckbox = document.getElementById("advert_checkbox");
 
     setStaticLocaleText("history-consent-title", "historyConsentTitle");
     setStaticLocaleText("history-consent-desc", "historyConsentDesc");
+    setStaticLocaleText("history-why", "historyWhy");
+    setStaticLocaleText("history-consent-desc-detailed", "historyConsentDescDetailed");
 
     setStaticLocaleText("setup_greet", "firstTimeGreeting");
     setStaticLocaleText("setup_desc1","firstTimeDescPG1");
@@ -56,7 +58,27 @@ const setupInitPage = async function() {
     functionalityCheckbox.checked = true;
     analyticsCheckbox.checked = false;
     advertisingCheckbox.checked = false;
-    histCheckbox.checked = false;
+    histCheckbox.checked = true;
+
+    // switch recommended store links according to browser name for Firefox, Chrome, Edge, Opera and other:
+    // if browser is Firefox:
+    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+        document.getElementById("setup_link_isdcac").href = "https://addons.mozilla.org/firefox/addon/istilldontcareaboutcookies/";
+        document.getElementById("setup_link_ublock").href = "https://addons.mozilla.org/firefox/addon/ublock-origin/";
+    } else if (navigator.userAgent.toLowerCase().indexOf('edge') > -1) {
+        // no I still don't care about cookies - point to Chrome store
+        document.getElementById("setup_link_isdcac").href = "https://chrome.google.com/webstore/detail/i-still-dont-care-about-c/edibdbjcniadpccecjdfdjjppcpchdlm";
+        document.getElementById("setup_link_ublock").href = "https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak";
+    } else if (navigator.userAgent.toLowerCase().indexOf('opera') > -1) {
+        // no I still don't care about cookies - point to Chrome store
+        document.getElementById("setup_link_isdcac").href = "https://chrome.google.com/webstore/detail/i-still-dont-care-about-c/edibdbjcniadpccecjdfdjjppcpchdlm";
+        document.getElementById("setup_link_ublock").href = "https://addons.opera.com/en/extensions/details/ublock/";
+    } else {
+        // use Chrome store as default
+        document.getElementById("setup_link_isdcac").href = "https://chrome.google.com/webstore/detail/i-still-dont-care-about-c/edibdbjcniadpccecjdfdjjppcpchdlm";
+        document.getElementById("setup_link_ublock").href = "https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm";
+    }
+
 }
 
 document.addEventListener("DOMContentLoaded", setupInitPage);

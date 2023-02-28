@@ -21,14 +21,25 @@ Released under the MIT License, see included LICENSE file.
     </div>
     <br>
     <div id="popup-content">
+        <div class="block">
+            <div id="blocked-stats"></div>
+        </div>
         <div id="pause-div">
             <input id="pause-check" type="checkbox" class="checkbox">
-            <label id="pause-desc" for="pause-check" class="catname"></label>
+            <div class="tooltip">
+                <label id="pause-checkbox" for="pause-check" class="catname"></label>
+                <span id="pause-checkbox-tooltip" class="tooltiptext"></span>
+            </div>
         </div>
-        <div id="desc-box"></div>
         <div id="error-box" hidden class="error"></div>
-        <button id="add-exception"></button>
-        <button id="config"></button>
+        <div class="block">
+            <div class="tooltip">
+                <div id="desc-box"></div>
+                <span id="add-exception-tooltip" class="tooltiptext"></span>
+            </div>
+            <button id="add-exception"></button>
+        </div>
+        <button id="config" style="margin-top: 0.5em"></button>
         <button id="options"></button>
         <button id="classify"></button>
     </div>

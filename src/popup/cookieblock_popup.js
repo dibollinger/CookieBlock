@@ -50,11 +50,30 @@ const showErrorBox = function(error, msg) {
 const popupSetup = async function() {
 
     setStaticLocaleText("popup-title", "extensionName");
-    setStaticLocaleText("pause-desc", "pauseCookieRemoval");
+    setStaticLocaleText("pause-checkbox", "pauseCookieRemoval");
+    setStaticLocaleText("pause-checkbox-tooltip", "pauseDescription");
     setStaticLocaleText("desc-box", "popupText");
     setStaticLocaleText("config", "popupButtonConfig");
+    setStaticLocaleText("add-exception-tooltip", "popupButtonAddTooltip");
     setStaticLocaleText("options", "popupButtonOptions");
-    setStaticLocaleText("classify", "popupButtonClassify")
+    setStaticLocaleText("classify", "popupButtonClassify");
+
+    if (await getStorageValue(chrome.storage.sync, "cblk_hconsent")){
+        chrome.runtime.sendMessage({"get_popup_stats": true}, (msg) => {
+            let [blocked_today, cookies_today, blocked_total, cookies_total] = msg.response;
+            
+            cookies_today = Math.max(cookies_today, 1);
+            cookies_total = Math.max(cookies_total, 1);
+    
+            setStaticLocaleText("blocked-stats", "popupStats",
+                                 [blocked_today,
+                                  Math.round(100*blocked_today/cookies_today),
+                                  blocked_total,
+                                  Math.round(100*blocked_total/cookies_total)]);
+        });
+    } else {
+        setStaticLocaleText("blocked-stats", "popupStatsDisabled");
+    }
 
     if (!await getStorageValue(chrome.storage.sync, "cblk_hconsent")){
         configButton.disabled = true;
