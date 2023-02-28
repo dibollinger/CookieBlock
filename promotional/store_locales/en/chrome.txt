@@ -2,6 +2,10 @@
 Chrome Store Page
 ================================
 
+ * CookieBlock automatically removes cookies that are used for analytics or advertising. It works everywhere in the world independently of language or law.
+ * CookieBlock does not remove or interact with cookie banners. There are extensions I don't care about cookies or uBlock Origin that remove banners. Using only them does not protect your privacy. Our research showed that almost 70% of websites track users after dismissing the banner. Hence we recommend using CookieBlock together with banner removal extensions.
+ * CookieBlock can sometimes break website functionality such as logins (our evaluation found that in 7% of websites). CookieBlock popup allows to 'Pause Cookie Removal' globally, or 'Add Domain Exception' for a given website to limit such disruptions.
+
 CookieBlock is a browser extension that allows you to automatically remove cookies that do not respect your privacy. Through the use of advanced machine-learning technology, it categorizes cookies into four distinct purposes. These are "Necessary", "Functionality", "Analytics" and "Advertising", which the user then has the power to permit or reject individually.
 
 Unlike nagging cookie banners that interrupt your browsing experience, CookieBlock only requires that you define your policy once, and furthermore guarantees that the types of cookies you reject are actually removed from your browser. Moreover, CookieBlock works on any website you visit, and does not rely on the honesty of the website host.
