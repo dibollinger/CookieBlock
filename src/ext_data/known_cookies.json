@@ -12,7 +12,8 @@
         "cf_clearance": 0,
         "__cmpAcceptedPurposes": 0,
         "pubconsent-v2": 0,
-        "consentUUID": 0
+        "consentUUID": 0,
+        "FedAuth1": 0
     },
     "domain_match": {
 
@@ -327,10 +328,17 @@
         },
         "hotcrp.com": {
             "hotcrpsession": 0
+        },
+        "jetbrains.com": {
+            "JBA": 0
+        },
+        "digid.nl": {
+            "_session_id": 0
         }
     },
     "domain_regex": {
         "^google\\..*": {
+            "TESTCOOKIESENABLED": 0,
             "CONSENT": 0,
             "NID" : 0,
             "SID" : 0,
@@ -350,9 +358,11 @@
             "__Secure-1PAPISID": 0,
             "__Secure-1PSIDCC": 0,
             "__Secure-3PAPISID": 0,
-            "__Secure-3PSIDCC": 0
+            "__Secure-3PSIDCC": 0,
+            "__Secure-ENID": 0
         },
         "^youtube\\..*" : {
+            "TESTCOOKIESENABLED": 0,
             "CONSENT": 0,
             "NID": 0,
             "SID" : 0,
@@ -372,7 +382,8 @@
             "__Secure-1PAPISID": 0,
             "__Secure-1PSIDCC": 0,
             "__Secure-3PAPISID": 0,
-            "__Secure-3PSIDCC": 0
+            "__Secure-3PSIDCC": 0,
+            "__Secure-ENID": 0
         },
         "^consent.youtube\\..*": {
             "TESTCOOKIESENABLED": 0,
