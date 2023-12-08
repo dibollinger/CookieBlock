@@ -359,7 +359,7 @@
             "__Secure-1PSIDCC": 0,
             "__Secure-3PAPISID": 0,
             "__Secure-3PSIDCC": 0,
-            "__Secure-ENID": 0,
+            "__Secure-ENID": 0
         },
         "^youtube\\..*" : {
             "TESTCOOKIESENABLED": 0,
@@ -383,7 +383,7 @@
             "__Secure-1PSIDCC": 0,
             "__Secure-3PAPISID": 0,
             "__Secure-3PSIDCC": 0,
-            "__Secure-ENID": 0,
+            "__Secure-ENID": 0
         },
         "^consent.youtube\\..*": {
             "TESTCOOKIESENABLED": 0,
