@@ -332,6 +332,9 @@
         "jetbrains.com": {
             "JBA": 0
         },
+        "digid.nl": {
+            "_session_id": 0
+        }
     },
     "domain_regex": {
         "^google\\..*": {
