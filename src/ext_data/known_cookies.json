@@ -328,7 +328,10 @@
         },
         "hotcrp.com": {
             "hotcrpsession": 0
-        }
+        },
+        "jetbrains.com": {
+            "JBA": 0
+        },
     },
     "domain_regex": {
         "^google\\..*": {
