@@ -12,7 +12,8 @@
         "cf_clearance": 0,
         "__cmpAcceptedPurposes": 0,
         "pubconsent-v2": 0,
-        "consentUUID": 0
+        "consentUUID": 0,
+        "FedAuth1": 0
     },
     "domain_match": {
 
