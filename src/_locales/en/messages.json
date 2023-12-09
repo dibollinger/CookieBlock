@@ -36,16 +36,16 @@
 
   "feedbackPG2": {
     "message": "You can also report issues on our Github page:",
-    "description": "Feedback text pointing towards the Github."
+    "description": "Feedback text pointing towards Github."
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock allows you to automatically remove cookies that collect sensitive data and track you. It uses machine learning to automatically predict the purpose that each cookie is used for.",
+    "message": "CookieBlock allows you to automatically remove cookies that collect sensitive data and track you. It uses machine learning to automatically predict the purpose that each cookie is used for. It does not remove cookie banners, for that we recommend using extension one of the following extensions:",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 
   "firstTimeDescPG2": {
-    "message": "Select the types of cookies you want to permit below. All of these options can be changed later. Note that the extension may make mistakes and can occasionally break website functionality. If this occurs, please report the issue so we can resolve the problem.",
+    "message": "Select the types of cookies you want to permit below. All of these options can be changed later. Note that the extension may make mistakes and can occasionally break website functionality. If this occurs, use the ‘Pause Cookie Removal’ checkbox or ‘Add Domain Exception’ button in extension popup to resolve the problem. You can also report the issue so we can resolve the problem.",
     "description": "Description paragraph 2 seen on the first time setup page."
   },
 
@@ -111,12 +111,12 @@
 
   "pauseCookieRemoval" : {
     "message": "Pause Cookie Removal",
-    "description": "Text for the cookie removal pause button."
+    "description": "Text for the cookie removal pause checkbox."
   },
 
   "pauseDescription" : {
-    "message": "While enabled, prevents the removal of cookies by the extension. Cookies are however still categorized in the background. Useful for debugging or stopping cookie removal temporarily in case a website breaks.",
-    "description": "Description for the 'pause removal' button."
+    "message": "This checkbox stops removal of cookies, indicated by the icon change. Use it when a website does not function due to cookies removal.",
+    "description": "Description for the 'pause removal' checkbox."
   },
 
   "buttonExitSetup" : {
@@ -129,9 +129,38 @@
     "description": "Text present on the popup."
   },
 
+  "popupStats" : {
+    "message": "CookieBlock blocked $BLOCKED_TODAY$ ($BLOCKED_TODAY_PERC$%) Analytics/Advertising cookies in last 24h and $BLOCKED_TOTAL$ ($BLOCKED_TOTAL_PERC$%) since installation.",
+    "description": "Text about blocked statistics.",
+    "placeholders": {
+      "blocked_today" : {
+        "content" : "$1"
+      },
+      "blocked_today_perc" : {
+        "content" : "$2"
+      },
+      "blocked_total" : {
+        "content" : "$3"
+      },
+      "blocked_total_perc" : {
+        "content" : "$4"
+      }
+    }
+  },
+
+  "popupStatsDisabled" : {
+    "message": "Enable ‘Keep Track of Cookie History’ in settings to display statistics about CookieBlock functionality.",
+    "description": "Text about blocked statistics when data collection is disabled."
+  },
+
   "popupButtonAdd" : {
     "message": "Add Domain Exception",
     "description": "Button text for adding exceptions"
+  },
+
+  "popupButtonAddTooltip" : {
+    "message": "The button below permanently disables removal of cookies only for the current domain but not external services (e.g. payment or redirection). For those, consider the “pause cookie removal” checkbox. You can remove exceptions in Settings -> Domain Exceptions.",
+    "description": "Tooltip hint of button for adding exceptions"
   },
 
   "popupButtonRemove" : {
@@ -185,7 +214,7 @@
   },
 
   "currentCookieEnforceDescriptionSetup" : {
-    "message" : "Run the extension on all currently stored cookies, and close the initial setup tab.",
+    "message" : "Run the extension on all currently stored cookies.",
     "description" : "Description of the policy enforcement on current cookies."
   },
 
@@ -196,12 +225,12 @@
 
   "currentCookieProgressMsg" : {
     "message" : "Policy enforcement in progress...",
-    "description" : "Message that appears after classifier was applied."
+    "description" : "Message that appears after the classifier was applied."
   },
 
   "currentCookieEnforceMsg" : {
     "message" : "User consent policy enforced, bad cookies removed.",
-    "description" : "Message that appears after classifier was applied."
+    "description" : "Message that appears after the classifier was applied."
   },
 
   "globalExceptionsHeader" : {
@@ -211,7 +240,7 @@
 
   "globalExceptionsDescription" : {
     "message" : "Cookies that originate from the domains in this list will always be permitted, regardless of the current consent policy. Use this to add exceptions to domains you trust, or if website functionality breaks.",
-    "description" : "Decription for the global website exceptions."
+    "description" : "Description for the global website exceptions."
   },
 
   "exceptionPlaceholderText" : {
@@ -305,12 +334,12 @@
 
   "popupErrorTextRemove": {
     "message": "Removing exception failed!",
-    "description": "Error message when trying to remove exception."
+    "description": "Error message when trying to remove an exception."
   },
 
   "popupErrorTextAdd": {
     "message": "Adding exception failed!",
-    "description": "Error message when trying to add exception."
+    "description": "Error message when trying to add an exception."
   },
 
   "defaultTitle": {
@@ -369,13 +398,24 @@
   },
 
   "historyConsentTitle" :  {
-    "message": "Keep Track of Cookie History",
+    "message": "Keep (Locally) Track of Cookie History (Recommended)",
     "description": "Description for the cookie history consent toggle."
   },
 
   "historyConsentDesc" :  {
-    "message": "By enabling this option, you agree to the collection of a local history of cookies, which is inaccessible to websites, and is used to improve the classifier accuracy. This history is entirely local, and is never accessed outside of Cookieblock.",
+    "message": "Store on your computer history of cookies to improve CookieBlock functionality. This history is inaccessible to other people.",
     "description": "Description for the cookie history consent checkbox."
+  },
+
+  "historyWhy" :  {
+    "message": "Why are we asking?",
+    "description": "Short question that allows showing more details."
+  },
+
+
+  "historyConsentDescDetailed" :  {
+    "message": "Storing the history improves CookieBlock's prediction accuracy by collecting more detail on how websites use your cookies. It also allows CookieBlock to show you statistics of how many cookies were removed. Disable this option, if you are worried about these example scenarios. Your browser history can be observed by someone untrusted using the same computer (same browser profile); a security breach can leak the data in your browser; or border control can access your unlocked devices. In all of these scenarios, the adversary would be able to observe also cookies that expired or were manually removed by you.",
+    "description": "Detailed description for the cookie history consent checkbox - why should user consider disabling it."
   },
 
   "closeButtonText" : {

@@ -7,7 +7,7 @@
     "cblk_exanal": [],
     "cblk_exadvert": [],
     "cblk_pscale": 3,
-    "cblk_hconsent": false,
+    "cblk_hconsent": true,
     "cblk_mintime": 120000,
     "cblk_knowncookies": [
         "https://raw.githubusercontent.com/dibollinger/CookieBlock/main/src/ext_data/known_cookies.json"

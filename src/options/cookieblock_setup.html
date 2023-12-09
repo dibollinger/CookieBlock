@@ -25,14 +25,19 @@ Released under the MIT License, see included LICENSE file.
     <div class="description">
         <p id="setup_greet" style="margin-top: 0em; font-size: 1.75em; font-weight: bold;"></p>
         <p id="setup_desc1" class="overview_description"></p>
+        <ul>
+            <li><a id="setup_link_isdcac" style="font-weight: normal" target="_blank">I still don't care about cookies!</a></li>
+            <li><a id="setup_link_ublock" style="font-weight: normal" target="_blank">uBlock Origin + EasyList Cookie list</a></li>
+        </ul>
+
         <p id="setup_desc2" class="overview_description"></p>
         <p id="setup_feed1" style="font-weight: bold;">
             Feedback:
-            <a id="setup_flink1" style="font-weight: normal" href="https://forms.gle/tL21ruvPZq2q218P8">https://forms.gle/tL21ruvPZq2q218P8</a>
+            <a id="setup_flink1" style="font-weight: normal" href="https://forms.gle/tL21ruvPZq2q218P8" target="_blank">https://forms.gle/tL21ruvPZq2q218P8</a>
         </p>
         <p id="setup_feed2" style="font-weight: bold;">
             Github:
-            <a id="setup_flink2" style="font-weight: normal" href="https://github.com/dibollinger/CookieBlock">https://github.com/dibollinger/CookieBlock</a>
+            <a id="setup_flink2" style="font-weight: normal" href="https://github.com/dibollinger/CookieBlock" target="_blank">https://github.com/dibollinger/CookieBlock</a>
         </p>
         <p id="setup_desc3" class="overview_description"></p>
     </div>
@@ -65,9 +70,13 @@ Released under the MIT License, see included LICENSE file.
             <hr class="thin">
         </fieldset>
         <fieldset id="general-options" class="preference_form">
-            <input id="history-consent-checkbox" type="checkbox" class="checkbox">
+            <input id="history-consent-checkbox" type="checkbox" class="checkbox" checked>
             <label id="history-consent-title" for="history-consent-checkbox" class="catname"></label>
             <div id="history-consent-desc" class=class_desc></div>
+            <details>
+                <summary class="class_desc" id="history-why"></summary>
+                <div id="history-consent-desc-detailed" class=class_desc></div>
+            </details>
 
             <div id="classify_title" class="catname missing_checkbox" style="margin-top: 1.25em;"></div>
             <div id="classify_desc" class="class_desc"></div>

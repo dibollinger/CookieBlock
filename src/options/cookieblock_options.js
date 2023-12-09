@@ -127,6 +127,8 @@ const setupLocalization = function () {
     // Additional Options
     setStaticLocaleText("history-consent-title", "historyConsentTitle");
     setStaticLocaleText("history-consent-desc", "historyConsentDesc");
+    setStaticLocaleText("history-why", "historyWhy");
+    setStaticLocaleText("history-consent-desc-detailed", "historyConsentDescDetailed");
 
     setStaticLocaleText("slider_title", "sliderTitle");
     setStaticLocaleText("slider_desc", "sliderDescription");

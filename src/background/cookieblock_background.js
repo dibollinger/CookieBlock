@@ -260,6 +260,48 @@ const getCurrentLabelCount = function() {
 }
 
 /**
+ * Retrieve the number of cookies in the current history, by label.
+ * @returns {Promise<Object>} The array of label counts.
+ */
+const getPopupStats = function() {
+    if (historyDB !== undefined) {
+        let objectStore = historyDB.transaction("cookies").objectStore("cookies");
+        let cursor = objectStore.index("label").openCursor();
+        /*let policy = await getStorageValue(chrome.storage.sync, "cblk_userpolicy");*/
+        return new Promise((resolve, reject) => {
+            let blocked_today = 0;
+            let cookies_today = 0;
+            let blocked_total = 0;
+            let cookies_total = 0;
+            cursor.onsuccess = function(event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                    /* if (!policy[cursor.value.current_label]) */
+                    if (cursor.value.current_label === 2 || cursor.value.current_label === 3) {
+                        
+                        if (cursor.value.label_ts > Date.now() - 86400000) {
+                            blocked_today += 1;
+                        }
+                        blocked_total += 1;
+                    }
+                    if (cursor.value.label_ts > Date.now() - 86400000) {
+                        cookies_today += 1;
+                    }
+                    cookies_total += 1
+                    cursor.continue();
+                } else {
+                    resolve([blocked_today, cookies_today, blocked_total, cookies_total]);
+                }
+            };
+            cursor.onerror = (event) => { reject(event.target.errorCode) }
+        });
+    } else {
+        console.error("Could not insert cookie because database connection is closed!");
+        return new Promise((resolve, reject) => { reject("Database connection closed."); });
+    }
+}
+
+/**
  * Callback function to set up config and storage defaults.
  * This initializes all chrome local and sync storage objects if undefined.
  * @param {Object} resp  Default configuration
@@ -669,6 +711,18 @@ const handleInternalMessage = function(request, sender, sendResponse) {
                 sendResponse({response: statsCount});
             } catch (err) {
                 console.error("Failed to retrieve label count. Error : " + err.message)
+                sendResponse({response: null});
+            }
+        };
+        sendStatsResponse();
+        return true;
+    } else if (request.get_popup_stats) {
+        let sendStatsResponse = async () => {
+            try {
+                let statsCount = await getPopupStats();
+                sendResponse({response: statsCount});
+            } catch (err) {
+                console.error("Failed to retrieve popup stats. Error : " + err.message)
                 sendResponse({response: null});
             }
         };
