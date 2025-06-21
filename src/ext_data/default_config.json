@@ -2,7 +2,7 @@
     "cblk_userpolicy": [true, true, false, false],
     "cblk_ulimit": 10,
     "cblk_pause": false,
-    "cblk_exglobal": [],
+    "cblk_exglobal": ["wikipedia.org"],
     "cblk_exfunc": [],
     "cblk_exanal": [],
     "cblk_exadvert": [],
