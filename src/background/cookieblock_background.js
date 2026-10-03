@@ -47,7 +47,7 @@ const regexKey = "~regex;";
 
 // indexed DB for cookie history
 var historyDB = undefined;
-const openDBRequest = window.indexedDB.open("CookieBlockHistory", 1);
+const openDBRequest = indexedDB.open("CookieBlockHistory", 1);
 
 
 /**
@@ -131,7 +131,7 @@ const mergeUserKnownCookies = function(cookiePaths, cache) {
 /**
  * This function reloads the current known cookies JSON from the given paths.
  * Performs requests to remote domains to retrieve the data. Correctness is also checked.
- * The background restarts frequently under Manifest V3, so the downloaded lists are cached in storage.local,
+ * The service worker restarts frequently, so the downloaded lists are cached in storage.local,
  * and only downloaded again once they are older than knownCookiesRefreshInterval.
  * @returns {Promise} Resolves once a list is available for every path, or its download failed.
  */
@@ -501,14 +501,14 @@ const classifyCookie = async function(cookieDat, feature_input) {
     // Otherwise, perform prediction
     if (label === -1) {
         // Feature extraction timing
-        let startTime = window.performance.now();
+        let startTime = performance.now();
         let features = extractFeatures(feature_input);
-        recordDebugTimings(window.performance.now() - startTime, 1);
+        recordDebugTimings(performance.now() - startTime, 1);
 
         // Prediction timing
-        startTime = window.performance.now();
+        startTime = performance.now();
         label = await predictClass(features, cblk_pscale);
-        recordDebugTimings(window.performance.now() - startTime, 2);
+        recordDebugTimings(performance.now() - startTime, 2);
     } else {
         debug_Nskipped++;
     }
@@ -599,7 +599,7 @@ const makePolicyDecision = async function(cookieDat, label) {
     await maybeRestoreCBLKVar(cblk_mintime, "cblk_mintime");
     await maybeRestoreCBLKVar(cblk_pause, "cblk_pause");
 
-    let startTime = window.performance.now();
+    let startTime = performance.now();
     // First, if consent is given, check if the cookie has already been stored.
     let serializedCookie, storedCookie;
     try {
@@ -620,7 +620,7 @@ const makePolicyDecision = async function(cookieDat, label) {
     }
 
     // Record debug timing for cookie retrieval
-    recordDebugTimings(window.performance.now() - startTime, 0);
+    recordDebugTimings(performance.now() - startTime, 0);
     console.assert(serializedCookie !== undefined, "Cookie object was still undefined!");
 
     // Check if the domain is contained in the allowlist
@@ -711,7 +711,7 @@ const constructHistoryJSON = function(type) {
  * @param {*} sendResponse response function
  */
 const handleInternalMessage = function(request, sender, sendResponse) {
-    // The background may have just been started by this message, wait until all resources are loaded.
+    // The service worker may have just been started by this message, wait until all resources are loaded.
     extensionReady.then(() => handleInternalMessageReady(request, sender, sendResponse));
     return true;
 }
@@ -855,14 +855,19 @@ const knownCookiesReady = getExtensionFile(chrome.runtime.getURL("/ext_data/know
 });
 
 /**
- * Resolves once all resources (model, feature resources, settings, database connection) are loaded.
- * Every event handler must wait on this promise before processing anything, as events can arrive
- * while the background script is still starting up. With Manifest V3, the background is stopped
- * when idle and restarted on the next event, so this happens on every restart.
+ * With Manifest V3, the background runs as a service worker (Chrome) or event page (Firefox),
+ * which is stopped when idle and restarted on the next event. All in-memory state (model,
+ * feature resources, settings, database connection) is then loaded again from scratch.
+ * Every event handler must wait on this promise before processing anything.
  */
 const extensionReady = Promise.all([
     defaultConfigReady, featureResourcesReady, forestsReady, historyDBReady, settingsReady, knownCookiesReady
-]).catch((err) => {
+]).then(() => {
+    // The toolbar icon is not persisted across browser restarts, restore the paused state.
+    if (cblk_pause) {
+        chrome.action.setIcon(grayScaleIcon);
+    }
+}).catch((err) => {
     console.error("Failed to initialize CookieBlock resources: " + err.message);
 });
 
