@@ -100,6 +100,8 @@ const setStorageValue = async function(newValue, stType, key, override = true) {
     // error handling
     if (value === undefined) {
         console.warn(`Warning: Value '${key}' not found in storage!`);
+        // In a service worker, this may run before the default config has been loaded.
+        await defaultConfigReady;
         if (Array.isArray(defaultConfig[key])) {
             value = [...defaultConfig[key]];
         } else {
@@ -263,4 +265,4 @@ const setStaticLocaleText = (elemID, locID, args=[]) => {
 
 // default configuration
 var defaultConfig = undefined;
-getExtensionFile(chrome.runtime.getURL("/ext_data/default_config.json"), "json", (df)=> {defaultConfig = df});
+const defaultConfigReady = getExtensionFile(chrome.runtime.getURL("/ext_data/default_config.json"), "json", (df)=> {defaultConfig = df});
