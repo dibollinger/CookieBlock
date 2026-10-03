@@ -114,32 +114,45 @@ const setStorageValue = async function(newValue, stType, key, override = true) {
 /**
 * Retrieves the data at the given URL with the specified type.
 * Once the response arrives, a callback is executed with the response object.
+* Uses fetch() rather than XMLHttpRequest, as the latter is unavailable in Manifest V3 service workers.
 * @param {String} url          URL to send the GET request to, intended to be a local extension URL.
-* @param {String} dtype        Type of the data. Examples: "json", "text", "binary"
+* @param {String} dtype        Type of the data. Examples: "json", "text", "arraybuffer"
 * @param {Function} callback   Callback function that will be executed as soon as the data is available, receives data as first argument.
+* @returns {Promise}           Resolves once the callback has completed, or once the error has been handled.
 */
-const getExtensionFile = function(url, dtype, callback, errorCallback = null) {
-    const req = new XMLHttpRequest();
-
-    req.responseType = dtype;
-    req.onreadystatechange = function(event)
-    {
-        if (this.readyState === XMLHttpRequest.DONE)
-        {
-            if (this.status === 200) {
-                callback(this.response);
-            }
-            else {
-                console.error("Error -- could not retrieve data at (%s): %d (%s)", url, this.status, this.statusText);
-                if (errorCallback){
-                    errorCallback(this.status);
-                }
-            }
+const getExtensionFile = async function(url, dtype, callback, errorCallback = null) {
+    let response;
+    try {
+        response = await fetch(url);
+    } catch (err) {
+        console.error("Error -- could not retrieve data at (%s): %s", url, err.message);
+        if (errorCallback) {
+            errorCallback(0);
         }
-    };
+        return;
+    }
 
-    req.open('GET', url, true);
-    req.send(null);
+    if (!response.ok) {
+        console.error("Error -- could not retrieve data at (%s): %d (%s)", url, response.status, response.statusText);
+        if (errorCallback) {
+            errorCallback(response.status);
+        }
+        return;
+    }
+
+    let data;
+    try {
+        switch (dtype) {
+            case "json": data = await response.json(); break;
+            case "text": data = await response.text(); break;
+            default: data = await response.arrayBuffer(); break;
+        }
+    } catch (err) {
+        // mirrors XMLHttpRequest, which yields a null response for invalid JSON
+        console.error("Error -- could not parse data at (%s): %s", url, err.message);
+        data = null;
+    }
+    await callback(data);
 };
 
 
