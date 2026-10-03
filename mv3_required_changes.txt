@@ -5,33 +5,54 @@
 
 === CHANGES NEEDED ===
 
-* [TODO] Update the `manifest.json` to v3, necessary to rename some properties.
+* [DONE] Update the `manifest.json` to v3, necessary to rename some properties.
+  - `browser_action` -> `action`, `chrome.browserAction` -> `chrome.action`.
+  - `<all_urls>` moved from `permissions` to `host_permissions`.
+  - `browser_style` removed, it is not supported in Manifest v3.
+  - Requires Chrome 121+ and Firefox 140+ (see background below).
 
 * [DONE] Replace usage of `chrome.extension.getURL()`
 
-* [TODO] Migrate background page to service worker.
-  - Replace background.page or background.scripts with background.service_worker in manifest.json.
-  - This is the most complicated task, mainly due to how the extension has been set up.
-  - Currently, the background script is specified as the html file:
-    `"background": { "page": "background/cookieblock_background.html" },`
-  - This html file includes all the necessary script modules, such that functions can be called in the background script.
-  - With Manifest v3, this is no longer supported. Instead, only a single service worker can be specified.
-  - As a result, we will need to come up with a solution so that the javascript code for classifying cookies can be executed.
+* [DONE] Migrate background page to service worker.
+  - Chromium: `background.service_worker` points to `background/cookieblock_service_worker.js`,
+    which loads the same modules as the old background page through `importScripts()`.
+  - Firefox does not support extension service workers. It uses `background.scripts` instead,
+    which lists the same modules, and runs them as a non-persistent event page.
+    Chrome 121+ and Firefox 121+ both accept a manifest that specifies both keys.
+  - The two module lists must be kept in sync.
 
-[TODO] Update background scripts to adapt to the service worker execution context.
-  - Some necessary changes are:
-    -> Remove all usages of global variables that do not contain constant values. Use `storage.local` or `storage.sync` instead (already partially implemented).
-    -> Ensure that all events are set up in the root context.
-    -> Replace chrome.cookies with the following: https://developers.google.com/web/updates/2018/09/asynchronous-access-to-http-cookies
-    -> May need to rework use of IndexedDB.
-    -> Check any other uses of `window.` context.
-    -> There may be more issues than what I listed.
+[DONE] Update background scripts to adapt to the service worker execution context.
+  -> `XMLHttpRequest` is unavailable in service workers: `getExtensionFile` now uses `fetch()`.
+  -> Removed usages of `window.` (`indexedDB`, `performance`).
+  -> All events are still set up in the root context.
+  -> The background is now stopped when idle, and restarted on the next event. All in-memory state
+     (model forests, feature resources, settings, known cookies, IndexedDB connection) is then loaded
+     again from scratch. Every load now returns a promise, and all event handlers wait on the combined
+     `extensionReady` promise before handling a cookie or a message.
+     Loading everything takes roughly 0.2-0.5 seconds per restart.
+  -> The user-defined known cookies lists are remote URLs. These are now cached in `storage.local`,
+     so that a restart does not have to wait for the network. The cache is refreshed in the background.
+  -> The settings were already kept in `storage.local` / `storage.sync`, with the global variables as a cache.
+  -> `chrome.cookies` does NOT need to be replaced, it remains available in Manifest v3 service workers.
+  -> IndexedDB works in service workers without changes, apart from the connection being reopened on restart.
+  -> The paused icon state is restored on startup, as `action.setIcon` does not persist across browser restarts.
 
-[TODO] Need to check that no CORS requests are performed in content scripts. If they are, these need to be moved to the background service worker.
+[DONE] Need to check that no CORS requests are performed in content scripts.
+  - The extension has no content scripts.
 
-[TODO] Need to check if Firefox and Edge have compatibility with these changes. May need a separate branch.
+[DONE] Need to check if Firefox and Edge have compatibility with these changes.
+  - One manifest works for both Chromium-based browsers and Firefox.
+  - In Firefox, Manifest v3 host permissions can be withheld by the user, in which case no cookies
+    can be seen or removed. The first time setup page requests `<all_urls>` when the user applies the policy.
+  - Added `data_collection_permissions` (none) for Firefox, required for new AMO submissions.
+
+=== POSSIBLE FUTURE WORK ===
+
+* The model forests (~21MB of JSON) are parsed again on every service worker restart.
+  If this turns out to be too slow on low-end devices, a more compact model format would help.
 
 More info:
-* https://developer.chrome.com/docs/extensions/mv3/intro/mv3-migration/
-* https://developer.chrome.com/docs/extensions/mv3/mv3-migration-checklist/
-* https://developer.chrome.com/docs/extensions/mv3/migrating_to_service_workers/
+* https://developer.chrome.com/docs/extensions/develop/migrate
+* https://developer.chrome.com/docs/extensions/develop/migrate/checklist
+* https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers
+* https://extensionworkshop.com/documentation/develop/manifest-v3-migration-guide/
