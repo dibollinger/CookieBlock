@@ -522,6 +522,79 @@ const classifyCookie = async function(cookieDat, feature_input) {
 };
 
 
+// storage.session key for the cookies removed per tab, shown as a count on the toolbar icon.
+// Kept in session storage, as the service worker restarts frequently. Cleared when the browser closes.
+const removedPerTabKey = "cblk_removed_per_tab";
+
+// Maps tab id to the page that is open in the tab ("url"), and the keys of the cookies removed for its site ("keys").
+// The browser clears the count on the toolbar icon when the tab navigates, the keys are reset lazily once the url
+// changes. This avoids listening to tabs.onUpdated, which would restart the service worker on every tab change.
+var removedPerTab = {};
+
+// Resolves once the removed cookies per tab have been restored from session storage.
+const removedPerTabReady = chrome.storage.session.get(removedPerTabKey).then((result) => {
+    removedPerTab = result[removedPerTabKey] || {};
+}).catch((err) => {
+    console.error("Failed to restore removed cookie counts: " + err.message);
+});
+
+/**
+ * Update the count on the toolbar icon for the given tab.
+ * @param {Number} tabId Tab to update the count for.
+ */
+const updateTabBadge = function(tabId) {
+    let count = removedPerTab[tabId] ? removedPerTab[tabId]["keys"].length : 0;
+    chrome.action.setBadgeText({"tabId": tabId, "text": count > 0 ? String(count) : ""});
+}
+
+/**
+ * Whether the cookie belongs to the site that is open in the tab, including its subdomains.
+ * The cookies API does not tell to which tab a third-party cookie belongs, so only these are counted.
+ * @param {Object} cookieDat Raw cookie data, with "domain" and "storeId".
+ * @param {Object} tab Tab object, with "url".
+ * @returns {Boolean} True if the cookie belongs to the site of the tab.
+ */
+const isCookieOfTabSite = function(cookieDat, tab) {
+    if (!tab.url || !/^https?:/.test(tab.url)) {
+        return false;
+    }
+    // Firefox has a cookie store per container and for private browsing, Chrome only for incognito.
+    let sameStore = (tab.cookieStoreId !== undefined) ? (tab.cookieStoreId === cookieDat.storeId) : (tab.incognito === (cookieDat.storeId !== "0"));
+    if (!sameStore) {
+        return false;
+    }
+    let ckDomain = cleanDomain(cookieDat.domain);
+    let tabDomain = cleanDomain(tab.url);
+    return ckDomain === tabDomain || tabDomain.endsWith("." + ckDomain) || ckDomain.endsWith("." + tabDomain);
+}
+
+/**
+ * Count a removed cookie for every tab that has the cookie's site open.
+ * @param {Object} cookieDat Raw cookie data of the removed cookie.
+ */
+const countRemovedCookie = async function(cookieDat) {
+    let ckey = constructKeyFromCookie(cookieDat);
+    let tabs = await chrome.tabs.query({});
+    let changed = false;
+    for (let tab of tabs) {
+        if (isCookieOfTabSite(cookieDat, tab)) {
+            let pageUrl = tab.url.replace(/#.*$/, "");
+            if (!removedPerTab[tab.id] || removedPerTab[tab.id]["url"] !== pageUrl) {
+                removedPerTab[tab.id] = { "url": pageUrl, "keys": [] };
+            }
+            let removed = removedPerTab[tab.id]["keys"];
+            if (!removed.includes(ckey)) {
+                removed.push(ckey);
+                updateTabBadge(tab.id);
+                changed = true;
+            }
+        }
+    }
+    if (changed) {
+        chrome.storage.session.set({[removedPerTabKey]: removedPerTab});
+    }
+}
+
 /**
  * Decides whether to keep the cookie or delete it, based on user policy.
  * @param  {Object} cookieDat   Raw cookie data as retrieved from the browser, with "storeId".
@@ -576,11 +649,13 @@ const makePolicyDecision = async function(cookieDat, label) {
                     } else {
                         //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTP protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                         debug_httpRemovalCounter += 1;
+                        countRemovedCookie(cookieDat);
                     }
                 });
             } else {
                 //console.debug("Cookie (%s;%s;%s) with label (%s) has been removed successfully over HTTPS protocol.", cookieDat.name, cookieDat.domain, cookieDat.path, cName);
                 debug_httpsRemovalCounter += 1;
+                countRemovedCookie(cookieDat);
             }
         });
     }
@@ -861,7 +936,7 @@ const knownCookiesReady = getExtensionFile(chrome.runtime.getURL("/ext_data/know
  * Every event handler must wait on this promise before processing anything.
  */
 const extensionReady = Promise.all([
-    defaultConfigReady, featureResourcesReady, forestsReady, historyDBReady, settingsReady, knownCookiesReady
+    defaultConfigReady, featureResourcesReady, forestsReady, historyDBReady, settingsReady, knownCookiesReady, removedPerTabReady
 ]).then(() => {
     // The toolbar icon is not persisted across browser restarts, restore the paused state.
     if (cblk_pause) {
@@ -869,6 +944,18 @@ const extensionReady = Promise.all([
     }
 }).catch((err) => {
     console.error("Failed to initialize CookieBlock resources: " + err.message);
+});
+
+/**
+ * Forget the count of removed cookies when a tab is closed.
+ * @param {Number} tabId Tab that was closed.
+ */
+chrome.tabs.onRemoved.addListener(async (tabId) => {
+    await removedPerTabReady;
+    if (removedPerTab[tabId]) {
+        delete removedPerTab[tabId];
+        chrome.storage.session.set({[removedPerTabKey]: removedPerTab});
+    }
 });
 
 /**
