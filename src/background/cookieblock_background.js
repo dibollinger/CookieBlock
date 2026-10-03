@@ -89,41 +89,96 @@ var timingsDebug = function () {
 }
 
 
+// storage.local key for the downloaded known cookies lists, see reloadUserKnownCookies
+const knownCookiesCacheKey = "cblk_knowncookies_cache";
+
+// Minimum time between downloads of the known cookies lists, in milliseconds (1 day)
+const knownCookiesRefreshInterval = 24 * 60 * 60 * 1000;
+
+/**
+ * Merge the known cookies lists retrieved from the given paths into a single lookup object.
+ * @param {Array} cookiePaths Paths of the lists, in order of precedence (later overrides earlier).
+ * @param {Object} cache Cached entry for each path, containing the list. Paths without an entry are skipped.
+ * @returns {Object} Merged known cookies object.
+ */
+const mergeUserKnownCookies = function(cookiePaths, cache) {
+    let merged = { "name_match": {}, "domain_match": {}, "domain_regex": {} };
+    for (let path of cookiePaths) {
+        let result = cache[path] && cache[path]["list"];
+        if (!result) {
+            continue;
+        }
+        if ("name_match" in result) {
+            for (let k of Object.keys(result["name_match"])) {
+                merged["name_match"][k] = result["name_match"][k];
+            }
+        }
+        if ("domain_match" in result) {
+            for (let k of Object.keys(result["domain_match"])) {
+                merged["domain_match"][k] = result["domain_match"][k];
+            }
+        }
+        if ("domain_regex" in result) {
+            for (let k of Object.keys(result["domain_regex"])) {
+                merged["domain_regex"][k] = Object.assign({}, result["domain_regex"][k]);
+                merged["domain_regex"][k][regexKey] = new RegExp(k);
+            }
+        }
+    }
+    return merged;
+}
+
 /**
  * This function reloads the current known cookies JSON from the given paths.
  * Performs requests to remote domains to retrieve the data. Correctness is also checked.
- * @returns {Promise} Resolves once all paths have been loaded.
+ * The background restarts frequently under Manifest V3, so the downloaded lists are cached in storage.local,
+ * and only downloaded again once they are older than knownCookiesRefreshInterval.
+ * @returns {Promise} Resolves once a list is available for every path, or its download failed.
  */
- const reloadUserKnownCookies = function(cookiePaths) {
+ const reloadUserKnownCookies = async function(cookiePaths) {
     if (cookiePaths.length === 0){
         knownCookies_user = undefined;
-        return Promise.resolve();
-    } else {
-        knownCookies_user = { "name_match": {}, "domain_match": {}, "domain_regex": {} }
-        return Promise.all(cookiePaths.map((path) => {
-            return getExtensionFile(path, "json", (result) => {
-                if (typeof result === "object" && result !== null && ("name_match" in result || "domain_match" in result || "domain_regex" in result)) {
-                    if ("name_match" in result) {
-                        for (let k of Object.keys(result["name_match"])) {
-                            knownCookies_user["name_match"][k] = result["name_match"][k];
-                        }
-                    }
-                    if ("domain_match" in result) {
-                        for (let k of Object.keys(result["domain_match"])) {
-                            knownCookies_user["domain_match"][k] = result["domain_match"][k];
-                        }
-                    }
-                    if ("domain_regex" in result) {
-                        for (let k of Object.keys(result["domain_regex"])) {
-                            knownCookies_user["domain_regex"][k] = result["domain_regex"][k];
-                            knownCookies_user["domain_regex"][k][regexKey] = new RegExp(k);
-                        }
-                    }
-                } else {
-                    console.error(`Stored path did not point to a valid JSON: ${path}`);
-                }
-            });
-        }));
+        return;
+    }
+
+    let cache;
+    try {
+        cache = await chromeWorkaround(chrome.storage.local, knownCookiesCacheKey);
+    } catch (err) {
+        console.error(err);
+    }
+    cache = cache || {};
+    knownCookies_user = mergeUserKnownCookies(cookiePaths, cache);
+
+    let isMissing = (path) => !(cache[path] && cache[path]["list"]);
+    let isStale = (path) => isMissing(path) || !(Date.now() - cache[path]["updated"] < knownCookiesRefreshInterval);
+    if (!cookiePaths.some(isStale)) {
+        return;
+    }
+
+    let refresh = Promise.all(cookiePaths.filter(isStale).map((path) => {
+        return getExtensionFile(path, "json", (result) => {
+            if (typeof result === "object" && result !== null && ("name_match" in result || "domain_match" in result || "domain_regex" in result)) {
+                cache[path] = { "list": result, "updated": Date.now() };
+            } else {
+                console.error(`Stored path did not point to a valid JSON: ${path}`);
+            }
+        });
+    })).then(() => {
+        // only keep lists that are still configured
+        let newCache = {};
+        for (let path of cookiePaths) {
+            if (path in cache) {
+                newCache[path] = cache[path];
+            }
+        }
+        knownCookies_user = mergeUserKnownCookies(cookiePaths, newCache);
+        chrome.storage.local.set({[knownCookiesCacheKey]: newCache});
+    });
+
+    // Stale lists are refreshed in the background, only wait if a list has not been downloaded yet.
+    if (cookiePaths.some(isMissing)) {
+        await refresh;
     }
 }
 
