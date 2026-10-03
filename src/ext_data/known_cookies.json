@@ -334,6 +334,16 @@
         },
         "digid.nl": {
             "_session_id": 0
+        },
+        "epicgames.com": {
+            "EPIC_DEVICE": 0,
+            "EPIC_SESSION_AP": 0,
+            "EPIC_SSO": 0,
+            "EPIC_SSO_RM": 0,
+            "EPIC_BEARER_TOKEN": 0,
+            "EPIC_EG1": 0,
+            "EPIC_EG1_REFRESH": 0,
+            "XSRF-TOKEN": 0
         }
     },
     "domain_regex": {
@@ -402,6 +412,15 @@
         "^facebook\\..*": {
             "datr": 0,
             "c_user": 0
+        },
+        "(^|\\.)(wikipedia|wikimedia|wiktionary|wikibooks|wikinews|wikiquote|wikisource|wikiversity|wikivoyage|wikidata|wikifunctions|mediawiki)\\.org$": {
+            "centralauth_Session": 0,
+            "centralauth_User": 0,
+            "centralauth_Token": 0,
+            "centralauth_ss0-User": 0,
+            "centralauth_ss0-Token": 0,
+            "authSession": 0,
+            "loginnotify_prevlogins": 0
         }
     }
 }
