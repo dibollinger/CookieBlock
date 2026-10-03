@@ -40,7 +40,7 @@
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock ermöglicht es automatisch Cookies zu entfernen, welche zum Sammeln persönlicher Daten und zur Aktivitätenverfolgung verwendet werden. Die Erweiterung kategorisiert Cookies hierbei mithilfe eines Machine-Learning Modell nach ihrem Verwendungszweck.",
+    "message": "CookieBlock ermöglicht es automatisch Cookies zu entfernen, welche zum Sammeln persönlicher Daten und zur Aktivitätenverfolgung verwendet werden. Die Erweiterung kategorisiert Cookies hierbei mithilfe eines Machine-Learning Modell nach ihrem Verwendungszweck. Cookie-Banner werden dabei nicht ausgeblendet. Um auch diese loszuwerden, empfehlen wir die Kombination mit einer Erweiterung wie Consent-O-Matic.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 

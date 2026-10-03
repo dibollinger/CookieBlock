@@ -95,6 +95,12 @@ To resolve these problems, we maintain a list of known cookie categories. This i
 
 By reporting broken websites, you can help us keep an updated list of cookie exceptions. This makes the extension more useable for everyone while also keeping a high level of privacy.
 
+### Cookie banners are still shown
+
+This is expected. CookieBlock removes the cookies that you did not consent to, but it does not hide cookie banners or answer them for you. To also get rid of the banners, combine CookieBlock with an extension such as [Consent-O-Matic](https://github.com/cavi-au/Consent-O-Matic).
+
+CookieBlock should not cause a banner to reappear after you have answered it. If a banner keeps reappearing on every visit, CookieBlock likely removed the cookie that stores your choice. Please report the website, so that the cookie can be added to the list of known cookies.
+
 ## Repository Contents
 
 * `node-feature-extractor/`:  Contains the feature extractor implemented using npm. Used to extract features with the same JavaScript code as the extension.
