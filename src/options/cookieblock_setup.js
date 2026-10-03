@@ -107,15 +107,23 @@ addPrefClickListener("advert_checkbox", 3);
 
 // Set policy button
 document.getElementById("set_policy").addEventListener("click", (ev) => {
-    document.getElementById("apply_text").hidden = false;
-    chrome.runtime.sendMessage({"classify_all": true}, (msg) => {
-        setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
-        console.log(`Process completed with message: ${msg}.`);
+    // With Manifest V3, Firefox allows users to withhold host permissions, without which
+    // no cookies can be observed or removed. Requesting must happen directly in the click handler.
+    chrome.permissions.request({"origins": ["<all_urls>"]}, (granted) => {
+        if (!granted) {
+            console.warn("Host permissions were not granted, CookieBlock cannot access any cookies.");
+        }
 
-        // close once done
-        //chrome.tabs.getCurrent(function(tab) {
-        //    chrome.tabs.remove(tab.id, () => {});
-        //})
+        document.getElementById("apply_text").hidden = false;
+        chrome.runtime.sendMessage({"classify_all": true}, (msg) => {
+            setStaticLocaleText("apply_text", "currentCookieEnforceMsg");
+            console.log(`Process completed with message: ${msg}.`);
+
+            // close once done
+            //chrome.tabs.getCurrent(function(tab) {
+            //    chrome.tabs.remove(tab.id, () => {});
+            //})
+        });
     });
 });
 

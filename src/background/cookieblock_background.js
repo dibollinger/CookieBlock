@@ -47,7 +47,7 @@ const regexKey = "~regex;";
 
 // indexed DB for cookie history
 var historyDB = undefined;
-const openDBRequest = window.indexedDB.open("CookieBlockHistory", 1);
+const openDBRequest = indexedDB.open("CookieBlockHistory", 1);
 
 
 /**
@@ -89,39 +89,96 @@ var timingsDebug = function () {
 }
 
 
+// storage.local key for the downloaded known cookies lists, see reloadUserKnownCookies
+const knownCookiesCacheKey = "cblk_knowncookies_cache";
+
+// Minimum time between downloads of the known cookies lists, in milliseconds (1 day)
+const knownCookiesRefreshInterval = 24 * 60 * 60 * 1000;
+
+/**
+ * Merge the known cookies lists retrieved from the given paths into a single lookup object.
+ * @param {Array} cookiePaths Paths of the lists, in order of precedence (later overrides earlier).
+ * @param {Object} cache Cached entry for each path, containing the list. Paths without an entry are skipped.
+ * @returns {Object} Merged known cookies object.
+ */
+const mergeUserKnownCookies = function(cookiePaths, cache) {
+    let merged = { "name_match": {}, "domain_match": {}, "domain_regex": {} };
+    for (let path of cookiePaths) {
+        let result = cache[path] && cache[path]["list"];
+        if (!result) {
+            continue;
+        }
+        if ("name_match" in result) {
+            for (let k of Object.keys(result["name_match"])) {
+                merged["name_match"][k] = result["name_match"][k];
+            }
+        }
+        if ("domain_match" in result) {
+            for (let k of Object.keys(result["domain_match"])) {
+                merged["domain_match"][k] = result["domain_match"][k];
+            }
+        }
+        if ("domain_regex" in result) {
+            for (let k of Object.keys(result["domain_regex"])) {
+                merged["domain_regex"][k] = Object.assign({}, result["domain_regex"][k]);
+                merged["domain_regex"][k][regexKey] = new RegExp(k);
+            }
+        }
+    }
+    return merged;
+}
+
 /**
  * This function reloads the current known cookies JSON from the given paths.
  * Performs requests to remote domains to retrieve the data. Correctness is also checked.
+ * The service worker restarts frequently, so the downloaded lists are cached in storage.local,
+ * and only downloaded again once they are older than knownCookiesRefreshInterval.
+ * @returns {Promise} Resolves once a list is available for every path, or its download failed.
  */
- const reloadUserKnownCookies = function(cookiePaths) {
+ const reloadUserKnownCookies = async function(cookiePaths) {
     if (cookiePaths.length === 0){
         knownCookies_user = undefined;
-    } else {
-        knownCookies_user = { "name_match": {}, "domain_match": {}, "domain_regex": {} }
+        return;
+    }
+
+    let cache;
+    try {
+        cache = await chromeWorkaround(chrome.storage.local, knownCookiesCacheKey);
+    } catch (err) {
+        console.error(err);
+    }
+    cache = cache || {};
+    knownCookies_user = mergeUserKnownCookies(cookiePaths, cache);
+
+    let isMissing = (path) => !(cache[path] && cache[path]["list"]);
+    let isStale = (path) => isMissing(path) || !(Date.now() - cache[path]["updated"] < knownCookiesRefreshInterval);
+    if (!cookiePaths.some(isStale)) {
+        return;
+    }
+
+    let refresh = Promise.all(cookiePaths.filter(isStale).map((path) => {
+        return getExtensionFile(path, "json", (result) => {
+            if (typeof result === "object" && result !== null && ("name_match" in result || "domain_match" in result || "domain_regex" in result)) {
+                cache[path] = { "list": result, "updated": Date.now() };
+            } else {
+                console.error(`Stored path did not point to a valid JSON: ${path}`);
+            }
+        });
+    })).then(() => {
+        // only keep lists that are still configured
+        let newCache = {};
         for (let path of cookiePaths) {
-            getExtensionFile(path, "json", (result) => {
-                if (typeof result === "object" && result !== null && ("name_match" in result || "domain_match" in result || "domain_regex" in result)) {
-                    if ("name_match" in result) {
-                        for (let k of Object.keys(result["name_match"])) {
-                            knownCookies_user["name_match"][k] = result["name_match"][k];
-                        }
-                    }
-                    if ("domain_match" in result) {
-                        for (let k of Object.keys(result["domain_match"])) {
-                            knownCookies_user["domain_match"][k] = result["domain_match"][k];
-                        }
-                    }
-                    if ("domain_regex" in result) {
-                        for (let k of Object.keys(result["domain_regex"])) {
-                            knownCookies_user["domain_regex"][k] = result["domain_regex"][k];
-                            knownCookies_user["domain_regex"][k][regexKey] = new RegExp(k);
-                        }
-                    }
-                } else {
-                    console.error(`Stored path did not point to a valid JSON: ${path}`);
-                }
-            });
+            if (path in cache) {
+                newCache[path] = cache[path];
+            }
         }
+        knownCookies_user = mergeUserKnownCookies(cookiePaths, newCache);
+        chrome.storage.local.set({[knownCookiesCacheKey]: newCache});
+    });
+
+    // Stale lists are refreshed in the background, only wait if a list has not been downloaded yet.
+    if (cookiePaths.some(isMissing)) {
+        await refresh;
     }
 }
 
@@ -147,7 +204,7 @@ const maybeRestoreCBLKVar = async function (cValue, varName) {
             case "cblk_mintime" : cblk_mintime = await getStorageValue(chrome.storage.sync, "cblk_mintime"); break;
             case "cblk_knowncookies" : {
                 cblk_knowncookies = await getStorageValue(chrome.storage.sync, "cblk_knowncookies");
-                reloadUserKnownCookies(cblk_knowncookies);
+                await reloadUserKnownCookies(cblk_knowncookies);
                 break;
             }
             case "cblk_useinternal" : cblk_useinternal = await getStorageValue(chrome.storage.sync, "cblk_useinternal"); break;
@@ -155,6 +212,10 @@ const maybeRestoreCBLKVar = async function (cValue, varName) {
         }
     }
 }
+
+// Resolves once the history database connection is open (or has failed to open).
+let resolveHistoryDBReady;
+const historyDBReady = new Promise((resolve) => { resolveHistoryDBReady = resolve; });
 
 // executed if the database is new or needs to be updated
 openDBRequest.onupgradeneeded = function(event) {
@@ -173,11 +234,13 @@ openDBRequest.onsuccess = function(ev1) {
     historyDB.onerror = function(ev2) {
         console.error("Database error: " + ev2.target.errorCode);
     };
+    resolveHistoryDBReady();
 };
 
 // if the connection failed
 openDBRequest.onerror = function(event) {
     console.error(`Failed to open history database with error code: ${event.target.errorCode}`);
+    resolveHistoryDBReady();
 };
 
 
@@ -297,7 +360,7 @@ const getCurrentLabelCount = function() {
 
     await setStorageValue(dfConfig["cblk_knowncookies"], chrome.storage.sync, "cblk_knowncookies", override);
     cblk_knowncookies = await getStorageValue(chrome.storage.sync, "cblk_knowncookies");
-    reloadUserKnownCookies(cblk_knowncookies);
+    await reloadUserKnownCookies(cblk_knowncookies);
 
     await setStorageValue(dfConfig["cblk_useinternal"], chrome.storage.sync, "cblk_useinternal", override);
     cblk_useinternal = await getStorageValue(chrome.storage.sync, "cblk_useinternal");
@@ -309,8 +372,8 @@ const getCurrentLabelCount = function() {
  * @param {Object} resp  Default configuration
  */
  const overrideDefaults = function() {
-    getExtensionFile(chrome.runtime.getURL("/ext_data/default_config.json"), "json", (dfConfig) => {
-        initDefaults(dfConfig, true);
+    return getExtensionFile(chrome.runtime.getURL("/ext_data/default_config.json"), "json", (dfConfig) => {
+        return initDefaults(dfConfig, true);
     });
   }
 
@@ -438,14 +501,14 @@ const classifyCookie = async function(cookieDat, feature_input) {
     // Otherwise, perform prediction
     if (label === -1) {
         // Feature extraction timing
-        let startTime = window.performance.now();
+        let startTime = performance.now();
         let features = extractFeatures(feature_input);
-        recordDebugTimings(window.performance.now() - startTime, 1);
+        recordDebugTimings(performance.now() - startTime, 1);
 
         // Prediction timing
-        startTime = window.performance.now();
+        startTime = performance.now();
         label = await predictClass(features, cblk_pscale);
-        recordDebugTimings(window.performance.now() - startTime, 2);
+        recordDebugTimings(performance.now() - startTime, 2);
     } else {
         debug_Nskipped++;
     }
@@ -530,12 +593,13 @@ const makePolicyDecision = async function(cookieDat, label) {
  * @param {Object} storeUpdate Whether
  */
  const handleCookie = async function (newCookie, storeUpdate, overrideTimeCheck){
+    await extensionReady;
     await maybeRestoreCBLKVar(cblk_hconsent, "cblk_hconsent");
     await maybeRestoreCBLKVar(cblk_exglobal, "cblk_exglobal");
     await maybeRestoreCBLKVar(cblk_mintime, "cblk_mintime");
     await maybeRestoreCBLKVar(cblk_pause, "cblk_pause");
 
-    let startTime = window.performance.now();
+    let startTime = performance.now();
     // First, if consent is given, check if the cookie has already been stored.
     let serializedCookie, storedCookie;
     try {
@@ -556,7 +620,7 @@ const makePolicyDecision = async function(cookieDat, label) {
     }
 
     // Record debug timing for cookie retrieval
-    recordDebugTimings(window.performance.now() - startTime, 0);
+    recordDebugTimings(performance.now() - startTime, 0);
     console.assert(serializedCookie !== undefined, "Cookie object was still undefined!");
 
     // Check if the domain is contained in the allowlist
@@ -647,6 +711,18 @@ const constructHistoryJSON = function(type) {
  * @param {*} sendResponse response function
  */
 const handleInternalMessage = function(request, sender, sendResponse) {
+    // The service worker may have just been started by this message, wait until all resources are loaded.
+    extensionReady.then(() => handleInternalMessageReady(request, sender, sendResponse));
+    return true;
+}
+
+/**
+ * Handle messages from other content scripts within the extension, once all resources are loaded.
+ * @param {Object} request Request object, containing the function type.
+ * @param {Object} sender Sender origin.
+ * @param {*} sendResponse response function
+ */
+const handleInternalMessageReady = function(request, sender, sendResponse) {
     //console.debug("Background script received a message.")
     if (request.classify_all) {
         chrome.cookies.getAll({}, async (allCookies) => {
@@ -690,8 +766,10 @@ const handleInternalMessage = function(request, sender, sendResponse) {
         sendJSONResponse();
         return true;
     } else if (request.reset_defaults) {
-        overrideDefaults();
-        sendResponse({response: "Defaults overridden by BG."});
+        overrideDefaults().then(() => {
+            sendResponse({response: "Defaults overridden by BG."});
+        });
+        return true;
     } else if (request.update_label) {
         let updateContents = request.update_label;
         let updateCookieProcess = async () => {
@@ -764,16 +842,33 @@ chrome.runtime.onMessage.addListener(handleInternalMessage);
 chrome.storage.onChanged.addListener(updateStorageVars);
 
 // Load the default configuration
-getExtensionFile(chrome.runtime.getURL("/ext_data/default_config.json"), "json", (dConfig) => {
-    initDefaults(dConfig, false)
+const settingsReady = getExtensionFile(chrome.runtime.getURL("/ext_data/default_config.json"), "json", (dConfig) => {
+    return initDefaults(dConfig, false);
 });
 
 // Load the cookie exceptions
-getExtensionFile(chrome.runtime.getURL("/ext_data/known_cookies.json"), "json", (result) => {
+const knownCookiesReady = getExtensionFile(chrome.runtime.getURL("/ext_data/known_cookies.json"), "json", (result) => {
     for (let k of Object.keys(result["domain_regex"])) {
         result["domain_regex"][k][regexKey] = new RegExp(k);
     }
     knownCookies_internal = result;
+});
+
+/**
+ * With Manifest V3, the background runs as a service worker (Chrome) or event page (Firefox),
+ * which is stopped when idle and restarted on the next event. All in-memory state (model,
+ * feature resources, settings, database connection) is then loaded again from scratch.
+ * Every event handler must wait on this promise before processing anything.
+ */
+const extensionReady = Promise.all([
+    defaultConfigReady, featureResourcesReady, forestsReady, historyDBReady, settingsReady, knownCookiesReady
+]).then(() => {
+    // The toolbar icon is not persisted across browser restarts, restore the paused state.
+    if (cblk_pause) {
+        chrome.action.setIcon(grayScaleIcon);
+    }
+}).catch((err) => {
+    console.error("Failed to initialize CookieBlock resources: " + err.message);
 });
 
 /**

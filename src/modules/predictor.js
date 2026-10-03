@@ -12,33 +12,23 @@ Released under the MIT License, see included LICENSE file.
 // initialize the forests
 var forests = [undefined, undefined, undefined, undefined];
 
-// Necessary Cookies Model
-getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class0_part1.json"), "json", (f1) => {
-    getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class0_part2.json"), "json", (f2) => {
-        forests[0] = f1.concat(f2);
-    });
-});
+/**
+ * Load the forest for the given class, which is split into two parts because of the Firefox filesize limit.
+ * Class 0: Necessary, 1: Functionality, 2: Analytics, 3: Advertising
+ * @param {Number} classIdx Index of the class whose forest to load.
+ * @returns {Promise} Resolves once the forest has been loaded.
+ */
+const loadForest = async function(classIdx) {
+    let [f1, f2] = await Promise.all([1, 2].map((part) => new Promise((resolve) => {
+        getExtensionFile(chrome.runtime.getURL(`/ext_data/model/forest_class${classIdx}_part${part}.json`), "json", resolve, () => resolve(undefined));
+    })));
+    if (f1 && f2) {
+        forests[classIdx] = f1.concat(f2);
+    }
+}
 
-// Functionality Cookies Model
-getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class1_part1.json"), "json", (f1) => {
-    getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class1_part2.json"), "json", (f2) => {
-        forests[1] = f1.concat(f2);
-    });
-});
-
-// Analytics Cookies Model
-getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class2_part1.json"), "json", (f1) => {
-    getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class2_part2.json"), "json", (f2) => {
-        forests[2] = f1.concat(f2);
-    });
-});
-
-// Advertising Cookies Model
-getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class3_part1.json"), "json", (f1) => {
-    getExtensionFile(chrome.runtime.getURL("/ext_data/model/forest_class3_part2.json"), "json", (f2) => {
-        forests[3] = f1.concat(f2);
-    });
-});
+// Resolves once all forests have been loaded. In a service worker, this happens again every time the worker starts.
+const forestsReady = Promise.all([0, 1, 2, 3].map(loadForest));
 
 /**
  * Given a tree node and corresponding features, retrieve the weight from the decision tree.

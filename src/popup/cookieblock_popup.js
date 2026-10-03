@@ -142,7 +142,7 @@ chrome.storage.onChanged.addListener(updateSelectionOnChange);
 pauseCheckbox.addEventListener("click", async () => {
     let pauseStatus = pauseCheckbox.checked;
     setStorageValue(pauseStatus, chrome.storage.local, "cblk_pause");
-    chrome.browserAction.setIcon(pauseStatus ? grayScaleIcon : defaultIcon);
+    chrome.action.setIcon(pauseStatus ? grayScaleIcon : defaultIcon);
     popupLogo.src = pauseStatus ? "/icons/gs-cookieblock-96.png" : "/icons/cookieblock-96.png";
 });
 
