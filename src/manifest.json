@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "__MSG_extensionName__",
   "author": "CookieBlock Team",
   "homepage_url": "https://karelkubicek.github.io/post/cookieblock",
@@ -19,25 +19,37 @@
   },
 
   "permissions": [
-      "<all_urls>",
       "cookies",
       "storage",
       "unlimitedStorage",
       "activeTab"
   ],
 
+  "host_permissions": [
+      "<all_urls>"
+  ],
+
   "background": {
-    "page": "/background/cookieblock_background.html"
+    "service_worker": "/background/cookieblock_service_worker.js",
+    "scripts": [
+      "/modules/third_party/lz-string.js",
+      "/modules/third_party/levenshtein.js",
+      "/modules/third_party/difflib-browser.js",
+      "/modules/globals.js",
+      "/modules/extractor.js",
+      "/modules/predictor.js",
+      "/background/cookieblock_background.js"
+    ]
   },
 
+  "minimum_chrome_version": "121",
+
   "options_ui": {
-    "browser_style": true,
     "page": "/options/cookieblock_options.html",
     "open_in_tab": true
   },
 
-  "browser_action": {
-    "browser_style": true,
+  "action": {
     "default_icon": {
       "16": "/icons/cookieblock-16.png",
       "32": "/icons/cookieblock-32.png",
@@ -52,7 +64,11 @@
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "cookie.block.extension@gmail.com"
+      "id": "cookie.block.extension@gmail.com",
+      "strict_min_version": "140.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   }
 }

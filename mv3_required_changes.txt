@@ -1,0 +1,58 @@
+# Required Changes to update to Manifest v3
+
+- Before starting work on this, try to assess whether the required changes still allow the extension to work properly.
+- Or whether the required changes are feasible in the first place.
+
+=== CHANGES NEEDED ===
+
+* [DONE] Update the `manifest.json` to v3, necessary to rename some properties.
+  - `browser_action` -> `action`, `chrome.browserAction` -> `chrome.action`.
+  - `<all_urls>` moved from `permissions` to `host_permissions`.
+  - `browser_style` removed, it is not supported in Manifest v3.
+  - Requires Chrome 121+ and Firefox 140+ (see background below).
+
+* [DONE] Replace usage of `chrome.extension.getURL()`
+
+* [DONE] Migrate background page to service worker.
+  - Chromium: `background.service_worker` points to `background/cookieblock_service_worker.js`,
+    which loads the same modules as the old background page through `importScripts()`.
+  - Firefox does not support extension service workers. It uses `background.scripts` instead,
+    which lists the same modules, and runs them as a non-persistent event page.
+    Chrome 121+ and Firefox 121+ both accept a manifest that specifies both keys.
+  - The two module lists must be kept in sync.
+
+[DONE] Update background scripts to adapt to the service worker execution context.
+  -> `XMLHttpRequest` is unavailable in service workers: `getExtensionFile` now uses `fetch()`.
+  -> Removed usages of `window.` (`indexedDB`, `performance`).
+  -> All events are still set up in the root context.
+  -> The background is now stopped when idle, and restarted on the next event. All in-memory state
+     (model forests, feature resources, settings, known cookies, IndexedDB connection) is then loaded
+     again from scratch. Every load now returns a promise, and all event handlers wait on the combined
+     `extensionReady` promise before handling a cookie or a message.
+     Loading everything takes roughly 0.2-0.5 seconds per restart.
+  -> The user-defined known cookies lists are remote URLs. These are now cached in `storage.local`,
+     so that a restart does not have to wait for the network. The cache is refreshed in the background.
+  -> The settings were already kept in `storage.local` / `storage.sync`, with the global variables as a cache.
+  -> `chrome.cookies` does NOT need to be replaced, it remains available in Manifest v3 service workers.
+  -> IndexedDB works in service workers without changes, apart from the connection being reopened on restart.
+  -> The paused icon state is restored on startup, as `action.setIcon` does not persist across browser restarts.
+
+[DONE] Need to check that no CORS requests are performed in content scripts.
+  - The extension has no content scripts.
+
+[DONE] Need to check if Firefox and Edge have compatibility with these changes.
+  - One manifest works for both Chromium-based browsers and Firefox.
+  - In Firefox, Manifest v3 host permissions can be withheld by the user, in which case no cookies
+    can be seen or removed. The first time setup page requests `<all_urls>` when the user applies the policy.
+  - Added `data_collection_permissions` (none) for Firefox, required for new AMO submissions.
+
+=== POSSIBLE FUTURE WORK ===
+
+* The model forests (~21MB of JSON) are parsed again on every service worker restart.
+  If this turns out to be too slow on low-end devices, a more compact model format would help.
+
+More info:
+* https://developer.chrome.com/docs/extensions/develop/migrate
+* https://developer.chrome.com/docs/extensions/develop/migrate/checklist
+* https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers
+* https://extensionworkshop.com/documentation/develop/manifest-v3-migration-guide/

@@ -175,7 +175,7 @@ const maybeDateContent = function(cookieContent) {
 const setupFunctions = {
     "setup_top_names": (source, vector_size, args) => {
         top_names = {};
-        getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
+        return getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
             let lines = resp.split('\n');
             if (lines.length < vector_size){
                 console.warn("Warning: Top cookie names resource is exhausted!");
@@ -190,7 +190,7 @@ const setupFunctions = {
     },
     "setup_top_domains": (source, vector_size, args) => {
         top_domains = {};
-        getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
+        return getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
             let lines = resp.split('\n');
             if (lines.length < vector_size){
                 console.warn("Warning: Top domain names resource is exhausted!");
@@ -205,7 +205,7 @@ const setupFunctions = {
     },
     "setup_name_features": (source, vector_size, args) => {
         name_tokens = [];
-        getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
+        return getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
             let lines = resp.split('\n');
             if (lines.length < vector_size){
                 console.warn("Warning: Name tokens resource is exhausted!");
@@ -220,7 +220,7 @@ const setupFunctions = {
     },
     "setup_content_terms": (source, vector_size, args) => {
         content_terms = [];
-        getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
+        return getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
             let lines = resp.split('\n');
             if (lines.length < vector_size){
                 console.warn("Warning: Content terms resource is exhausted!");
@@ -235,7 +235,7 @@ const setupFunctions = {
     },
     "setup_pattern_names": (source, vector_size, args) => {
         pattern_names = [];
-        getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
+        return getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
             let lines = resp.split('\n');
             if (lines.length < vector_size){
                 console.warn("Warning: Pattern names resource is exhausted!");
@@ -250,7 +250,7 @@ const setupFunctions = {
     },
     "setup_iabeurope_vendors": (source, vector_size, args) => {
         iabeurope_vendors = new Set();
-        getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
+        return getExtensionFile(chrome.runtime.getURL(source), "text", (resp) => {
             let lines = resp.split('\n');
             for (let i = 0; i < lines.length; i++) {
                 if (lines[i]) {
@@ -266,14 +266,16 @@ const setupFunctions = {
 * Callback function for when the config is loaded.
 * Sets up the configuration variable and executes the setup functions defined in features.json
 * @param {Object} fconfig   Configuration object, which defines the features to be extracted.
+* @returns {Promise}         Resolves once all feature resources have been loaded.
 */
 const setupFeatureResourcesCallback = function(fconfig) {
     feature_config = fconfig;
 
+    let setupPromises = [];
     let maybeRunSetup = function(featArray) {
         for (const entry of featArray) {
             if (entry["enabled"] && "setup" in entry) {
-                setupFunctions[entry['setup']](entry["source"], entry["vector_size"], entry["args"])
+                setupPromises.push(setupFunctions[entry['setup']](entry["source"], entry["vector_size"], entry["args"]));
             }
         }
     };
@@ -281,10 +283,11 @@ const setupFeatureResourcesCallback = function(fconfig) {
     maybeRunSetup(feature_config["per_cookie_features"]);
     maybeRunSetup(feature_config["per_update_features"]);
     maybeRunSetup(feature_config["per_diff_features"]);
+    return Promise.all(setupPromises);
 };
 
-// retrieve the configuration
-getExtensionFile(chrome.runtime.getURL("/ext_data/features.json"), "json", setupFeatureResourcesCallback);
+// retrieve the configuration, resolves once all feature resources are loaded
+const featureResourcesReady = getExtensionFile(chrome.runtime.getURL("/ext_data/features.json"), "json", setupFeatureResourcesCallback);
 
 
 // Features extracted for each unique cookie
