@@ -40,7 +40,7 @@
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock allows you to automatically remove cookies that collect sensitive data and track you. It uses machine learning to automatically predict the purpose that each cookie is used for.",
+    "message": "CookieBlock allows you to automatically remove cookies that collect sensitive data and track you. It uses machine learning to automatically predict the purpose that each cookie is used for. It does not hide cookie banners. To get rid of those as well, we recommend combining it with an extension such as Consent-O-Matic.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 

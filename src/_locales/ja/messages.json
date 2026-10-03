@@ -40,7 +40,7 @@
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock は、機密データを収集したり、あなたを追跡したりするクッキーを自動的に削除することができます。機械学習により、各クッキーが使用される目的を自動的に予測します。",
+    "message": "CookieBlock は、機密データを収集したり、あなたを追跡したりするクッキーを自動的に削除することができます。機械学習により、各クッキーが使用される目的を自動的に予測します。クッキーバナーは非表示になりません。バナーも消したい場合は、Consent-O-Matic などの拡張機能と組み合わせることをおすすめします。",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 

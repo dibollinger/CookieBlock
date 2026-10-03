@@ -40,7 +40,7 @@
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock le permite eliminar automáticamente las cookies que recogen datos sensibles y le rastrean. Utiliza el aprendizaje automático para predecir la finalidad de cada cookie.",
+    "message": "CookieBlock le permite eliminar automáticamente las cookies que recogen datos sensibles y le rastrean. Utiliza el aprendizaje automático para predecir la finalidad de cada cookie. No oculta los avisos de cookies. Para eliminarlos también, le recomendamos combinarla con una extensión como Consent-O-Matic.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 

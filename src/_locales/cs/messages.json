@@ -40,7 +40,7 @@
   },
 
   "firstTimeDescPG1": {
-    "message": "CookieBlock vám umožňuje automaticky smazat cookies které o vás sbírají citlivé osobní údaje a sledují vás. K tomu používá strojové učení, pomocí jehož umí automatický předpovědět účel ke kterému daná cookie slouží.",
+    "message": "CookieBlock vám umožňuje automaticky smazat cookies které o vás sbírají citlivé osobní údaje a sledují vás. K tomu používá strojové učení, pomocí jehož umí automatický předpovědět účel ke kterému daná cookie slouží. Neskrývá však lišty se souhlasem s cookies. Pokud se chcete zbavit i jich, doporučujeme ji kombinovat s rozšířením, jako je Consent-O-Matic.",
     "description": "Description paragraph 1 seen on the first time setup page."
   },
 
